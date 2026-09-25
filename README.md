@@ -12,6 +12,7 @@
 [![Autonomous Subagents](https://img.shields.io/badge/Subagents-6%20Specialized-purple.svg?style=for-the-badge)](https://github.com/Gastonchevarria/god-mode)
 [![Protocol](https://img.shields.io/badge/Protocol-Fable%205.1-critical.svg?style=for-the-badge)](https://github.com/Gastonchevarria/god-mode)
 [![Platform Support](https://img.shields.io/badge/Engines-Claude%20Code%20%7C%20Cursor%20%7C%20Antigravity%20%7C%20Windsurf-success.svg?style=for-the-badge)](https://github.com/Gastonchevarria/god-mode)
+[![Security Policy](https://img.shields.io/badge/Security-Policy-brightgreen.svg?style=for-the-badge&logo=shield)](SECURITY.md)
 
 <br/>
 
@@ -20,7 +21,7 @@
 
 <br/>
 
-[1-Minute Install](#-1-minute-install) • [Modular Packs](#-modular-packs-anti-context-bloat) • [The 5 King Commands](#-the-5-king-commands) • [CLI Manager](#-global-cli-manager-god-mode) • [Cursor & Windsurf](#-cursor--windsurf-support) • [Fable 5.1 Doctrine](#-the-fable-51-doctrine)
+[1-Minute Install](#-1-minute-install) • [Modular Packs](#-modular-packs-anti-context-bloat) • [The 5 King Commands](#-the-5-king-commands) • [CLI Manager](#-global-cli-manager-god-mode) • [Cursor & Windsurf](#-cursor--windsurf-support) • [Fable 5.1 Doctrine](#-the-fable-51-doctrine) • [Security Policy](SECURITY.md)
 
 </div>
 
