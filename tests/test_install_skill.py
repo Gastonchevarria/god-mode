@@ -60,6 +60,10 @@ class ParseGithubUrlTest(unittest.TestCase):
             with self.subTest(url=url), self.assertRaises(install_skill.UnsafeInputError):
                 install_skill.parse_github_url(url)
 
+    def test_dot_segments_are_rejected(self):
+        with self.assertRaises(install_skill.UnsafeInputError):
+            install_skill.parse_github_url("https://github.com/owner/repo/tree/main/.git")
+
     def test_path_traversal_is_rejected(self):
         with self.assertRaises(install_skill.UnsafeInputError):
             install_skill.parse_github_url("https://github.com/owner/repo/tree/main/../../etc")
@@ -125,7 +129,42 @@ class InstallFromGithubTest(unittest.TestCase):
         install_dir.assert_not_called()
 
 
+class MultiSkillInstallTest(IsolatedHomeTest):
+    def fake_clone_with(self, *names):
+        def fake_clone(args, cwd=None):
+            repo = Path(cwd) / "repo"
+            for idx, name in enumerate(names):
+                make_skill(repo / "packages" / f"pkg{idx}", name)
+            return True, "", ""
+        return fake_clone
+
+    def test_multi_skill_repo_requires_confirmation_when_non_interactive(self):
+        with mock.patch.object(install_skill, "run_cmd", side_effect=self.fake_clone_with("god", "security")), \
+                mock.patch.object(sys.stdin, "isatty", return_value=False), redirect_stdout(io.StringIO()) as out:
+            ok = install_skill.install_from_github("https://github.com/attacker/innocent")
+        self.assertFalse(ok)
+        self.assertFalse((self.claude / "god").exists())
+        self.assertIn("~/.claude/skills/god", out.getvalue())
+
+    def test_multi_skill_repo_installs_with_yes(self):
+        with mock.patch.object(install_skill, "run_cmd", side_effect=self.fake_clone_with("alpha", "beta")), \
+                redirect_stdout(io.StringIO()):
+            ok = install_skill.install_from_github("https://github.com/owner/repo", assume_yes=True)
+        self.assertTrue(ok)
+        self.assertTrue((self.claude / "alpha").exists() and (self.claude / "beta").exists())
+
+
 class InstallSkillDirectoryTest(IsolatedHomeTest):
+    def test_symlinked_skill_md_is_rejected_before_reading(self):
+        skill = Path(self.src) / "linked"
+        skill.mkdir()
+        outside = Path(self.tmp.name) / "outside.md"
+        outside.write_text("---\nname: outside\n---\n", encoding="utf-8")
+        (skill / "SKILL.md").symlink_to(outside)
+        with mock.patch.object(install_skill, "resolve_skill_name") as resolve, redirect_stdout(io.StringIO()):
+            self.assertFalse(install_skill.install_skill_directory(skill))
+        resolve.assert_not_called()
+
     def test_installs_valid_skill(self):
         skill = make_skill(self.src)
         with redirect_stdout(io.StringIO()):

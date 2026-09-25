@@ -35,8 +35,8 @@ class UnsafeInputError(ValueError):
 
 
 def _check_segment(value, label):
-    if (not value or not SAFE_SEGMENT.fullmatch(value) or value.startswith("-")
-            or value in (".", "..") or ".." in value):
+    if (not value or not SAFE_SEGMENT.fullmatch(value) or value.startswith(("-", "."))
+            or ".." in value):
         raise UnsafeInputError(f"{label} con caracteres no permitidos: {value!r}")
     return value
 
@@ -160,9 +160,28 @@ def _confirm_overwrite(skill_name, assume_yes):
     return answer in ("s", "si", "sí", "y", "yes")
 
 
+def _confirm_multi_install(count, assume_yes):
+    if assume_yes:
+        return True
+    if not sys.stdin.isatty():
+        log(f"El repositorio trae {count} skills. Mostrale la lista al usuario y, con su confirmación, "
+            "repetí el comando con --yes.", "⛔")
+        return False
+    answer = input(f"¿Instalar estas {count} skills? [s/N] ").strip().lower()
+    return answer in ("s", "si", "sí", "y", "yes")
+
+
 def _escaping_symlinks(src):
     root = Path(src).resolve()
     return [p for p in Path(src).rglob("*") if p.is_symlink() and not _is_within(p, root)]
+
+
+def resolve_skill_name(src_skill_dir):
+    """Name declared in SKILL.md frontmatter, falling back to the directory name."""
+    src = Path(src_skill_dir)
+    content = (src / "SKILL.md").read_text(encoding="utf-8", errors="ignore")
+    m = re.search(r"^name:\s*([a-zA-Z0-9_-]+)", content, re.MULTILINE)
+    return m.group(1).strip() if m else src.name
 
 
 def install_skill_directory(src_skill_dir, skill_name=None, force=False, assume_yes=False):
@@ -173,19 +192,19 @@ def install_skill_directory(src_skill_dir, skill_name=None, force=False, assume_
         log(f"No se encontró SKILL.md en {src}", "⚠️")
         return False
 
+    escaping = _escaping_symlinks(src)
+    if skill_file.is_symlink() and not _is_within(skill_file, src):
+        escaping.append(skill_file)
+    if escaping:
+        log(f"La skill en '{src.name}' contiene enlaces simbólicos que apuntan fuera de su carpeta "
+            f"({', '.join(sorted({str(p.relative_to(src)) for p in escaping}))}). Instalación cancelada.", "⛔")
+        return False
+
     if not skill_name:
-        content = skill_file.read_text(encoding="utf-8", errors="ignore")
-        m = re.search(r"^name:\s*([a-zA-Z0-9_-]+)", content, re.MULTILINE)
-        skill_name = m.group(1).strip() if m else src.name
+        skill_name = resolve_skill_name(src)
 
     if not SAFE_SKILL_NAME.fullmatch(skill_name):
         log(f"Nombre de skill no permitido: {skill_name!r}", "⛔")
-        return False
-
-    escaping = _escaping_symlinks(src)
-    if escaping:
-        log(f"La skill '{skill_name}' contiene enlaces simbólicos que apuntan fuera de su carpeta "
-            f"({', '.join(str(p.relative_to(src)) for p in escaping)}). Instalación cancelada.", "⛔")
         return False
 
     target_claude = CLAUDE_SKILLS / skill_name
@@ -258,10 +277,25 @@ def install_from_github(url, force=False, assume_yes=False):
             log(f"No se encontraron archivos SKILL.md en {url}", "❌")
             return False
 
-        log(f"Se encontraron {len(found_skills)} skill(s) en el repositorio:", "📦")
-        installed_count = 0
+        plan = []
         for sk in found_skills:
-            if install_skill_directory(sk.parent, force=force, assume_yes=assume_yes):
+            try:
+                plan.append((sk.parent, resolve_skill_name(sk.parent)))
+            except OSError as e:
+                log(f"No se pudo leer {sk.relative_to(repo_dir)}: {e}", "⚠️")
+
+        log(f"Se encontraron {len(plan)} skill(s) en el repositorio:", "📦")
+        for src_dir, name in plan:
+            existing = " (ya instalada)" if (CLAUDE_SKILLS / name).exists() else ""
+            print(f"   • {src_dir.relative_to(repo_dir)} → ~/.claude/skills/{name}{existing}")
+
+        if len(plan) > 1 and not _confirm_multi_install(len(plan), assume_yes):
+            log("Instalación cancelada: no se confirmó la lista de skills.", "ℹ️")
+            return False
+
+        installed_count = 0
+        for src_dir, name in plan:
+            if install_skill_directory(src_dir, skill_name=name, force=force, assume_yes=assume_yes):
                 installed_count += 1
 
         failed = len(found_skills) - installed_count
