@@ -7,7 +7,7 @@ description: >
   (EQ, compressor, limiter, gate, saturation, delay, reverb, chorus, phaser,
   bitcrush), automation envelopes drawn on a track's volume or any effect
   parameter, or one submix bus carrying a chain, a fader and an automation clock
-  for several tracks at once (`<hf-audio-group>`).
+  for several tracks at once (`hf-audio-group`).
   Don't use for sourcing or generating audio — finding BGM, SFX, or making a
   voiceover is `/media-use`. Don't use for clip timing or track layout, which is
   `/hyperframes-core`.
