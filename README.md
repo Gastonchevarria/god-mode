@@ -8,7 +8,7 @@
 ### The Autonomous AI Engineering Squad for Claude Code, Cursor, Antigravity & Windsurf
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
-[![Skills Count](https://img.shields.io/badge/Skills-133%20Modular-blue.svg?style=for-the-badge&logo=anthropic)](https://github.com/Gastonchevarria/god-mode)
+[![Skills Count](https://img.shields.io/badge/Skills-135%20Modular-blue.svg?style=for-the-badge&logo=anthropic)](https://github.com/Gastonchevarria/god-mode)
 [![Autonomous Subagents](https://img.shields.io/badge/Subagents-6%20Specialized-purple.svg?style=for-the-badge)](https://github.com/Gastonchevarria/god-mode)
 [![Protocol](https://img.shields.io/badge/Protocol-Fable%205.1-critical.svg?style=for-the-badge)](https://github.com/Gastonchevarria/god-mode)
 [![Platform Support](https://img.shields.io/badge/Engines-Claude%20Code%20%7C%20Cursor%20%7C%20Antigravity%20%7C%20Windsurf-success.svg?style=for-the-badge)](https://github.com/Gastonchevarria/god-mode)
@@ -105,16 +105,16 @@ curl -fsSL https://raw.githubusercontent.com/Gastonchevarria/god-mode/main/insta
 ### Choose Your Specialized Pack:
 
 ```bash
-# Core Pack (Default - 18 skills: Fullstack, Security, Thermos, Anti-Slop. Zero context bloat)
+# Core Pack (Default - 20 skills: Fullstack, Security, Thermos, Anti-Slop. Zero context bloat)
 curl -fsSL https://raw.githubusercontent.com/Gastonchevarria/god-mode/main/install.sh | bash -s -- --pack=core
 
-# Dev Pack (55 skills: Core + Backend, Next.js, FastAPI, RAG, Evals, MCP Builder, Architecture)
+# Dev Pack (57 skills: Core + Backend, Next.js, FastAPI, RAG, Evals, MCP Builder, Architecture)
 curl -fsSL https://raw.githubusercontent.com/Gastonchevarria/god-mode/main/install.sh | bash -s -- --pack=dev
 
-# Growth Pack (65 skills: Core + SaaS Monetization, SEO, CRO, Onboarding, Paywalls, Cold Email)
+# Growth Pack (72 skills: Core + SaaS Monetization, SEO, CRO, Onboarding, Paywalls, Cold Email)
 curl -fsSL https://raw.githubusercontent.com/Gastonchevarria/god-mode/main/install.sh | bash -s -- --pack=growth
 
-# All Pack (133 skills: Complete Arsenal including Video/Media, Hyperframes, Remotion)
+# All Pack (135 skills: Complete Arsenal including Video/Media, Hyperframes, Remotion)
 curl -fsSL https://raw.githubusercontent.com/Gastonchevarria/god-mode/main/install.sh | bash -s -- --pack=all
 ```
 
@@ -126,10 +126,10 @@ Loading 130+ tool schemas into an AI agent at session start causes **tool halluc
 
 | Pack | Active Skills | Target Workflow | Context Weight |
 | :--- | :---: | :--- | :---: |
-| **`core`** *(Default)* | **18 skills** | Full-Stack Building, Thermos Review, DevSecOps, Anti-Slop | 🟢 Ultra-Light (<5% context) |
-| **`dev`** | **55 skills** | Distributed Backend, FastAPI, Next.js, RAG Pipelines, Testing | 🟡 Medium (~12% context) |
-| **`growth`** | **65 skills** | SaaS Monetization, Funnels, Programmatic SEO, Cold Email, CRO | 🟡 Medium (~14% context) |
-| **`all`** | **133 skills** | Video production, motion graphics, Hyperframes & everything | 🔴 Heavy (Full loadout) |
+| **`core`** *(Default)* | **20 skills** | Full-Stack Building, Thermos Review, DevSecOps, Anti-Slop | 🟢 Ultra-Light (<5% context) |
+| **`dev`** | **57 skills** | Distributed Backend, FastAPI, Next.js, RAG Pipelines, Testing | 🟡 Medium (~12% context) |
+| **`growth`** | **72 skills** | SaaS Monetization, Funnels, Programmatic SEO, Cold Email, CRO | 🟡 Medium (~14% context) |
+| **`all`** | **135 skills** | Video production, motion graphics, Hyperframes & everything | 🔴 Heavy (Full loadout) |
 
 You can switch packs in **1 second** at any time:
 ```bash

@@ -204,10 +204,10 @@ def cmd_status():
   • Protocolo:           {GREEN}Fable 5.1 (Never Stop Short){NC}
 ────────────────────────────────────────────────────
 Packs disponibles:
-  • {BOLD}core{NC}     (18 skills)  - Indispensables Fullstack/Security/Clean Code
-  • {BOLD}dev{NC}      (55 skills)  - Fullstack, Backend, AI Pipelines, Testing
-  • {BOLD}growth{NC}   (65 skills)  - SaaS Growth, Monetización, SEO, CRO, Ads
-  • {BOLD}all{NC}      (133 skills) - Suite completa incluyendo video y media
+  • {BOLD}core{NC}     (20 skills)  - Indispensables Fullstack/Security/Clean Code
+  • {BOLD}dev{NC}      (57 skills)  - Fullstack, Backend, AI Pipelines, Testing
+  • {BOLD}growth{NC}   (72 skills)  - SaaS Growth, Monetización, SEO, CRO, Ads
+  • {BOLD}all{NC}      (135 skills) - Suite completa incluyendo video y media
 
 Para cambiar de pack:
   god-mode pack <core|dev|growth|all>

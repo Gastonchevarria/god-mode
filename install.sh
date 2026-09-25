@@ -27,10 +27,10 @@ for arg in "$@"; do
             ;;
         --help|-h)
             echo "Uso: ./install.sh [--pack=core|dev|growth|all]"
-            echo "  --pack=core     (Default) 18 skills indispensables (Cero ruido de contexto)"
-            echo "  --pack=dev      55 skills Fullstack, Backend, AI Pipelines, Testing"
-            echo "  --pack=growth   65 skills SaaS Growth, Monetización, SEO, CRO, Ads"
-            echo "  --pack=all      133 skills completas"
+            echo "  --pack=core     (Default) 20 skills indispensables (Cero ruido de contexto)"
+            echo "  --pack=dev      57 skills Fullstack, Backend, AI Pipelines, Testing"
+            echo "  --pack=growth   72 skills SaaS Growth, Monetización, SEO, CRO, Ads"
+            echo "  --pack=all      135 skills completas"
             exit 0
             ;;
     esac

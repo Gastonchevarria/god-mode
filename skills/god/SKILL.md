@@ -54,44 +54,44 @@ Opera bajo el estándar **Fable 5.1**, combinando la autonomía implacable de Cl
        ▼
 ¿En qué fase o problema estás?
  ├── 💥 "¿Quiero una auditoría implacable pre-merge / Thermo-Nuclear Review de un branch/diff?"
- │    └── Ruta: THERMO-NUCLEAR REVIEW ➔ Activa `/thermos` (`thermo-nuclear-review` + `thermo-nuclear-code-quality-review`)
+ │    └── Ruta: THERMO-NUCLEAR REVIEW ➔ Activa `thermos` (`thermo-nuclear-review` + `thermo-nuclear-code-quality-review`)
  │
  ├── 🧹 "¿Quiero auditar y eliminar vicios, código vago y anti-patrones de IA en TypeScript/JS?"
- │    └── Ruta: ANTI-SLOP CLEAN CODE ➔ Activa `/anti-slop` (`anti-slop`)
+ │    └── Ruta: ANTI-SLOP CLEAN CODE ➔ Activa `anti-slop`
  │
  ├── 🛡️ "¿Quiero una auditoría defensiva de seguridad pre-launch / DevSecOps?"
- │    └── Ruta: PRE-LAUNCH SECURITY AUDIT ➔ Activa `/security` (`security-and-hardening` + `security-auditor` + protocolo `SECURITY_AUDIT.md`)
+ │    └── Ruta: PRE-LAUNCH SECURITY AUDIT ➔ Activa `security` (`security-and-hardening` + `security-auditor`)
  │
  ├── 🗺️ "¿Quiero diagramar mi arquitectura / mapa del sistema / secuencia de APIs / Mermaid a HTML?"
- │    └── Ruta: SYSTEM MAPPING & ARCHIFY ➔ Activa `/archify` (`archify` + `archify.mjs` render & validate)
+ │    └── Ruta: SYSTEM MAPPING & ARCHIFY ➔ Activa `archify`
  │
  ├── 🐛 "¿Tengo un error de código, compilación o despliegue?"
  │    └── Ruta: DEBUGGING & ERROR RECOVERY ➔ Activa `debugging-and-error-recovery` + `test-driven-development`
  │
  ├── 💡 "¿Tengo una idea / quiero validar un mercado?"
- │    └── Ruta: DISCOVERY ➔ Activa `/grill-me` + `office-hours` + `startup-idea-validation`
+ │    └── Ruta: DISCOVERY ➔ Activa `interview-me` + `office-hours` + `startup-idea-validation`
  │
  ├── 💰 "¿Cómo cobro / cuánto cobrar / planes / Stripe?"
- │    └── Ruta: MONETIZATION ➔ Activa `/monetize` (`saas-business-model` + `plan-ceo-review`)
+ │    └── Ruta: MONETIZATION ➔ Activa `saas-business-model` + `plan-ceo-review` + `pricing`
  │
  ├── ✂️ "¿Tengo demasiado alcance / cómo hago el MVP rápido?"
- │    └── Ruta: SCOPE-KILLER ➔ Activa `/scope-kill` (`mvp-scope-killer`)
+ │    └── Ruta: SCOPE-KILLER ➔ Activa `mvp-scope-killer`
  │
  ├── 🧠 "¿Cómo armo el sistema de IA / RAG / Prompts / Evals?"
- │    └── Ruta: AI-ARCH ➔ Activa `/ai-arch` (`ai-product-architect` + `rag-implementation`)
+ │    └── Ruta: AI-ARCH ➔ Activa `ai-product-architect` + `rag-implementation`
  │
  ├── 📐 "¿Cómo armo la arquitectura backend / frontend / DB?"
  │    └── Ruta: TECH-ARCH ➔ Activa `plan-eng-review` + `backend-architect` + `fastapi-pro` / `nextjs-app-router`
  │
  ├── 🏗️ "¿Quiero que construyas toda esta feature de punta a punta?"
- │    └── Ruta: FULL-BUILD ➔ Activa `/goal` (`autoplan` + `ralph-loop` + `tdd` + `testing`)
+ │    └── Ruta: FULL-BUILD ➔ Activa `autoplan` + `ralph-loop` + `test-driven-development`
  │
  ├── 🚀 "¿Cómo consigo usuarios / landing page / onboarding / SEO?"
- │    └── Ruta: GROWTH ➔ Activa `/growth` (`launch-growth-loop` + `saas-launch-revenue`)
+ │    └── Ruta: GROWTH ➔ Activa `launch-growth-loop` + `saas-launch-revenue`
  │
  ├── 🧐 "¿Estoy seguro de esta decisión técnica difícil?"
- │    └── Ruta: ADVERSARIAL ➔ Activa `/doubt` (`doubt-driven-development` + `founder-technical-decision`)
+ │    └── Ruta: ADVERSARIAL ➔ Activa `doubt-driven-development` + `founder-technical-decision`
  │
  └── 🎓 "¿Qué aprendimos / guarda este patrón para siempre?"
-      └── Ruta: PERSISTENCE ➔ Activa `/learn` (`retro` + memoria del agente)
+      └── Ruta: PERSISTENCE ➔ Activa `retro` + `self-learning-skills`
 ```
