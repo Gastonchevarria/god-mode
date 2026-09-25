@@ -1,5 +1,9 @@
 <div align="center">
 
+<p align="center">
+  <img src="assets/banner.gif" alt="DEV GOD-MODE Autonomous Engineering Suite" width="100%" />
+</p>
+
 # ⚡ DEV GOD-MODE
 ### The Autonomous AI Engineering Squad for Claude Code, Cursor, Antigravity & Windsurf
 
