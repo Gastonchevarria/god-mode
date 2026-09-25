@@ -1,6 +1,6 @@
 <div align="center">
 
-# ⚡ DEV GOD-TIER
+# ⚡ DEV GOD-MODE
 ### The Autonomous AI Engineering Squad for Claude Code & Google Antigravity
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
@@ -16,13 +16,13 @@
 
 <br/>
 
-[Quickstart](#-1-minute-install) • [Feature Matrix](#-the-god-tier-arsenal) • [Slash Commands](#-slash-command-matrix) • [Skills Catalog](#-the-130-skills-breakdown) • [Fable 5.1 Protocol](#-the-fable-51-doctrine)
+[Quickstart](#-1-minute-install) • [Feature Matrix](#-the-GOD-Mode-arsenal) • [Slash Commands](#-slash-command-matrix) • [Skills Catalog](#-the-130-skills-breakdown) • [Fable 5.1 Protocol](#-the-fable-51-doctrine)
 
 </div>
 
 ---
 
-## 🌟 Why DEV GOD-Tier?
+## 🌟 Why DEV GOD-Mode?
 
 Most AI coding setups suffer from the same 4 fatal flaws:
 1. **The "Stop Short" Fatigue**: The agent stops halfway, outputs a markdown list, and tells you: *"Now it's your turn to implement step 4 and 5"*.
@@ -30,7 +30,7 @@ Most AI coding setups suffer from the same 4 fatal flaws:
 3. **Ecosystem Fragmentation**: Skills made for Claude Code don't work in Antigravity, and vice versa.
 4. **Lack of Senior Engineering Rigor**: No automated pre-merge diff auditing, no DevSecOps review, and no architectural sanity checks.
 
-**DEV GOD-Tier solves all of this in a single command.**
+**DEV GOD-Mode solves all of this in a single command.**
 
 ```
                                   ┌───────────────────────────┐
@@ -89,9 +89,9 @@ chmod +x install.sh
 
 ---
 
-## 🥊 Vanilla Agents vs. Arcadia GOD-Tier
+## 🥊 Vanilla Agents vs. Arcadia GOD-Mode
 
-| Feature | Vanilla Claude / Antigravity | ⚡ Arcadia GOD-Tier |
+| Feature | Vanilla Claude / Antigravity | ⚡ Arcadia GOD-Mode |
 | :--- | :---: | :---: |
 | **Execution Autonomy** | Stops frequently for confirmation | **"Never Stop Short" Mandate (Executes all N steps)** |
 | **Prompt Rationalization** | Hides or glosses over failures | **Reports actual tool outcomes in line 1** |
