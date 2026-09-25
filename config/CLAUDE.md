@@ -15,8 +15,9 @@
 
 ## Always-Active Skills & Integraciones
 
-- Always invoke the `superpowers:dev-agents` skill when working on any software development task (designing, building, reviewing, securing, deploying, debugging, or documenting code). This applies to ALL projects.
-- Use `claude-security` plugin (`/claude-security:claude-security`) or native `/security` for pre-launch defensive security audits.
+- Always leverage the native **DEV GOD-MODE** skills (`startup-god-router`, `anti-slop`, `thermos`, `security-and-hardening`, `code-review-and-quality`) when designing, building, reviewing, securing, deploying, debugging, or documenting code.
+- Use `/god` or `/startup-god-router` for autonomous intent classification and multi-role squad execution.
+- Use `/thermos` for double thermo-nuclear pre-merge audits and `/security` for pre-launch defensive audits.
 
 ---
 
