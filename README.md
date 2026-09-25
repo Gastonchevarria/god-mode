@@ -1,7 +1,7 @@
 <div align="center">
 
 <p align="center">
-  <img src="assets/banner.gif" alt="DEV GOD-MODE Autonomous Engineering Suite" width="100%" />
+  <img src="assets/banner.png" alt="DEV GOD-MODE Autonomous AI Engineering Squad" width="100%" style="border-radius: 12px; box-shadow: 0 10px 40px rgba(245, 158, 11, 0.15);" />
 </p>
 
 # ⚡ DEV GOD-MODE
