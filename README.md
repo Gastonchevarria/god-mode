@@ -4,10 +4,10 @@
 ### The Autonomous AI Engineering Squad for Claude Code & Google Antigravity
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
-[![Skills Count](https://img.shields.io/badge/Skills-130+-blue.svg?style=for-the-badge&logo=anthropic)](https://github.com/gastonchevarria/arcadia-god-tier)
-[![Autonomous Subagents](https://img.shields.io/badge/Subagents-6%20Specialized-purple.svg?style=for-the-badge)](https://github.com/gastonchevarria/arcadia-god-tier)
-[![Protocol](https://img.shields.io/badge/Protocol-Fable%205.1-critical.svg?style=for-the-badge)](https://github.com/gastonchevarria/arcadia-god-tier)
-[![Platform Support](https://img.shields.io/badge/Engines-Claude%20Code%20%7C%20Antigravity-success.svg?style=for-the-badge)](https://github.com/gastonchevarria/arcadia-god-tier)
+[![Skills Count](https://img.shields.io/badge/Skills-130+-blue.svg?style=for-the-badge&logo=anthropic)](https://github.com/Gastonchevarria/god-mode)
+[![Autonomous Subagents](https://img.shields.io/badge/Subagents-6%20Specialized-purple.svg?style=for-the-badge)](https://github.com/Gastonchevarria/god-mode)
+[![Protocol](https://img.shields.io/badge/Protocol-Fable%205.1-critical.svg?style=for-the-badge)](https://github.com/Gastonchevarria/god-mode)
+[![Platform Support](https://img.shields.io/badge/Engines-Claude%20Code%20%7C%20Antigravity-success.svg?style=for-the-badge)](https://github.com/Gastonchevarria/god-mode)
 
 <br/>
 
@@ -73,14 +73,14 @@ Most AI coding setups suffer from the same 4 fatal flaws:
 Run this single command in your terminal. It detects your AI environments, installs all 130+ skills, subagents, and configures zero-drift synchronization:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/gastonchevarria/arcadia-god-tier/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Gastonchevarria/god-mode/main/install.sh | bash
 ```
 
 ### Or Manual Clone:
 
 ```bash
-git clone https://github.com/gastonchevarria/arcadia-god-tier.git
-cd arcadia-god-tier
+git clone https://github.com/Gastonchevarria/god-mode.git
+cd god-mode
 chmod +x install.sh
 ./install.sh
 ```
@@ -259,7 +259,7 @@ Every agent in this suite adheres to the **Fable 5.1 Standard**:
 ## 🛠️ Repository Structure
 
 ```text
-arcadia-god-tier/
+god-mode/
 ├── README.md               # 🌟 The 100k-star presentation document
 ├── install.sh              # 🚀 1-Click universal installer (Bash)
 ├── LICENSE                 # 📄 MIT License
@@ -304,6 +304,6 @@ Distributed under the **MIT License**. Created by [Gaston Chevarria](https://git
 
 **⭐ If this suite saves you hundreds of hours of coding, please give it a Star! ⭐**
 
-[![Star on GitHub](https://img.shields.io/github/stars/gastonchevarria/arcadia-god-tier.svg?style=social&label=Star)](https://github.com/gastonchevarria/arcadia-god-tier)
+[![Star on GitHub](https://img.shields.io/github/stars/Gastonchevarria/god-mode.svg?style=social&label=Star)](https://github.com/Gastonchevarria/god-mode)
 
 </div>

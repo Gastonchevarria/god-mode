@@ -35,7 +35,7 @@ TMP_CLONE_DIR=""
 if [ ! -d "$SCRIPT_DIR/skills" ]; then
     echo -e "${YELLOW}📥 Fetching latest release from GitHub...${NC}"
     TMP_CLONE_DIR=$(mktemp -d)
-    git clone --depth 1 https://github.com/gastonchevarria/arcadia-god-tier.git "$TMP_CLONE_DIR" >/dev/null 2>&1 || {
+    git clone --depth 1 https://github.com/Gastonchevarria/god-mode.git "$TMP_CLONE_DIR" >/dev/null 2>&1 || {
         echo -e "${RED}❌ Error cloning repository. Ensure git and internet connection are available.${NC}"
         exit 1
     }
@@ -149,4 +149,4 @@ echo -e "  ${CYAN}/scope-kill${NC}     ➔ Ruthless MVP scope cutter"
 echo -e "  ${CYAN}/install-skill${NC}  ➔ Install any skill from GitHub automatically"
 echo -e ""
 echo -e "${YELLOW}⭐ If you love this suite, give it a star on GitHub:${NC}"
-echo -e "${BOLD}https://github.com/gastonchevarria/arcadia-god-tier${NC}\n"
+echo -e "${BOLD}https://github.com/Gastonchevarria/god-mode${NC}\n"
