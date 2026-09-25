@@ -3,7 +3,7 @@ name: skill-installer
 description: Autonomous installer for Agent Skills from GitHub repos, subfolders, officialskills.sh, or VoltAgent/awesome-agent-skills. Installs and syncs across Claude Code (~/.claude/skills) and Antigravity (~/.gemini/config/skills). Triggered via /install-skill, /skills-add, or when asked to install an agent skill from a repository.
 ---
 
-# Skill Installer (Arcadia GOD Level)
+# Skill Installer (DEV GOD-MODE)
 
 ## Overview
 Esta skill permite a los agentes autónomos (Claude Code y Antigravity) buscar, descargar, validar e instalar **Agent Skills** directamente desde cualquier repositorio de GitHub, subcarpetas, o desde el catálogo curado **VoltAgent/awesome-agent-skills**.

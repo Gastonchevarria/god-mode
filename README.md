@@ -1,6 +1,6 @@
 <div align="center">
 
-# ⚡ GOD-MODE (Arcadia GOD-Tier)
+# ⚡ DEV GOD-MODE
 ### The Autonomous AI Engineering Squad for Claude Code, Cursor, Antigravity & Windsurf
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
@@ -184,9 +184,9 @@ This automatically generates:
 
 ---
 
-## 🥊 Vanilla Agents vs. Arcadia GOD-Mode
+## 🥊 Vanilla Agents vs. DEV GOD-Mode
 
-| Feature | Vanilla Claude / Antigravity | ⚡ Arcadia GOD-Mode |
+| Feature | Vanilla Claude / Antigravity | ⚡ DEV GOD-Mode |
 | :--- | :---: | :---: |
 | **Execution Autonomy** | Stops frequently for confirmation | **"Never Stop Short" Mandate (Executes all N steps)** |
 | **Context Strategy** | Monolithic tool dump (Bloat) | **Modular Packs (`core`, `dev`, `growth`, `all`)** |

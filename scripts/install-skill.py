@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Arcadia Skill Installer for Claude Code & Antigravity
+DEV GOD-MODE Skill Installer for Claude Code & Antigravity
 Installs Agent Skills from GitHub repos, subfolders, raw URLs, or VoltAgent/awesome-agent-skills.
 Syncs automatically to both ~/.claude/skills/ and ~/.gemini/config/skills/.
 """

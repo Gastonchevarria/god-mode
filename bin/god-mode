@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Arcadia GOD-Mode Global CLI Manager
+DEV GOD-MODE Global CLI Manager
 Allows managing packs, updating skills, and integrating with Claude Code, Antigravity, and Cursor.
 """
 
@@ -195,7 +195,7 @@ def cmd_status():
     gemini_count = len(list(GEMINI_SKILLS.iterdir())) if GEMINI_SKILLS.exists() else 0
 
     print(f"""
-{PURPLE}{BOLD}⚡ ARCADIA GOD-MODE STATUS{NC}
+{PURPLE}{BOLD}⚡ DEV GOD-MODE STATUS{NC}
 ────────────────────────────────────────────────────
   • Pack Activo:         {GREEN}{BOLD}{active_pack.upper()}{NC}
   • Claude Code Skills:  {CYAN}{claude_count}{NC}
@@ -229,12 +229,12 @@ def cmd_cursor(target_dir="."):
         shutil.copy2(agents_src, target_path / "AGENTS.md")
         print(f"  {GREEN}✓ Creado {target_path / 'AGENTS.md'}{NC}")
 
-    print(f"{GREEN}🎉 ¡Cursor y Windsurf ahora operan bajo el protocolo GOD-Mode Fable 5.1!{NC}\n")
+    print(f"{GREEN}🎉 ¡Cursor y Windsurf ahora operan bajo el protocolo DEV GOD-MODE Fable 5.1!{NC}\n")
 
 def main():
     if len(sys.argv) < 2 or sys.argv[1] in ["-h", "--help", "help"]:
         print(f"""
-{PURPLE}{BOLD}⚡ god-mode CLI — Gestor Universal de la Suite GOD-Tier{NC}
+{PURPLE}{BOLD}⚡ god-mode CLI — Gestor Universal de la Suite DEV GOD-MODE{NC}
 
 {BOLD}Uso:{NC}
   god-mode <comando> [opciones]

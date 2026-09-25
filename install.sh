@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# Arcadia GOD-Mode 1-Click Installer for Claude Code, Antigravity, Cursor & Windsurf
+# DEV GOD-MODE 1-Click Installer for Claude Code, Antigravity, Cursor & Windsurf
 # ==============================================================================
 
 set -e
@@ -38,15 +38,15 @@ done
 
 echo -e "${PURPLE}${BOLD}"
 cat << 'EOF'
-     ___    ____   ____    _    ____ ___    _        ____  ___  ____
-    /   \  |  _ \ / ___|  / \  |  _ \_ _|  / \      / ___|/ _ \|  _ \
-   / /_\ \ | |_) | |     / _ \ | | | | |  / _ \    | |  _| | | | | | |
-  / _____ \|  _ <| |___ / ___ \| |_| | | / ___ \   | |_| | |_| | |_| |
- /_/     \_\_| \_\\____/_/   \_\____/___/_/   \_\   \____|\___/|____/
-                   T I E R   —   F A B L E   5 . 1
+  ____  _______     __   ____  ___  ____        __  __  ___  ____  _____ 
+ |  _ \| ____\ \   / /  / ___|/ _ \|  _ \      |  \/  |/ _ \|  _ \| ____|
+ | | | |  _|  \ \ / /  | |  _| | | | | | |_____| |\/| | | | | | | |  _|  
+ | |_| | |___  \ V /   | |_| | |_| | |_| |_____| |  | | |_| | |_| | |___ 
+ |____/|_____|  \_/     \____|\___/|____/      |_|  |_|\___/|____/|_____|
+                        F A B L E   5 . 1   T I E R
 EOF
 echo -e "${NC}"
-echo -e "${CYAN}⚡ The Autonomous GOD-Tier Suite for Claude Code, Cursor, Antigravity & Windsurf${NC}"
+echo -e "${CYAN}⚡ The Autonomous DEV GOD-MODE Suite for Claude Code, Cursor, Antigravity & Windsurf${NC}"
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 
 # Determine directory of this script or clone repo if running from curl
@@ -127,8 +127,8 @@ fi
 
 # Antigravity Rules
 if [ -f "$SCRIPT_DIR/config/GEMINI_RULES.md" ]; then
-    cp "$SCRIPT_DIR/config/GEMINI_RULES.md" "$GEMINI_DIR/rules/arcadia_god.md"
-    echo -e "  ${GREEN}✓ Creado ~/.gemini/config/rules/arcadia_god.md${NC}"
+    cp "$SCRIPT_DIR/config/GEMINI_RULES.md" "$GEMINI_DIR/rules/dev_god_mode.md"
+    echo -e "  ${GREEN}✓ Creado ~/.gemini/config/rules/dev_god_mode.md${NC}"
 fi
 
 # Cursor & Windsurf rules en proyecto actual
@@ -165,7 +165,7 @@ if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
 fi
 
 echo -e "\n${PURPLE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-echo -e "${GREEN}${BOLD}🎉 SUCCESS! Arcadia GOD-Mode está 100% operativo en tu sistema.${NC}"
+echo -e "${GREEN}${BOLD}🎉 SUCCESS! DEV GOD-MODE está 100% operativo en tu sistema.${NC}"
 echo -e "${PURPLE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo -e "Comandos Disponibles de la Suite:"
 echo -e "  ${CYAN}/god${NC} o ${CYAN}/startup-god-router${NC}  ➔ Meta-Orquestador Inteligente"

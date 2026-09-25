@@ -1,6 +1,6 @@
 ---
 name: startup-god-router
-description: Master intent classifier and orchestrator for Arcadia GOD Level agents. Routes user requests into the optimal multi-role workflow. Triggered automatically or via /route, /god, /auto, /archify, /security, /thermos, /anti-slop, or when asking which path to take.
+description: Master intent classifier and orchestrator for DEV GOD-MODE agents. Routes user requests into the optimal multi-role workflow. Triggered automatically or via /route, /god, /auto, /archify, /security, /thermos, /anti-slop, or when asking which path to take.
 ---
 
 # Startup GOD Router (El Orquestador Maestro Inteligente — Fable 5.1 Tier)
