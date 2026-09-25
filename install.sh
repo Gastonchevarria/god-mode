@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# Arcadia GOD-Tier 1-Click Installer for Claude Code & Google Antigravity
+# Arcadia GOD-Mode 1-Click Installer for Claude Code, Antigravity, Cursor & Windsurf
 # ==============================================================================
 
 set -e
@@ -15,6 +15,27 @@ YELLOW='\033[1;33m'
 BOLD='\033[1m'
 NC='\033[0m' # No Color
 
+# Default pack to prevent Context Bloat
+PACK="core"
+
+# Parse CLI arguments
+for arg in "$@"; do
+    case $arg in
+        --pack=*)
+            PACK="${arg#*=}"
+            shift
+            ;;
+        --help|-h)
+            echo "Uso: ./install.sh [--pack=core|dev|growth|all]"
+            echo "  --pack=core     (Default) 18 skills indispensables (Cero ruido de contexto)"
+            echo "  --pack=dev      55 skills Fullstack, Backend, AI Pipelines, Testing"
+            echo "  --pack=growth   65 skills SaaS Growth, Monetización, SEO, CRO, Ads"
+            echo "  --pack=all      133 skills completas"
+            exit 0
+            ;;
+    esac
+done
+
 echo -e "${PURPLE}${BOLD}"
 cat << 'EOF'
      ___    ____   ____    _    ____ ___    _        ____  ___  ____
@@ -25,128 +46,143 @@ cat << 'EOF'
                    T I E R   —   F A B L E   5 . 1
 EOF
 echo -e "${NC}"
-echo -e "${CYAN}⚡ The Autonomous GOD-Tier Suite for Antigravity & Claude Code${NC}"
-echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo -e "${CYAN}⚡ The Autonomous GOD-Tier Suite for Claude Code, Cursor, Antigravity & Windsurf${NC}"
+echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 
 # Determine directory of this script or clone repo if running from curl
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-TMP_CLONE_DIR=""
+CACHE_REPO="$HOME/.cache/god-mode-repo"
 
 if [ ! -d "$SCRIPT_DIR/skills" ]; then
-    echo -e "${YELLOW}📥 Fetching latest release from GitHub...${NC}"
-    TMP_CLONE_DIR=$(mktemp -d)
-    git clone --depth 1 https://github.com/Gastonchevarria/god-mode.git "$TMP_CLONE_DIR" >/dev/null 2>&1 || {
-        echo -e "${RED}❌ Error cloning repository. Ensure git and internet connection are available.${NC}"
-        exit 1
-    }
-    SCRIPT_DIR="$TMP_CLONE_DIR"
+    echo -e "${YELLOW}📥 Descargando última versión de god-mode desde GitHub...${NC}"
+    mkdir -p "$CACHE_REPO"
+    if [ -d "$CACHE_REPO/.git" ]; then
+        cd "$CACHE_REPO" && git pull --rebase >/dev/null 2>&1 || true
+    else
+        git clone --depth 1 https://github.com/Gastonchevarria/god-mode.git "$CACHE_REPO" >/dev/null 2>&1
+    fi
+    SCRIPT_DIR="$CACHE_REPO"
 fi
 
 CLAUDE_DIR="$HOME/.claude"
 GEMINI_DIR="$HOME/.gemini/config"
+LOCAL_BIN="$HOME/.local/bin"
 
-echo -e "\n${BOLD}🔍 Detecting installed AI coding environments...${NC}"
+echo -e "\n${BOLD}🔍 Detectando entornos de IA compatibles...${NC}"
 
-HAS_CLAUDE=false
-HAS_GEMINI=false
+mkdir -p "$CLAUDE_DIR/skills" "$CLAUDE_DIR/agents" "$CLAUDE_DIR/scripts"
+mkdir -p "$GEMINI_DIR/skills" "$GEMINI_DIR/rules" "$GEMINI_DIR/scripts"
+mkdir -p "$LOCAL_BIN"
 
 if [ -d "$CLAUDE_DIR" ] || command -v claude >/dev/null 2>&1; then
-    HAS_CLAUDE=true
-    echo -e "  ${GREEN}✓ Claude Code detected${NC} ($CLAUDE_DIR)"
-else
-    echo -e "  ${YELLOW}○ Claude Code not found (creating target directory)${NC}"
-    mkdir -p "$CLAUDE_DIR"
-    HAS_CLAUDE=true
+    echo -e "  ${GREEN}✓ Claude Code detectado${NC}"
 fi
 
 if [ -d "$GEMINI_DIR" ] || [ -d "$HOME/.gemini" ]; then
-    HAS_GEMINI=true
-    echo -e "  ${GREEN}✓ Google Antigravity detected${NC} ($GEMINI_DIR)"
-else
-    echo -e "  ${YELLOW}○ Google Antigravity directory prepared${NC} ($GEMINI_DIR)"
-    mkdir -p "$GEMINI_DIR"
-    HAS_GEMINI=true
+    echo -e "  ${GREEN}✓ Google Antigravity detectado${NC}"
 fi
 
-# 1. Install to Claude Code
-echo -e "\n${BOLD}🚀 [1/3] Installing 130+ Skills & Subagents into Claude Code...${NC}"
-mkdir -p "$CLAUDE_DIR/skills"
-mkdir -p "$CLAUDE_DIR/agents"
-mkdir -p "$CLAUDE_DIR/scripts"
-
-cp -R "$SCRIPT_DIR"/skills/* "$CLAUDE_DIR/skills/"
-cp -R "$SCRIPT_DIR"/agents/* "$CLAUDE_DIR/agents/"
-if [ -d "$SCRIPT_DIR/scripts" ]; then
-    cp -R "$SCRIPT_DIR"/scripts/* "$CLAUDE_DIR/scripts/"
+# Cursor detection
+HAS_CURSOR=false
+if [ -d "$HOME/.cursor" ] || [ -f ".cursorrules" ] || command -v cursor >/dev/null 2>&1; then
+    HAS_CURSOR=true
+    echo -e "  ${GREEN}✓ Cursor IDE detectado${NC}"
 fi
-chmod +x "$CLAUDE_DIR"/scripts/*.py 2>/dev/null || true
 
-# Update or install ~/.claude/CLAUDE.md
+# 1. Instalar CLI global 'god-mode'
+echo -e "\n${BOLD}⚙️  [1/4] Instalando CLI global 'god-mode'...${NC}"
+if [ -f "$SCRIPT_DIR/bin/god-mode" ]; then
+    cp "$SCRIPT_DIR/bin/god-mode" "$LOCAL_BIN/god-mode"
+    chmod +x "$LOCAL_BIN/god-mode"
+    
+    # Intentar instalar en /usr/local/bin si tiene permisos
+    if [ -w "/usr/local/bin" ]; then
+        cp "$SCRIPT_DIR/bin/god-mode" "/usr/local/bin/god-mode" 2>/dev/null || true
+    fi
+    echo -e "  ${GREEN}✓ Comando global 'god-mode' instalado en $LOCAL_BIN/god-mode${NC}"
+fi
+
+# Instalar script de descarga de skills
+if [ -f "$SCRIPT_DIR/scripts/install-skill.py" ]; then
+    cp "$SCRIPT_DIR/scripts/install-skill.py" "$CLAUDE_DIR/scripts/"
+    chmod +x "$CLAUDE_DIR/scripts/install-skill.py"
+fi
+
+# 2. Configuración Fable 5.1 & Reglas
+echo -e "\n${BOLD}🧠 [2/4] Configurando protocolo Fable 5.1 & GOD Router...${NC}"
+
+# Claude Code
 if [ -f "$SCRIPT_DIR/config/CLAUDE.md" ]; then
     if [ ! -f "$CLAUDE_DIR/CLAUDE.md" ]; then
         cp "$SCRIPT_DIR/config/CLAUDE.md" "$CLAUDE_DIR/CLAUDE.md"
-        echo -e "  ${GREEN}✓ Created global ~/.claude/CLAUDE.md${NC}"
+        echo -e "  ${GREEN}✓ Creado ~/.claude/CLAUDE.md${NC}"
+    elif ! grep -q "Startup GOD Router" "$CLAUDE_DIR/CLAUDE.md"; then
+        echo "" >> "$CLAUDE_DIR/CLAUDE.md"
+        cat "$SCRIPT_DIR/config/CLAUDE.md" >> "$CLAUDE_DIR/CLAUDE.md"
+        echo -e "  ${GREEN}✓ Integrado GOD Router en ~/.claude/CLAUDE.md${NC}"
     else
-        # Append router if not present
-        if ! grep -q "Startup GOD Router" "$CLAUDE_DIR/CLAUDE.md"; then
-            echo "" >> "$CLAUDE_DIR/CLAUDE.md"
-            cat "$SCRIPT_DIR/config/CLAUDE.md" >> "$CLAUDE_DIR/CLAUDE.md"
-            echo -e "  ${GREEN}✓ Integrated GOD Router into existing ~/.claude/CLAUDE.md${NC}"
-        else
-            echo -e "  ${BLUE}ℹ Existing GOD Router found in ~/.claude/CLAUDE.md${NC}"
-        fi
+        echo -e "  ${BLUE}ℹ Router ya presente en ~/.claude/CLAUDE.md${NC}"
     fi
 fi
 
-# 2. Sync to Google Antigravity
-echo -e "\n${BOLD}🔗 [2/3] Establishing Zero-Drift Sync with Antigravity...${NC}"
-mkdir -p "$GEMINI_DIR/skills"
-mkdir -p "$GEMINI_DIR/scripts"
-
-# Create symlinks from Claude skills to Antigravity so they share single source of truth
-for skill in "$CLAUDE_DIR"/skills/*; do
-    skill_name=$(basename "$skill")
-    if [ ! -e "$GEMINI_DIR/skills/$skill_name" ]; then
-        ln -s "$skill" "$GEMINI_DIR/skills/$skill_name" 2>/dev/null || cp -R "$skill" "$GEMINI_DIR/skills/"
-    fi
-done
-
+# Antigravity Rules
 if [ -f "$SCRIPT_DIR/config/GEMINI_RULES.md" ]; then
-    mkdir -p "$GEMINI_DIR/rules"
     cp "$SCRIPT_DIR/config/GEMINI_RULES.md" "$GEMINI_DIR/rules/arcadia_god.md"
-    echo -e "  ${GREEN}✓ Created Antigravity Global Rules in ~/.gemini/config/rules/arcadia_god.md${NC}"
+    echo -e "  ${GREEN}✓ Creado ~/.gemini/config/rules/arcadia_god.md${NC}"
 fi
 
-# Clean up temp clone if used
-if [ -n "$TMP_CLONE_DIR" ] && [ -d "$TMP_CLONE_DIR" ]; then
-    rm -rf "$TMP_CLONE_DIR"
+# Cursor & Windsurf rules en proyecto actual
+if [ -f "$SCRIPT_DIR/config/.cursorrules" ]; then
+    cp "$SCRIPT_DIR/config/.cursorrules" "./.cursorrules"
+    cp "$SCRIPT_DIR/config/AGENTS.md" "./AGENTS.md"
+    echo -e "  ${GREEN}✓ Generados .cursorrules y AGENTS.md en el proyecto actual${NC}"
 fi
 
-echo -e "\n${BOLD}✨ [3/3] Verifying Installation...${NC}"
-SKILL_COUNT=$(ls -1 "$CLAUDE_DIR/skills" | wc -l | tr -d ' ')
-AGENT_COUNT=$(ls -1 "$CLAUDE_DIR/agents" | wc -l | tr -d ' ')
+# 3. Copiar subagentes
+echo -e "\n${BOLD}🤖 [3/4] Desplegando 6 Subagentes Especializados...${NC}"
+if [ -d "$SCRIPT_DIR/agents" ]; then
+    for ag in "$SCRIPT_DIR"/agents/*; do
+        ag_name=$(basename "$ag")
+        rm -f "$CLAUDE_DIR/agents/$ag_name" 2>/dev/null || true
+        cp "$ag" "$CLAUDE_DIR/agents/$ag_name"
+    done
+    echo -e "  ${GREEN}✓ Subagentes instalados en ~/.claude/agents/${NC}"
+fi
 
-echo -e "  ${GREEN}✓ ${SKILL_COUNT} Production Skills Active${NC}"
-echo -e "  ${GREEN}✓ ${AGENT_COUNT} Autonomous Subagents Deployed${NC}"
-echo -e "  ${GREEN}✓ Fable 5.1 Protocol Injected${NC}"
-echo -e "  ${GREEN}✓ Autonomous GitHub Skill Downloader Ready${NC}"
+# 4. Aplicar Pack Seleccionado (Anti Context Bloat)
+PACK_UPPER=$(echo "$PACK" | tr '[:lower:]' '[:upper:]')
+echo -e "\n${BOLD}📦 [4/4] Aplicando Pack Modular: ${CYAN}${PACK_UPPER}${NC}..."
+if [ -x "$LOCAL_BIN/god-mode" ]; then
+    "$LOCAL_BIN/god-mode" pack "$PACK"
+else
+    python3 "$SCRIPT_DIR/bin/god-mode" pack "$PACK"
+fi
 
-echo -e "\n${PURPLE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-echo -e "${GREEN}${BOLD}🎉 SUCCESS! Arcadia GOD-Tier is fully operational.${NC}"
-echo -e "${PURPLE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-echo -e "To activate in Claude Code, open your project terminal and run:"
-echo -e "  ${BOLD}claude${NC}"
-echo -e "  Type: ${CYAN}/god${NC} or ${CYAN}/startup-god-router${NC}"
+# PATH check reminder
+if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
+    echo -e "${YELLOW}💡 Tip: Agrega ~/.local/bin a tu PATH para usar 'god-mode' desde cualquier lugar:${NC}"
+    echo -e "   export PATH=\"\$HOME/.local/bin:\$PATH\" >> ~/.zshrc (o ~/.bashrc)"
+fi
+
+echo -e "\n${PURPLE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo -e "${GREEN}${BOLD}🎉 SUCCESS! Arcadia GOD-Mode está 100% operativo en tu sistema.${NC}"
+echo -e "${PURPLE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo -e "Comandos Disponibles de la Suite:"
+echo -e "  ${CYAN}/god${NC} o ${CYAN}/startup-god-router${NC}  ➔ Meta-Orquestador Inteligente"
+echo -e "  ${CYAN}/thermos${NC}                  ➔ Pre-merge double thermo-nuclear code review"
+echo -e "  ${CYAN}/anti-slop${NC}                ➔ Purga vicios, lazy types y código vago de IA"
+echo -e "  ${CYAN}/security${NC}                 ➔ DevSecOps pre-launch defensive audit"
+echo -e "  ${CYAN}/archify${NC}                  ➔ Diagrama interactivo HTML/SVG de arquitectura"
+echo -e "  ${CYAN}/validate${NC}                 ➔ Validación de hipótesis e ICP"
+echo -e "  ${CYAN}/monetize${NC}                 ➔ Modelos de cobro, pricing y Stripe"
+echo -e "  ${CYAN}/scope-kill${NC}               ➔ Poda radical de MVP"
 echo -e ""
-echo -e "Available Quick Commands:"
-echo -e "  ${CYAN}/thermos${NC}        ➔ Pre-merge double thermo-nuclear code review"
-echo -e "  ${CYAN}/anti-slop${NC}      ➔ Remove lazy AI patterns and sanitize code"
-echo -e "  ${CYAN}/security${NC}       ➔ DevSecOps pre-launch security audit"
-echo -e "  ${CYAN}/archify${NC}        ➔ Interactive HTML/SVG system architecture"
-echo -e "  ${CYAN}/validate${NC}       ➔ Validate startup ideas, ICP & JTBD"
-echo -e "  ${CYAN}/monetize${NC}       ➔ SaaS business models, pricing & Stripe"
-echo -e "  ${CYAN}/scope-kill${NC}     ➔ Ruthless MVP scope cutter"
-echo -e "  ${CYAN}/install-skill${NC}  ➔ Install any skill from GitHub automatically"
+echo -e "Gestión con el nuevo CLI 'god-mode':"
+echo -e "  ${BOLD}god-mode status${NC}           ➔ Ver pack activo y estadísticas"
+echo -e "  ${BOLD}god-mode pack dev${NC}         ➔ Cambiar a pack Fullstack & AI"
+echo -e "  ${BOLD}god-mode pack growth${NC}      ➔ Cambiar a pack Growth & Marketing"
+echo -e "  ${BOLD}god-mode update${NC}           ➔ Actualizar suite desde GitHub"
+echo -e "  ${BOLD}god-mode cursor${NC}           ➔ Inyectar reglas en cualquier proyecto Cursor"
 echo -e ""
-echo -e "${YELLOW}⭐ If you love this suite, give it a star on GitHub:${NC}"
+echo -e "${YELLOW}⭐ Apoya el proyecto con una Estrella en GitHub:${NC}"
 echo -e "${BOLD}https://github.com/Gastonchevarria/god-mode${NC}\n"
