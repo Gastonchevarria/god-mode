@@ -22,7 +22,7 @@
 
 ---
 
-## 🌟 Why Arcadia GOD-Tier?
+## 🌟 Why DEV GOD-Tier?
 
 Most AI coding setups suffer from the same 4 fatal flaws:
 1. **The "Stop Short" Fatigue**: The agent stops halfway, outputs a markdown list, and tells you: *"Now it's your turn to implement step 4 and 5"*.
@@ -30,7 +30,7 @@ Most AI coding setups suffer from the same 4 fatal flaws:
 3. **Ecosystem Fragmentation**: Skills made for Claude Code don't work in Antigravity, and vice versa.
 4. **Lack of Senior Engineering Rigor**: No automated pre-merge diff auditing, no DevSecOps review, and no architectural sanity checks.
 
-**Arcadia GOD-Tier solves all of this in a single command.**
+**DEV GOD-Tier solves all of this in a single command.**
 
 ```
                                   ┌───────────────────────────┐
