@@ -1,6 +1,6 @@
 <div align="center">
 
-# ⚡ ARCADIA GOD-TIER
+# ⚡ DEV GOD-TIER
 ### The Autonomous AI Engineering Squad for Claude Code & Google Antigravity
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
