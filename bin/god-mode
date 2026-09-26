@@ -1,24 +1,35 @@
 #!/usr/bin/env python3
 """
 DEV GOD-MODE Global CLI Manager
-Allows managing packs, updating skills, and integrating with Claude Code, Antigravity, and Cursor.
+Manages packs, protocol files, agents and updates for Claude Code, Antigravity and Cursor.
 """
 
-import sys
-import os
+import datetime
 import json
+import os
+import re
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 
 HOME = Path.home()
-CLAUDE_SKILLS = HOME / ".claude" / "skills"
-CLAUDE_AGENTS = HOME / ".claude" / "agents"
-GEMINI_SKILLS = HOME / ".gemini" / "config" / "skills"
+CLAUDE_DIR = HOME / ".claude"
+CLAUDE_SKILLS = CLAUDE_DIR / "skills"
+CLAUDE_AGENTS = CLAUDE_DIR / "agents"
+CLAUDE_SCRIPTS = CLAUDE_DIR / "scripts"
+CLAUDE_MD = CLAUDE_DIR / "CLAUDE.md"
+GEMINI_DIR = HOME / ".gemini"
+GEMINI_SKILLS = GEMINI_DIR / "config" / "skills"
+GEMINI_RULES = GEMINI_DIR / "config" / "rules" / "dev_god_mode.md"
 CACHE_REPO = HOME / ".cache" / "god-mode-repo"
-STATE_FILE = HOME / ".claude" / ".god-mode-state.json"
+STATE_FILE = CLAUDE_DIR / ".god-mode-state.json"
 
 GITHUB_REPO = "https://github.com/Gastonchevarria/god-mode.git"
+
+BLOCK_START = "<!-- god-mode:start (bloque gestionado por god-mode; se reemplaza en cada update) -->"
+BLOCK_END = "<!-- god-mode:end -->"
+LEGACY_HEADER = re.compile(r"^# Global Instructions — .*\(Fable 5\.1 Tier\)\s*$", re.MULTILINE)
 
 BOLD = "\033[1m"
 GREEN = "\033[0;32m"
@@ -29,248 +40,341 @@ YELLOW = "\033[1;33m"
 RED = "\033[0;31m"
 NC = "\033[0m"
 
-def get_installed_source_dir():
-    # If running from a cloned repo
-    script_path = Path(__file__).resolve()
-    candidate = script_path.parent.parent
-    if (candidate / "skills").exists() and (candidate / "config" / "packs.json").exists():
-        return candidate
-    # Fallback to cache repo
-    if (CACHE_REPO / "skills").exists():
-        return CACHE_REPO
-    return None
 
-def ensure_repo_cache():
-    if not CACHE_REPO.exists():
-        print(f"{YELLOW}📥 Descargando repositorio god-mode en caché local...{NC}")
-        CACHE_REPO.parent.mkdir(parents=True, exist_ok=True)
-        subprocess.run(["git", "clone", "--depth", "1", GITHUB_REPO, str(CACHE_REPO)], check=True)
-    return CACHE_REPO
+def fail(msg, code=1):
+    print(f"{RED}❌ {msg}{NC}", file=sys.stderr)
+    sys.exit(code)
 
-DEFAULT_PACKS = {
-    "core": [
-        "startup-god-router", "thermos", "thermo-nuclear-review", "thermo-nuclear-code-quality-review",
-        "anti-slop", "security-and-hardening", "archify", "skill-installer",
-        "spec-driven-development", "test-driven-development", "doubt-driven-development",
-        "code-simplification", "debugging-and-error-recovery", "performance-optimization",
-        "ai-product-architect", "mvp-scope-killer", "saas-business-model", "launch-growth-loop"
-    ],
-    "dev": [
-        "startup-god-router", "thermos", "thermo-nuclear-review", "thermo-nuclear-code-quality-review",
-        "anti-slop", "security-and-hardening", "archify", "skill-installer",
-        "spec-driven-development", "test-driven-development", "doubt-driven-development",
-        "code-simplification", "debugging-and-error-recovery", "performance-optimization",
-        "ai-product-architect", "mvp-scope-killer", "saas-business-model", "launch-growth-loop",
-        "backend-architect", "fastapi-pro", "nextjs-app-router", "rag-implementation",
-        "prompt-engineering-patterns", "agent-mcp-builder", "ai-product-eval-ops", "deep-code-audit",
-        "error-handling", "browser-testing-with-devtools", "api-and-interface-design",
-        "ci-cd-and-automation", "code-review-and-quality", "context-engineering",
-        "deprecation-and-migration", "documentation-and-adrs", "frontend-ui-engineering",
-        "git-workflow-and-versioning", "idea-refine", "incremental-implementation",
-        "interview-me", "observability-and-instrumentation", "planning-and-task-breakdown",
-        "shipping-and-launch", "source-driven-development", "using-agent-skills",
-        "ralph-loop", "self-learning-skills", "founder-technical-decision", "autoplan",
-        "office-hours", "plan-ceo-review", "plan-design-review", "plan-eng-review",
-        "plan-devex-review", "retro", "zero"
-    ],
-    "growth": [
-        "startup-god-router", "thermos", "thermo-nuclear-review", "thermo-nuclear-code-quality-review",
-        "anti-slop", "security-and-hardening", "archify", "skill-installer",
-        "spec-driven-development", "test-driven-development", "doubt-driven-development",
-        "code-simplification", "debugging-and-error-recovery", "performance-optimization",
-        "ai-product-architect", "mvp-scope-killer", "saas-business-model", "launch-growth-loop",
-        "ab-testing", "ad-creative", "ads", "ai-seo", "analytics", "aso", "attribution",
-        "churn-prevention", "co-marketing", "cold-email", "community-marketing",
-        "competitor-profiling", "competitors", "content-strategy", "copy-editing",
-        "copywriting", "cro", "customer-research", "data-analytics-growth",
-        "directory-submissions", "emails", "free-tools", "image", "influencer-marketing",
-        "launch", "lead-magnets", "marketing-council", "marketing-ideas", "marketing-loops",
-        "marketing-plan", "marketing-psychology", "offers", "onboarding", "paywalls",
-        "popups", "pricing", "product-marketing", "programmatic-seo", "prospecting",
-        "public-relations", "referrals", "revops", "saas-launch-revenue", "sales-enablement",
-        "schema", "seo-audit", "signup", "site-architecture", "sms", "social",
-        "startup-idea-validation", "video"
-    ],
-    "all": "ALL"
-}
-
-def load_packs(repo_dir):
-    if repo_dir:
-        packs_file = repo_dir / "config" / "packs.json"
-        if packs_file.exists():
-            try:
-                with open(packs_file, "r", encoding="utf-8") as f:
-                    return json.load(f).get("packs", DEFAULT_PACKS)
-            except Exception:
-                pass
-    return DEFAULT_PACKS
 
 def load_state():
     if STATE_FILE.exists():
         try:
-            with open(STATE_FILE, "r", encoding="utf-8") as f:
-                return json.load(f)
-        except Exception:
-            pass
-    return {"active_pack": "core"}
+            return json.loads(STATE_FILE.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            print(f"{YELLOW}⚠️  No se pudo leer {STATE_FILE}; se usan valores por defecto.{NC}")
+    return {}
 
-def save_state(state):
+
+def save_state(**changes):
+    state = load_state()
+    state.update(changes)
     STATE_FILE.parent.mkdir(parents=True, exist_ok=True)
-    with open(STATE_FILE, "w", encoding="utf-8") as f:
-        json.dump(state, f, indent=2)
+    STATE_FILE.write_text(json.dumps(state, indent=2), encoding="utf-8")
+
+
+def is_repo(path):
+    return path is not None and (path / "config" / "packs.json").exists()
+
+
+def source_dir():
+    """Repo the CLI manages: the one recorded at install, a repo containing this script, or the cache."""
+    recorded = load_state().get("source_dir")
+    if recorded and is_repo(Path(recorded)):
+        return Path(recorded)
+    here = Path(__file__).resolve().parent.parent
+    if is_repo(here):
+        return here
+    if is_repo(CACHE_REPO):
+        return CACHE_REPO
+    return None
+
+
+def ensure_source_dir():
+    repo = source_dir()
+    if repo:
+        return repo
+    print(f"{YELLOW}📥 Descargando god-mode en {CACHE_REPO}...{NC}")
+    CACHE_REPO.parent.mkdir(parents=True, exist_ok=True)
+    res = subprocess.run(["git", "clone", "--depth", "1", "--", GITHUB_REPO, str(CACHE_REPO)])
+    if res.returncode != 0 or not is_repo(CACHE_REPO):
+        fail("No se pudo descargar el repositorio de god-mode. Revisá tu conexión y que git esté instalado.")
+    save_state(source_dir=str(CACHE_REPO))
+    return CACHE_REPO
+
+
+def discover_skills(repo):
+    """Map skill name -> directory, for both skills/<name> and plugins/<plugin>/skills/<name> layouts."""
+    found = {}
+    for skill_md in sorted(list(repo.glob("skills/*/SKILL.md")) + list(repo.glob("plugins/*/skills/*/SKILL.md"))):
+        found[skill_md.parent.name] = skill_md.parent
+    return found
+
+
+def discover_agents(repo):
+    return sorted(list(repo.glob("agents/*.md")) + list(repo.glob("plugins/*/agents/*.md")))
+
+
+def load_packs(repo):
+    packs_file = repo / "config" / "packs.json"
+    try:
+        packs = json.loads(packs_file.read_text(encoding="utf-8"))["packs"]
+    except (OSError, json.JSONDecodeError, KeyError) as e:
+        fail(f"No se pudo leer {packs_file}: {e}")
+    return packs
+
+
+def pack_skills(repo, pack_name):
+    packs = load_packs(repo)
+    available = discover_skills(repo)
+    if pack_name not in packs:
+        fail(f"Pack '{pack_name}' desconocido. Opciones válidas: {', '.join(packs)}")
+    if packs[pack_name] == "ALL":
+        return available, []
+    selected = {n: available[n] for n in packs[pack_name] if n in available}
+    missing = [n for n in packs[pack_name] if n not in available]
+    return selected, missing
+
+
+def detect_targets():
+    targets = ["claude"]
+    if GEMINI_DIR.exists():
+        targets.append("gemini")
+    return targets
+
+
+def target_dirs(targets):
+    dirs = [CLAUDE_SKILLS]
+    if "gemini" in targets:
+        dirs.append(GEMINI_SKILLS)
+    return dirs
+
+
+def _managed_link(link, roots):
+    target = Path(os.readlink(link))
+    if not target.is_absolute():
+        target = (link.parent / target)
+    target = Path(os.path.abspath(target))
+    return any(target == r or r in target.parents for r in roots)
+
 
 def apply_pack(pack_name):
-    repo_dir = get_installed_source_dir()
-    if not repo_dir:
-        repo_dir = ensure_repo_cache()
+    repo = ensure_source_dir()
+    selected, missing = pack_skills(repo, pack_name)
+    targets = load_state().get("targets") or detect_targets()
+    roots = {Path(os.path.abspath(repo)), Path(os.path.abspath(CACHE_REPO))}
 
-    packs = load_packs(repo_dir)
-    if pack_name not in packs and pack_name != "all":
-        print(f"{RED}❌ Pack '{pack_name}' desconocido. Opciones válidas: core, dev, growth, all{NC}")
-        sys.exit(1)
+    print(f"\n{PURPLE}{BOLD}⚡ Aplicando pack '{pack_name.upper()}' ({len(selected)} skills)...{NC}")
+    if missing:
+        print(f"{YELLOW}⚠️  El pack menciona skills que no existen en el repo: {', '.join(missing)}{NC}")
 
-    all_skills_dir = repo_dir / "skills"
-    selected_skills = []
-
-    if pack_name == "all":
-        selected_skills = [s.name for s in all_skills_dir.iterdir() if s.is_dir()]
-    else:
-        pack_list = packs.get(pack_name, [])
-        selected_skills = [s for s in pack_list if (all_skills_dir / s).exists()]
-
-    print(f"\n{PURPLE}{BOLD}⚡ Aplicando Pack '{pack_name.upper()}' ({len(selected_skills)} skills seleccionadas)...{NC}")
-
-    CLAUDE_SKILLS.mkdir(parents=True, exist_ok=True)
-    GEMINI_SKILLS.mkdir(parents=True, exist_ok=True)
-
-    # Clean existing god-mode managed skills that are symlinks
-    for item in list(CLAUDE_SKILLS.iterdir()):
-        if item.is_symlink():
-            target = item.resolve()
-            if "god-mode" in str(target) or str(repo_dir) in str(target):
+    conflicts = []
+    for skills_dir in target_dirs(targets):
+        skills_dir.mkdir(parents=True, exist_ok=True)
+        for item in skills_dir.iterdir():
+            if item.is_symlink() and _managed_link(item, roots):
                 item.unlink()
+        for name, src in selected.items():
+            dest = skills_dir / name
+            if dest.is_symlink() or dest.exists():
+                conflicts.append(str(dest))
+                continue
+            dest.symlink_to(src, target_is_directory=True)
 
-    # Link selected skills
-    linked = 0
-    for s_name in selected_skills:
-        src = all_skills_dir / s_name
-        dest_claude = CLAUDE_SKILLS / s_name
-        dest_gemini = GEMINI_SKILLS / s_name
+    save_state(active_pack=pack_name, skills_count=len(selected), targets=targets)
 
-        if not dest_claude.exists():
-            dest_claude.symlink_to(src, target_is_directory=True)
-            linked += 1
+    print(f"{GREEN}✓ Pack '{pack_name}' activado.{NC}")
+    for skills_dir in target_dirs(targets):
+        managed = sum(1 for i in skills_dir.iterdir() if i.is_symlink() and _managed_link(i, roots))
+        print(f"  • {skills_dir}: {managed} skills de god-mode")
+    if conflicts:
+        print(f"{YELLOW}⚠️  Se mantuvieron {len(conflicts)} skills propias con el mismo nombre:{NC}")
+        for c in conflicts:
+            print(f"     {c}")
+    if pack_name != "all":
+        print(f"{CYAN}💡 Pack parcial: solo {len(selected)} skills ocupan contexto.{NC}")
+    print()
 
-        if not dest_gemini.exists():
-            dest_gemini.symlink_to(src, target_is_directory=True)
 
-    # Save state
-    save_state({"active_pack": pack_name, "skills_count": len(selected_skills)})
+def backup_path(path):
+    stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    return path.with_name(f"{path.name}.bak-{stamp}")
 
-    print(f"{GREEN}✓ Pack '{pack_name}' activado con éxito.{NC}")
-    print(f"  • Claude Code: {len(list(CLAUDE_SKILLS.iterdir()))} skills totales activas")
-    print(f"  • Antigravity: {len(list(GEMINI_SKILLS.iterdir()))} skills totales activas")
-    print(f"{CYAN}💡 Cero Context Bloat: Tu ventana de contexto ahora está 100% optimizada.{NC}\n")
+
+def sync_claude_md(repo):
+    src = repo / "config" / "CLAUDE.md"
+    if not src.exists():
+        fail(f"No existe {src}")
+    block = f"{BLOCK_START}\n{src.read_text(encoding='utf-8').strip()}\n{BLOCK_END}\n"
+    CLAUDE_MD.parent.mkdir(parents=True, exist_ok=True)
+
+    if not CLAUDE_MD.exists():
+        CLAUDE_MD.write_text(block, encoding="utf-8")
+        print(f"  {GREEN}✓ Creado {CLAUDE_MD}{NC}")
+        return
+
+    current = CLAUDE_MD.read_text(encoding="utf-8")
+    has_start, has_end = BLOCK_START in current, BLOCK_END in current
+    if has_start and has_end:
+        start = current.index(BLOCK_START)
+        end = current.index(BLOCK_END) + len(BLOCK_END)
+        if end < start:
+            fail(f"Los marcadores de god-mode en {CLAUDE_MD} están desordenados. Corregilos a mano.")
+        updated = current[:start] + block.rstrip("\n") + current[end:]
+        if updated == current:
+            print(f"  {BLUE}ℹ {CLAUDE_MD} ya tiene la última versión del protocolo{NC}")
+            return
+        CLAUDE_MD.write_text(updated, encoding="utf-8")
+        print(f"  {GREEN}✓ Protocolo actualizado en {CLAUDE_MD}{NC}")
+        return
+    if has_start or has_end:
+        fail(f"{CLAUDE_MD} tiene solo uno de los marcadores de god-mode. Corregilo a mano y volvé a correr.")
+
+    legacy = LEGACY_HEADER.search(current)
+    if legacy:
+        bak = backup_path(CLAUDE_MD)
+        shutil.copy2(CLAUDE_MD, bak)
+        kept = current[:legacy.start()].rstrip()
+        CLAUDE_MD.write_text((kept + "\n\n" if kept else "") + block, encoding="utf-8")
+        print(f"  {GREEN}✓ Protocolo anterior reemplazado en {CLAUDE_MD}{NC}")
+        print(f"  {YELLOW}  Copia de la versión anterior: {bak}{NC}")
+        return
+
+    CLAUDE_MD.write_text(current.rstrip() + "\n\n" + block, encoding="utf-8")
+    print(f"  {GREEN}✓ Protocolo agregado al final de {CLAUDE_MD}{NC}")
+
+
+def install_file(src, dest, label):
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    if dest.exists() and dest.read_bytes() == src.read_bytes():
+        return False
+    if dest.exists():
+        bak = backup_path(dest)
+        shutil.copy2(dest, bak)
+        print(f"  {YELLOW}  {label}: copia de la versión anterior en {bak}{NC}")
+    shutil.copy2(src, dest)
+    return True
+
+
+def cmd_setup(targets):
+    repo = ensure_source_dir()
+    save_state(source_dir=str(repo), targets=targets)
+    print(f"\n{BOLD}🧠 Configurando protocolo, agentes e instalador de skills...{NC}")
+
+    sync_claude_md(repo)
+
+    installer = repo / "scripts" / "install-skill.py"
+    if installer.exists():
+        install_file(installer, CLAUDE_SCRIPTS / "install-skill.py", "install-skill.py")
+        (CLAUDE_SCRIPTS / "install-skill.py").chmod(0o755)
+
+    agents = discover_agents(repo)
+    changed = sum(install_file(a, CLAUDE_AGENTS / a.name, f"Agente {a.name}") for a in agents)
+    print(f"  {GREEN}✓ {len(agents)} subagentes en {CLAUDE_AGENTS} ({changed} actualizados){NC}")
+
+    if "gemini" in targets:
+        rules = repo / "config" / "GEMINI_RULES.md"
+        if rules.exists():
+            install_file(rules, GEMINI_RULES, "Reglas de Antigravity")
+            print(f"  {GREEN}✓ Reglas de Antigravity en {GEMINI_RULES}{NC}")
+
 
 def cmd_update():
     print(f"\n{BOLD}{PURPLE}🔄 Actualizando god-mode desde GitHub...{NC}")
-    repo_dir = get_installed_source_dir()
-    if repo_dir and (repo_dir / ".git").exists():
-        subprocess.run(["git", "pull", "--rebase"], cwd=repo_dir, check=False)
-    else:
-        repo_dir = ensure_repo_cache()
-        subprocess.run(["git", "pull", "--rebase"], cwd=repo_dir, check=False)
-
+    repo = ensure_source_dir()
+    if not (repo / ".git").exists():
+        fail(f"{repo} no es un repositorio git; no se puede actualizar. Reinstalá con install.sh.")
+    res = subprocess.run(["git", "pull", "--ff-only"], cwd=repo)
+    if res.returncode != 0:
+        fail(f"git pull falló en {repo} (código {res.returncode}). No se aplicó ningún cambio.")
     state = load_state()
-    active_pack = state.get("active_pack", "core")
-    print(f"{BLUE}Re-aplicando pack activo: {active_pack}...{NC}")
-    apply_pack(active_pack)
-    print(f"{GREEN}{BOLD}🎉 ¡god-mode actualizado a la última versión!{NC}\n")
+    cmd_setup(state.get("targets") or detect_targets())
+    apply_pack(state.get("active_pack", "core"))
+    print(f"{GREEN}{BOLD}🎉 god-mode actualizado.{NC}\n")
+
 
 def cmd_status():
     state = load_state()
-    active_pack = state.get("active_pack", "core")
-    claude_count = len(list(CLAUDE_SKILLS.iterdir())) if CLAUDE_SKILLS.exists() else 0
-    claude_agents = len(list(CLAUDE_AGENTS.iterdir())) if CLAUDE_AGENTS.exists() else 0
-    gemini_count = len(list(GEMINI_SKILLS.iterdir())) if GEMINI_SKILLS.exists() else 0
+    repo = source_dir()
+    active = state.get("active_pack", "ninguno")
+    targets = state.get("targets") or detect_targets()
+    agents = len(list(CLAUDE_AGENTS.glob("*.md"))) if CLAUDE_AGENTS.exists() else 0
+    print(f"\n{PURPLE}{BOLD}⚡ DEV GOD-MODE STATUS{NC}")
+    print("────────────────────────────────────────────────────")
+    print(f"  • Repositorio:     {repo or 'no encontrado'}")
+    print(f"  • Pack activo:     {GREEN}{BOLD}{active.upper()}{NC}")
+    print(f"  • Destinos:        {', '.join(targets)}")
+    for d in target_dirs(targets):
+        count = len(list(d.iterdir())) if d.exists() else 0
+        print(f"  • {d}: {CYAN}{count}{NC} skills")
+    print(f"  • Subagentes:      {CYAN}{agents}{NC}")
+    if repo:
+        packs = load_packs(repo)
+        total = len(discover_skills(repo))
+        print("────────────────────────────────────────────────────\nPacks disponibles:")
+        for name, skills in packs.items():
+            count = total if skills == "ALL" else len(skills)
+            print(f"  • {BOLD}{name}{NC}: {count} skills")
+    print("\nPara cambiar de pack:  god-mode pack <nombre>\n")
 
-    print(f"""
-{PURPLE}{BOLD}⚡ DEV GOD-MODE STATUS{NC}
-────────────────────────────────────────────────────
-  • Pack Activo:         {GREEN}{BOLD}{active_pack.upper()}{NC}
-  • Claude Code Skills:  {CYAN}{claude_count}{NC}
-  • Subagentes Activos:  {CYAN}{claude_agents}{NC}
-  • Antigravity Skills:  {CYAN}{gemini_count}{NC}
-  • Protocolo:           {GREEN}Fable 5.1 (Never Stop Short){NC}
-────────────────────────────────────────────────────
-Packs disponibles:
-  • {BOLD}core{NC}     (20 skills)  - Indispensables Fullstack/Security/Clean Code
-  • {BOLD}dev{NC}      (57 skills)  - Fullstack, Backend, AI Pipelines, Testing
-  • {BOLD}growth{NC}   (72 skills)  - SaaS Growth, Monetización, SEO, CRO, Ads
-  • {BOLD}all{NC}      (135 skills) - Suite completa incluyendo video y media
-
-Para cambiar de pack:
-  god-mode pack <core|dev|growth|all>
-""")
 
 def cmd_cursor(target_dir="."):
-    repo_dir = get_installed_source_dir() or ensure_repo_cache()
-    cursorrules_src = repo_dir / "config" / ".cursorrules"
-    agents_src = repo_dir / "config" / "AGENTS.md"
+    repo = ensure_source_dir()
+    target = Path(target_dir).resolve()
+    print(f"{BOLD}Inyectando reglas de god-mode para Cursor y Windsurf en:{NC} {target}")
+    for name in (".cursorrules", "AGENTS.md"):
+        src = repo / "config" / name
+        if not src.exists():
+            continue
+        if install_file(src, target / name, name):
+            print(f"  {GREEN}✓ {target / name}{NC}")
+        else:
+            print(f"  {BLUE}ℹ {target / name} ya estaba actualizado{NC}")
 
-    target_path = Path(target_dir).resolve()
-    print(f"{BOLD}Inyectando configuración GOD-Mode para Cursor y Windsurf en:{NC} {target_path}")
 
-    if cursorrules_src.exists():
-        shutil.copy2(cursorrules_src, target_path / ".cursorrules")
-        print(f"  {GREEN}✓ Creado {target_path / '.cursorrules'}{NC}")
-
-    if agents_src.exists():
-        shutil.copy2(agents_src, target_path / "AGENTS.md")
-        print(f"  {GREEN}✓ Creado {target_path / 'AGENTS.md'}{NC}")
-
-    print(f"{GREEN}🎉 ¡Cursor y Windsurf ahora operan bajo el protocolo DEV GOD-MODE Fable 5.1!{NC}\n")
-
-def main():
-    if len(sys.argv) < 2 or sys.argv[1] in ["-h", "--help", "help"]:
-        print(f"""
-{PURPLE}{BOLD}⚡ god-mode CLI — Gestor Universal de la Suite DEV GOD-MODE{NC}
+USAGE = f"""
+{PURPLE}{BOLD}⚡ god-mode CLI — Gestor de la suite DEV GOD-MODE{NC}
 
 {BOLD}Uso:{NC}
   god-mode <comando> [opciones]
 
-{BOLD}Comandos Disponibles:{NC}
-  {CYAN}status{NC}                 Muestra el estado del sistema, pack activo y skills cargadas.
-  {CYAN}pack <nombre>{NC}          Cambia el pack activo ({BOLD}core{NC} | {BOLD}dev{NC} | {BOLD}growth{NC} | {BOLD}all{NC}).
-  {CYAN}update{NC}                 Actualiza god-mode a la última versión de GitHub.
-  {CYAN}cursor [ruta]{NC}          Inyecta .cursorrules y AGENTS.md en el proyecto actual.
-  {CYAN}add <github-url>{NC}       Descarga e instala una nueva skill desde GitHub.
-        """)
-        sys.exit(0)
+{BOLD}Comandos:{NC}
+  {CYAN}status{NC}                 Estado del sistema, pack activo y skills instaladas.
+  {CYAN}pack <nombre>{NC}          Cambia el pack activo (ver `god-mode status`).
+  {CYAN}update{NC}                 Actualiza desde GitHub y reaplica protocolo, agentes y pack.
+  {CYAN}cursor [ruta]{NC}          Copia .cursorrules y AGENTS.md a un proyecto (con copia de respaldo).
+  {CYAN}add <github-url>{NC}       Instala una skill desde GitHub (pide confirmación).
+  {CYAN}setup [--targets=claude,gemini] [--source=<repo>]{NC}
+                         Instala protocolo, agentes e instalador (lo usa install.sh).
+"""
 
-    cmd = sys.argv[1].lower()
 
+def main():
+    args = sys.argv[1:]
+    if not args or args[0] in ("-h", "--help", "help"):
+        print(USAGE)
+        return
+    cmd = args[0].lower()
     if cmd == "status":
         cmd_status()
     elif cmd == "pack":
-        if len(sys.argv) < 3:
-            print(f"{RED}Especifica un pack: core, dev, growth, all{NC}")
-            sys.exit(1)
-        apply_pack(sys.argv[2].lower())
+        if len(args) < 2:
+            fail("Especificá un pack. Ej: god-mode pack core")
+        apply_pack(args[1].lower())
     elif cmd == "update":
         cmd_update()
     elif cmd == "cursor":
-        target = sys.argv[2] if len(sys.argv) > 2 else "."
-        cmd_cursor(target)
+        cmd_cursor(args[1] if len(args) > 1 else ".")
+    elif cmd == "setup":
+        targets = detect_targets()
+        for a in args[1:]:
+            if a.startswith("--targets="):
+                targets = [t for t in a.split("=", 1)[1].split(",") if t in ("claude", "gemini")] or ["claude"]
+            elif a.startswith("--source="):
+                src = Path(a.split("=", 1)[1]).expanduser().resolve()
+                if not is_repo(src):
+                    fail(f"{src} no es un repositorio de god-mode (falta config/packs.json).")
+                save_state(source_dir=str(src))
+        cmd_setup(targets)
     elif cmd == "add":
-        if len(sys.argv) < 3:
-            print(f"{RED}Especifica una URL de GitHub. Ej: god-mode add https://github.com/...{NC}")
-            sys.exit(1)
-        installer = HOME / ".claude" / "scripts" / "install-skill.py"
-        subprocess.run([sys.executable, str(installer), sys.argv[2]])
+        if len(args) < 2:
+            fail("Especificá una URL de GitHub. Ej: god-mode add https://github.com/owner/repo")
+        installer = CLAUDE_SCRIPTS / "install-skill.py"
+        if not installer.exists():
+            fail(f"No existe {installer}. Corré `god-mode setup` primero.")
+        sys.exit(subprocess.run([sys.executable, str(installer), *args[1:]]).returncode)
     else:
-        print(f"{RED}Comando desconocido: {cmd}. Ejecuta 'god-mode --help'{NC}")
-        sys.exit(1)
+        fail(f"Comando desconocido: {cmd}. Ejecutá 'god-mode --help'")
+
 
 if __name__ == "__main__":
     main()
