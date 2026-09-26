@@ -1,0 +1,17 @@
+{
+  "name": "god-mode-core",
+  "version": "1.0.0",
+  "description": "DEV GOD-MODE core: the /god router, /thermos double review, /anti-slop, /security, /archify, TDD, debugging, scope cutting and 6 review subagents.",
+  "author": {
+    "name": "Gaston Chevarria"
+  },
+  "homepage": "https://github.com/Gastonchevarria/god-mode",
+  "repository": "https://github.com/Gastonchevarria/god-mode",
+  "license": "MIT",
+  "keywords": [
+    "router",
+    "code-review",
+    "security",
+    "tdd"
+  ]
+}

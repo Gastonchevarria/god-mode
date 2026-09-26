@@ -8,7 +8,7 @@
 ### The Autonomous AI Engineering Squad for Claude Code, Cursor, Antigravity & Windsurf
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
-[![Skills Count](https://img.shields.io/badge/Skills-135%20Modular-blue.svg?style=for-the-badge&logo=anthropic)](https://github.com/Gastonchevarria/god-mode)
+[![Skills Count](https://img.shields.io/badge/Skills-132%20Modular-blue.svg?style=for-the-badge&logo=anthropic)](https://github.com/Gastonchevarria/god-mode)
 [![Autonomous Subagents](https://img.shields.io/badge/Subagents-6%20Specialized-purple.svg?style=for-the-badge)](https://github.com/Gastonchevarria/god-mode)
 [![Protocol](https://img.shields.io/badge/Protocol-Fable%205.1-critical.svg?style=for-the-badge)](https://github.com/Gastonchevarria/god-mode)
 [![Platform Support](https://img.shields.io/badge/Engines-Claude%20Code%20%7C%20Cursor%20%7C%20Antigravity%20%7C%20Windsurf-success.svg?style=for-the-badge)](https://github.com/Gastonchevarria/god-mode)
@@ -96,45 +96,57 @@ Most AI coding setups suffer from 4 fatal flaws:
 
 ## ⚡ 1-Minute Install
 
-Run this single command in your terminal. It installs the **Core Pack** (18 essential skills to eliminate context bloat), subagents, and sets up the global `god-mode` CLI:
+### Claude Code and Cowork: plugin marketplace (recommended)
+
+god-mode ships as four plugins. Install only the ones you need, so the rest never takes up context:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Gastonchevarria/god-mode/main/install.sh | bash
+/plugin marketplace add Gastonchevarria/god-mode
+/plugin install god-mode-core@god-mode      # always: /god, /thermos, /anti-slop, /security, /archify
+/plugin install god-mode-dev@god-mode       # optional: backend, frontend, AI, CI/CD, planning
+/plugin install god-mode-growth@god-mode    # optional: pricing, SEO, CRO, ads, email, launch
+/plugin install god-mode-video@god-mode     # optional: HyperFrames video production
 ```
 
-### Choose Your Specialized Pack:
+Plugins do not change your global `CLAUDE.md`. `/god` loads the Fable 5.1 protocol from its own references when it runs. If you also want the protocol active in every session, use the installer below.
+
+### Antigravity, Cursor and the global protocol: `install.sh`
+
+The installer adds the protocol to `~/.claude/CLAUDE.md` (in a managed block that keeps your own rules), the subagents, the skill installer and the `god-mode` CLI. It links skills into Antigravity only if `~/.gemini` exists:
 
 ```bash
-# Core Pack (Default - 20 skills: Fullstack, Security, Thermos, Anti-Slop. Zero context bloat)
 curl -fsSL https://raw.githubusercontent.com/Gastonchevarria/god-mode/main/install.sh | bash -s -- --pack=core
-
-# Dev Pack (57 skills: Core + Backend, Next.js, FastAPI, RAG, Evals, MCP Builder, Architecture)
-curl -fsSL https://raw.githubusercontent.com/Gastonchevarria/god-mode/main/install.sh | bash -s -- --pack=dev
-
-# Growth Pack (72 skills: Core + SaaS Monetization, SEO, CRO, Onboarding, Paywalls, Cold Email)
-curl -fsSL https://raw.githubusercontent.com/Gastonchevarria/god-mode/main/install.sh | bash -s -- --pack=growth
-
-# All Pack (135 skills: Complete Arsenal including Video/Media, Hyperframes, Remotion)
-curl -fsSL https://raw.githubusercontent.com/Gastonchevarria/god-mode/main/install.sh | bash -s -- --pack=all
 ```
+
+To install a published release and verify it first:
+
+```bash
+curl -fsSLO https://github.com/Gastonchevarria/god-mode/releases/download/v1.0.0/install.sh
+curl -fsSLO https://github.com/Gastonchevarria/god-mode/releases/download/v1.0.0/install.sh.sha256
+shasum -a 256 -c install.sh.sha256 && bash install.sh --version=v1.0.0 --pack=core
+```
+
+Add `--cursor` to also copy `.cursorrules` and `AGENTS.md` into the current folder. Existing files are backed up first.
+
+> Upgrading from a version before 1.0.0? Run the installer once more. Skills moved from `skills/` to `plugins/`, and older `god-mode update` commands cannot follow that change on their own.
 
 ---
 
 ## 📦 Modular Packs (Anti-Context Bloat)
 
-Loading 130+ tool schemas into an AI agent at session start causes **tool hallucination and prompt fatigue**. GOD-Mode solves this with **Instant Pack Switching**:
+Every installed skill adds its description to the agent's context. Packs and plugins keep that list short:
 
-| Pack | Active Skills | Target Workflow | Context Weight |
-| :--- | :---: | :--- | :---: |
-| **`core`** *(Default)* | **20 skills** | Full-Stack Building, Thermos Review, DevSecOps, Anti-Slop | 🟢 Ultra-Light (<5% context) |
-| **`dev`** | **57 skills** | Distributed Backend, FastAPI, Next.js, RAG Pipelines, Testing | 🟡 Medium (~12% context) |
-| **`growth`** | **72 skills** | SaaS Monetization, Funnels, Programmatic SEO, Cold Email, CRO | 🟡 Medium (~14% context) |
-| **`all`** | **135 skills** | Video production, motion graphics, Hyperframes & everything | 🔴 Heavy (Full loadout) |
+| Pack (`install.sh`) | Plugins (marketplace) | Skills | Target workflow |
+| :--- | :--- | :---: | :--- |
+| **`core`** *(default)* | `god-mode-core` | **19** | Router, Thermos review, DevSecOps, Anti-Slop, TDD, debugging |
+| **`dev`** | core + `god-mode-dev` | **55** | Backend, FastAPI, Next.js, RAG and evals, MCP, CI/CD, planning |
+| **`growth`** | core + `god-mode-growth` | **71** | SaaS pricing, funnels, SEO, CRO, ads, email, sales |
+| **`video`** | core + `god-mode-video` | **44** | HyperFrames video, captions, motion graphics |
+| **`all`** | all four | **132** | Everything |
 
-You can switch packs in **1 second** at any time:
+Switch packs at any time:
 ```bash
 god-mode pack dev
-god-mode pack growth
 god-mode pack core
 ```
 
@@ -144,7 +156,7 @@ god-mode pack core
 
 If you only use 5 commands, use these:
 
-1. **`/god` (or `/startup-god-router`)**: The Brain. Tell it your problem in plain Spanish or English; it diagnoses your phase and activates the optimal multi-role sequence.
+1. **`/god`**: The Brain. Tell it your problem in plain Spanish or English; it diagnoses your phase and activates the optimal multi-role sequence.
 2. **`/thermos`**: The Reviewer. Launches two specialized subagents in parallel to audit your git diff for logic bugs, breaking API changes, and spaghetti maintainability before you merge.
 3. **`/anti-slop`**: The Cleaner. Scans your TypeScript/JS codebase to eliminate lazy `as any` casting, hallucinated imports, and useless AI wrappers.
 4. **`/security`**: The Shield. Runs an 8-point defensive DevSecOps audit checking for leaked credentials, SQL/Prompt injections, unauthenticated endpoints, and OWASP Top 10 vulnerabilities.
@@ -161,13 +173,13 @@ The installation script deploys a global command line tool:
 god-mode status
 
 # Switch active skill packs instantly
-god-mode pack <core|dev|growth|all>
+god-mode pack <core|dev|growth|video|all>
 
-# Update the entire suite from GitHub in 1 second
+# Update from GitHub and re-apply protocol, subagents and pack (fails loudly if git fails)
 god-mode update
 
-# Inject GOD-Mode rules into any project for Cursor and Windsurf
-god-mode cursor
+# Copy GOD-Mode rules into a project for Cursor and Windsurf (backs up existing files)
+god-mode cursor <path>
 
 # Download and install any external skill from GitHub
 god-mode add https://github.com/owner/repo/tree/main/skills/foo
@@ -181,9 +193,9 @@ We don't leave the 80% of developers using Cursor, Windsurf, or VS Code behind.
 
 To enable GOD-Mode in any project:
 ```bash
-god-mode cursor
+god-mode cursor path/to/project
 ```
-This automatically generates:
+This copies, after backing up any existing version:
 - **`.cursorrules`**: Tailored for Cursor AI to enforce the Fable 5.1 Doctrine, Anti-Slop compilation, and Slash Commands.
 - **`AGENTS.md`**: Cross-platform configuration recognized by Windsurf, Codex, and modern AI IDEs.
 
@@ -230,17 +242,25 @@ Located in `~/.claude/agents/`, ready to be dispatched for complex jobs:
 
 ## 🤝 Contributing
 
-We welcome contributions from engineering teams and developers worldwide!
-1. Fork the repository
-2. Add your skill folder into `skills/<your-skill>/` with a valid `SKILL.md` (YAML frontmatter with `name` and `description`)
-3. Test with `./install.sh`
-4. Submit a Pull Request
+1. Fork the repository.
+2. Add your skill to the plugin it belongs to: `plugins/<plugin>/skills/<your-skill>/SKILL.md`, with YAML frontmatter (`name` equal to the folder, and a `description` of 300 characters or fewer).
+3. If it comes from another project, add it to `config/third_party.json`.
+4. Run the checks CI runs on every pull request:
+   ```bash
+   python3 scripts/build_plugins.py
+   python3 scripts/validate.py
+   python3 -m unittest discover -s tests
+   bash tests/smoke.sh
+   ```
+5. Submit a pull request.
 
 ---
 
 ## 📄 License
 
-Distributed under the **MIT License**. Created with passion by [Gaston Chevarria](https://github.com/Gastonchevarria).
+god-mode's own code and skills are distributed under the **MIT License**. Created by [Gaston Chevarria](https://github.com/Gastonchevarria).
+
+Many skills come from other open-source projects and keep their original licenses (MIT and Apache-2.0). See [THIRD_PARTY.md](THIRD_PARTY.md) for the full list and credits.
 
 <div align="center">
 

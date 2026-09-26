@@ -11,7 +11,7 @@ Run the two thermo review passes as async background subagents in parallel, then
 
 1. Determine the review scope from the user request, PR, current branch, or relevant changed files.
 2. Gather the diff and any file/context excerpts needed for reviewers to evaluate the change without guessing.
-3. Launch both subagents in the same message with `run_in_background: true`:
+3. Launch both subagents in the same message so they run in parallel. Use `run_in_background: true` when the subagent tool supports it (Claude Code); otherwise launch them in the foreground in that same message (Cowork):
    - `subagent_type: "thermo-nuclear-review-subagent"` for bugs, breakages, security, devex regressions, feature-flag leaks, and other branch-audit risks.
    - `subagent_type: "thermo-nuclear-code-quality-review-subagent"` for maintainability, structure, file-size growth, spaghetti, abstractions, and codebase-health risks.
 4. Pass each subagent the same scoped diff/file context and ask it to return prioritized findings with file references and evidence.

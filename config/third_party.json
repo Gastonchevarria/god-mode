@@ -1,0 +1,183 @@
+{
+  "sources": [
+    {
+      "repo": "coreyhaines31/marketingskills",
+      "license": "MIT",
+      "license_file": "licenses/marketingskills-MIT.txt",
+      "commit": "5b2c000",
+      "skills": [
+        "ab-testing",
+        "ad-creative",
+        "ads",
+        "ai-seo",
+        "analytics",
+        "aso",
+        "attribution",
+        "churn-prevention",
+        "co-marketing",
+        "cold-email",
+        "community-marketing",
+        "competitor-profiling",
+        "competitors",
+        "content-strategy",
+        "copy-editing",
+        "copywriting",
+        "cro",
+        "customer-research",
+        "directory-submissions",
+        "emails",
+        "free-tools",
+        "image",
+        "influencer-marketing",
+        "launch",
+        "lead-magnets",
+        "marketing-council",
+        "marketing-ideas",
+        "marketing-loops",
+        "marketing-plan",
+        "marketing-psychology",
+        "offers",
+        "onboarding",
+        "paywalls",
+        "popups",
+        "pricing",
+        "product-marketing",
+        "programmatic-seo",
+        "prospecting",
+        "public-relations",
+        "referrals",
+        "revops",
+        "sales-enablement",
+        "schema",
+        "seo-audit",
+        "signup",
+        "site-architecture",
+        "sms",
+        "social",
+        "video"
+      ],
+      "agents": []
+    },
+    {
+      "repo": "addyosmani/agent-skills",
+      "license": "MIT",
+      "license_file": "licenses/agent-skills-MIT.txt",
+      "commit": "bcab6a1",
+      "skills": [
+        "api-and-interface-design",
+        "browser-testing-with-devtools",
+        "ci-cd-and-automation",
+        "code-review-and-quality",
+        "code-simplification",
+        "context-engineering",
+        "debugging-and-error-recovery",
+        "deprecation-and-migration",
+        "documentation-and-adrs",
+        "doubt-driven-development",
+        "frontend-ui-engineering",
+        "git-workflow-and-versioning",
+        "idea-refine",
+        "incremental-implementation",
+        "interview-me",
+        "observability-and-instrumentation",
+        "performance-optimization",
+        "planning-and-task-breakdown",
+        "security-and-hardening",
+        "shipping-and-launch",
+        "source-driven-development",
+        "spec-driven-development",
+        "test-driven-development",
+        "using-agent-skills"
+      ],
+      "agents": [
+        "code-reviewer",
+        "security-auditor",
+        "test-engineer",
+        "web-performance-auditor"
+      ]
+    },
+    {
+      "repo": "heygen-com/hyperframes",
+      "license": "Apache-2.0",
+      "license_file": "licenses/hyperframes-Apache-2.0.txt",
+      "commit": "edb3747c4",
+      "skills": [
+        "captions-overlay",
+        "cut-the-curve",
+        "embedded-captions",
+        "faceless-explainer",
+        "figma",
+        "general-video",
+        "hyperframes",
+        "hyperframes-animation",
+        "hyperframes-audio",
+        "hyperframes-cli",
+        "hyperframes-core",
+        "hyperframes-creative",
+        "hyperframes-keyframes",
+        "hyperframes-registry",
+        "media-use",
+        "motion-doctrine",
+        "motion-graphics",
+        "music-to-video",
+        "oversized-cursor",
+        "pr-to-video",
+        "product-launch-video",
+        "remotion-to-hyperframes",
+        "seam-craft",
+        "slideshow",
+        "talking-head-recut"
+      ],
+      "agents": []
+    },
+    {
+      "repo": "tt-a1i/archify",
+      "license": "MIT",
+      "license_file": "plugins/god-mode-core/skills/archify/LICENSE",
+      "commit": "9e35d2b",
+      "skills": [
+        "archify"
+      ],
+      "agents": []
+    }
+  ],
+  "removed": [
+    {
+      "skill": "zero",
+      "repo": "officialzeroxyz/zero-plugins",
+      "reason": "the upstream repository has no license, so redistribution is not permitted"
+    },
+    {
+      "skill": "changelog-video",
+      "repo": "heygen-com/hyperframes",
+      "reason": "it ships commercial fonts (TT Norms Pro, ABC Solar Display) that the repository license does not cover"
+    }
+  ],
+  "name_only_credits": [
+    {
+      "repo": "garrytan/gstack",
+      "skills": [
+        "autoplan",
+        "office-hours",
+        "plan-ceo-review",
+        "plan-design-review",
+        "plan-devex-review",
+        "plan-eng-review",
+        "retro"
+      ]
+    },
+    {
+      "repo": "wshobson/agents",
+      "skills": [
+        "backend-architect",
+        "fastapi-pro",
+        "prompt-engineering-patterns",
+        "rag-implementation"
+      ]
+    }
+  ],
+  "notes": [
+    "Fonts bundled inside the hyperframes skills (for example embedded-captions/modes/standard/fonts) are distributed upstream under their own open font licenses, mostly the SIL Open Font License 1.1.",
+    "talking-head-recut/assets/vendor/gsap.min.js is GSAP, distributed under the GSAP Standard License (https://gsap.com/standard-license)."
+  ]
+}

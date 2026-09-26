@@ -1,0 +1,40 @@
+{
+  "name": "god-mode",
+  "owner": {
+    "name": "Gaston Chevarria"
+  },
+  "metadata": {
+    "description": "DEV GOD-MODE (Fable 5.1): engineering, growth and video skills for Claude Code and Cowork.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "god-mode-core",
+      "source": "./plugins/god-mode-core",
+      "description": "DEV GOD-MODE core: the /god router, /thermos double review, /anti-slop, /security, /archify, TDD, debugging, scope cutting and 6 review subagents.",
+      "version": "1.0.0",
+      "license": "MIT"
+    },
+    {
+      "name": "god-mode-dev",
+      "source": "./plugins/god-mode-dev",
+      "description": "Full-stack engineering skills: backend and API design, Next.js, FastAPI, RAG and LLM evals, MCP servers, CI/CD, observability, planning and reviews.",
+      "version": "1.0.0",
+      "license": "MIT"
+    },
+    {
+      "name": "god-mode-growth",
+      "source": "./plugins/god-mode-growth",
+      "description": "SaaS growth skills: pricing, CRO, SEO and AI SEO, ads, email, onboarding, paywalls, launch, sales and customer research.",
+      "version": "1.0.0",
+      "license": "MIT"
+    },
+    {
+      "name": "god-mode-video",
+      "source": "./plugins/god-mode-video",
+      "description": "Video production with HyperFrames: captions, motion graphics, explainers, product launch and PR videos, music-synced edits.",
+      "version": "1.0.0",
+      "license": "Apache-2.0"
+    }
+  ]
+}

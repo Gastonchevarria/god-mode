@@ -1,0 +1,17 @@
+{
+  "name": "god-mode-dev",
+  "version": "1.0.0",
+  "description": "Full-stack engineering skills: backend and API design, Next.js, FastAPI, RAG and LLM evals, MCP servers, CI/CD, observability, planning and reviews.",
+  "author": {
+    "name": "Gaston Chevarria"
+  },
+  "homepage": "https://github.com/Gastonchevarria/god-mode",
+  "repository": "https://github.com/Gastonchevarria/god-mode",
+  "license": "MIT",
+  "keywords": [
+    "backend",
+    "frontend",
+    "ai",
+    "ci-cd"
+  ]
+}

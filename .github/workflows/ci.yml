@@ -19,7 +19,15 @@ jobs:
       - run: pip install pyyaml ruff
       - name: Validate skills, agents, packs and credits
         run: python3 scripts/validate.py --max-description 1024
+      - name: Generated files are up to date
+        run: python3 scripts/build_plugins.py --check
+      - name: Validate plugin manifests with the Claude CLI
+        run: |
+          npm install -g @anthropic-ai/claude-code
+          claude plugin validate .
+          for p in plugins/*/; do claude plugin validate "$p"; done
       - name: Lint Python
+
         run: ruff check scripts tests bin/god-mode
       - name: Lint shell
         run: shellcheck install.sh tests/smoke.sh

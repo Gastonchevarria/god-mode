@@ -15,8 +15,8 @@
 
 ## Always-Active Skills & Integraciones
 
-- Always leverage the native **DEV GOD-MODE** skills (`startup-god-router`, `anti-slop`, `thermos`, `security-and-hardening`, `code-review-and-quality`) when designing, building, reviewing, securing, deploying, debugging, or documenting code.
-- Use `/god` or `/startup-god-router` for autonomous intent classification and multi-role squad execution.
+- Always leverage the native **DEV GOD-MODE** skills (`god`, `anti-slop`, `thermos`, `security-and-hardening`, `code-review-and-quality`) when designing, building, reviewing, securing, deploying, debugging, or documenting code.
+- Use `/god` for autonomous intent classification and multi-role squad execution.
 - Use `/thermos` for double thermo-nuclear pre-merge audits and `/security` for pre-launch defensive audits.
 
 ---
@@ -57,7 +57,7 @@ Cualquiera de los siguientes comandos o intenciones activa la skill correspondie
 
 | Comando / Intención | Skill Activada | Objetivo / Alcance |
 | :--- | :--- | :--- |
-| `/god` o `/startup-god-router` | `startup-god-router` | Orquestador maestro que clasifica el requerimiento y activa la mejor combinación de skills. |
+| `/god` | `god` | Orquestador maestro que clasifica el requerimiento y activa la mejor combinación de skills. |
 | `/install-skill` | `skill-installer` | Instalación y sincronización autónoma de Agent Skills desde GitHub o VoltAgent/awesome-agent-skills. |
 | `/thermos` | `thermos` | Auditoría implacable pre-merge (Bugs + Code Quality) usando subagentes termo-nucleares. |
 | `/anti-slop` | `anti-slop` | Auditoría y eliminación de código vago, 'as any' y anti-patrones de IA en TypeScript/JS. |

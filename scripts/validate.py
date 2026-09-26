@@ -155,6 +155,31 @@ def check_plugins(errors):
                     errors.append(f"{rel}: plugin {entry.get('name')!r} points to missing source {src!r}")
 
 
+def check_protocol(errors):
+    for protocol in ROOT.glob("plugins/*/skills/god/references/protocol.md"):
+        body = protocol.read_text(encoding="utf-8").split("\n", 1)[1].strip()
+        claude_md = (ROOT / "config" / "CLAUDE.md").read_text(encoding="utf-8")
+        if body not in claude_md:
+            errors.append(f"{protocol.relative_to(ROOT)}: protocol text differs from config/CLAUDE.md; keep both identical")
+
+
+def check_router_plugin_map(errors):
+    location = {d.name: d.parent.parent.name for d in skill_dirs() if d.parent.parent.parent.name == "plugins"}
+    for router in [d / "SKILL.md" for d in skill_dirs() if d.name == "god"]:
+        text = router.read_text(encoding="utf-8")
+        if "## Dónde vive cada skill" not in text:
+            continue
+        section = text.split("## Dónde vive cada skill", 1)[1]
+        for line in section.splitlines():
+            m = re.match(r"\|\s*`(god-mode-[a-z]+)`\s*\|[^|]*\|(.*)\|", line)
+            if not m:
+                continue
+            for name in re.findall(r"`([a-z0-9-]+)`", m.group(2)):
+                if location.get(name) != m.group(1):
+                    errors.append(f"{router.relative_to(ROOT)}: plugin map lists {name!r} under {m.group(1)} "
+                                  f"but it lives in {location.get(name, 'no plugin')}")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--max-description", type=int, default=DEFAULT_MAX_DESCRIPTION)
@@ -167,6 +192,8 @@ def main():
     check_router(skills, agents, errors)
     check_third_party(skills, errors)
     check_plugins(errors)
+    check_protocol(errors)
+    check_router_plugin_map(errors)
 
     if errors:
         print(f"❌ {len(errors)} problem(s) found:")

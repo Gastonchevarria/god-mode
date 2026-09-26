@@ -1,0 +1,17 @@
+{
+  "name": "god-mode-growth",
+  "version": "1.0.0",
+  "description": "SaaS growth skills: pricing, CRO, SEO and AI SEO, ads, email, onboarding, paywalls, launch, sales and customer research.",
+  "author": {
+    "name": "Gaston Chevarria"
+  },
+  "homepage": "https://github.com/Gastonchevarria/god-mode",
+  "repository": "https://github.com/Gastonchevarria/god-mode",
+  "license": "MIT",
+  "keywords": [
+    "marketing",
+    "seo",
+    "cro",
+    "saas"
+  ]
+}
