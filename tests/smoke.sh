@@ -4,7 +4,8 @@
 set -uo pipefail
 
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-WORK="$(mktemp -d)"
+# Physical path: on macOS mktemp returns /var/..., a symlink to /private/var/..., and the CLI resolves --source.
+WORK="$(cd "$(mktemp -d)" && pwd -P)"
 trap 'rm -rf "$WORK"' EXIT
 PASS=0
 FAIL=0
@@ -98,7 +99,8 @@ git clone -q --bare "$REPO" "$WORK/remote.git"
 mkdir -p "$WORK/solo" && cp "$REPO/install.sh" "$WORK/solo/install.sh"
 git -C "$WORK/remote.git" tag v9.9.9 HEAD
 (cd "$WORK/solo" && GOD_MODE_REPO_URL="file://$WORK/remote.git" bash install.sh --version=v9.9.9 --pack=core >"$WORK/pinned.log" 2>&1)
-check "install.sh --version clona el tag pedido" test "$(git -C "$HOME/.cache/god-mode-repo" describe --tags --exact-match 2>/dev/null)" = v9.9.9
+# tag --points-at, not describe: on a release commit describe prefers the annotated release tag over v9.9.9.
+check "install.sh --version clona el tag pedido" bash -c "git -C '$HOME/.cache/god-mode-repo' tag --points-at HEAD | grep -qx v9.9.9"
 check "y activa el pack" test "$(count_links "$HOME/.claude/skills")" = "$(pack_size core)"
 check "una versión con formato inválido se rechaza" bash -c "! bash '$WORK/solo/install.sh' --version=latest >/dev/null 2>&1"
 

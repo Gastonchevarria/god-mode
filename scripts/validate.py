@@ -19,7 +19,7 @@ except ImportError:
     sys.exit("PyYAML is required: pip install pyyaml")
 
 ROOT = Path(__file__).resolve().parent.parent
-FRONTMATTER = re.compile(r"\A---\n(.*?)\n---\n", re.S)
+FRONTMATTER = re.compile(r"\A---\n(.*?)\n---\n", re.DOTALL)
 DEFAULT_MAX_DESCRIPTION = 300
 # Skills allowed to set disable-model-invocation (manual-only). Keep empty unless a skill must never auto-run.
 MANUAL_ONLY_ALLOWLIST = set()

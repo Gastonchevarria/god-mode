@@ -129,12 +129,12 @@ def main():
 
     jobs = [(i, run) for i in range(len(cases)) for run in range(args.runs)]
     results = {i: [] for i in range(len(cases))}
-    with tempfile.TemporaryDirectory(prefix="god-mode-eval-") as home:
-        with ThreadPoolExecutor(max_workers=args.workers) as pool:
-            futures = {pool.submit(first_skill_call, cases[i]["query"], plugin_dirs, Path(home), args.model,
-                                   args.timeout): i for i, _ in jobs}
-            for fut in as_completed(futures):
-                results[futures[fut]].append(fut.result())
+    with tempfile.TemporaryDirectory(prefix="god-mode-eval-") as home, \
+            ThreadPoolExecutor(max_workers=args.workers) as pool:
+        futures = {pool.submit(first_skill_call, cases[i]["query"], plugin_dirs, Path(home), args.model,
+                               args.timeout): i for i, _ in jobs}
+        for fut in as_completed(futures):
+            results[futures[fut]].append(fut.result())
 
     report, passed, total, errors = [], 0, 0, 0
     by_plugin = {}
