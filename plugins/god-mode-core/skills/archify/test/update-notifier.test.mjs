@@ -344,6 +344,9 @@ function pauseRenameOnce(sourcePath, destinationPath) {
   ));
 }
 
+// Tests that hold a fetch open need more than the 50 ms default, or a loaded CI runner times them out.
+const heldFetchTimeout = { timeoutMs: 2_000 };
+
 function options(testFixture, fetchImpl, overrides = {}) {
   return {
     releasePath: testFixture.releasePath,
@@ -1964,9 +1967,9 @@ test('an empty precheck snapshot cannot start a second concurrent network reques
     return new Promise((resolve) => { releaseFetch = resolve; });
   };
 
-  const delayedPrecheck = checkForUpdate(options(testFixture, fetchImpl));
+  const delayedPrecheck = checkForUpdate(options(testFixture, fetchImpl, heldFetchTimeout));
   await pause.reached;
-  const claimedCheck = checkForUpdate(options(testFixture, fetchImpl));
+  const claimedCheck = checkForUpdate(options(testFixture, fetchImpl, heldFetchTimeout));
   await fetchStarted;
   pause.release();
   assert.deepEqual(await delayedPrecheck, { status: 'silent', reason: 'check-in-progress' });
@@ -2004,7 +2007,7 @@ test('two promoters cannot replace and then steal a stale empty active claim', a
     staleTime,
     staleTime,
   );
-  const claimedCheck = checkForUpdate(options(testFixture, fetchImpl));
+  const claimedCheck = checkForUpdate(options(testFixture, fetchImpl, heldFetchTimeout));
   await fetchStarted;
   pause.release();
   assert.deepEqual(await delayedRetirement, { status: 'silent', reason: 'check-in-progress' });
@@ -2246,7 +2249,7 @@ test('a fenced owner rechecks its active claim immediately before network access
     return new Promise((resolve) => { releaseFetch = resolve; });
   };
 
-  const delayedOwner = checkForUpdate(options(testFixture, fetchImpl));
+  const delayedOwner = checkForUpdate(options(testFixture, fetchImpl, heldFetchTimeout));
   await pause.reached;
   const staleTime = new Date(Date.now() - 60_000);
   fs.utimesSync(
@@ -2254,7 +2257,7 @@ test('a fenced owner rechecks its active claim immediately before network access
     staleTime,
     staleTime,
   );
-  const successor = checkForUpdate(options(testFixture, fetchImpl));
+  const successor = checkForUpdate(options(testFixture, fetchImpl, heldFetchTimeout));
   await fetchStarted;
   assert.equal(requests, 1);
 
@@ -2352,6 +2355,8 @@ test('a last-good notice remains acknowledgeable after the refresh commits a new
     return new Promise((resolve) => { releaseRefresh = resolve; });
   }, {
     now: () => baseTime + (73 * 60 * 60 * 1_000),
+    // The fetch is held open on purpose; the helper's 50 ms default timed it out on loaded CI runners.
+    timeoutMs: 2_000,
   }));
   await refreshStarted;
 

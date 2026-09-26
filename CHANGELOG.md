@@ -14,6 +14,7 @@ Upgrading from a version before 1.0.0 now works: run the installer once more.
 - CI passes on `main`: ruff is pinned to 0.16.9 with its findings fixed, and the smoke tests pass on release commits and on macOS.
 - `tests/smoke.sh` no longer rewrites the developer's `origin` remote.
 - archify: brand marks regenerated for simple-icons 16.32.0.
+- archify: four update-notifier tests that hold a network request open no longer time out on loaded CI runners (they used the 50 ms test default).
 
 ### Added
 - CI runs archify's own test suite with `scripts/test_archify.py`, excluding only the tests that read files from the upstream archify repository (listed in `config/archify-tests.json`).
