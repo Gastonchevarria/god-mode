@@ -48,9 +48,11 @@ def code_list(names):
 def credits_markdown(meta, skills, agents, license_prefix, archify_license):
     lines = [
         GENERATED_HEADER + "# Third-party components\n",
-        "This package bundles skills and agents written by other authors. Each one keeps its original license, "
-        f"and the full license texts are in [`{license_prefix}`]({license_prefix}). "
-        "Files may have been modified from the upstream versions listed below.\n",
+        (
+            "This package bundles skills and agents written by other authors. Each one keeps its original license, "
+            f"and the full license texts are in [`{license_prefix}`]({license_prefix}). "
+            "Files may have been modified from the upstream versions listed below.\n"
+        ),
         "| Source | License | Upstream commit | Skills / agents |",
         "| --- | --- | --- | --- |",
     ]

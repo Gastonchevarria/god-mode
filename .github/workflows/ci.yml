@@ -16,7 +16,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install pyyaml ruff
+      - run: pip install pyyaml ruff==0.16.9
       - name: Validate skills, agents, packs and credits
         run: python3 scripts/validate.py
       - name: Generated files are up to date
@@ -27,7 +27,6 @@ jobs:
           claude plugin validate .
           for p in plugins/*/; do claude plugin validate "$p"; done
       - name: Lint Python
-
         run: ruff check scripts tests bin/god-mode
       - name: Lint shell
         run: shellcheck install.sh tests/smoke.sh

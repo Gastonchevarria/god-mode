@@ -5,12 +5,13 @@ Installs Agent Skills from GitHub repos, subfolders, raw URLs, or VoltAgent/awes
 Syncs automatically to both ~/.claude/skills/ and ~/.gemini/config/skills/.
 """
 
-import sys
+import http.client
 import os
 import re
 import shutil
-import tempfile
 import subprocess
+import sys
+import tempfile
 import urllib.request
 from pathlib import Path
 
@@ -62,7 +63,7 @@ def run_cmd(args, cwd=None):
     env = {**os.environ, "GIT_TERMINAL_PROMPT": "0"}
     try:
         res = subprocess.run(list(args), cwd=cwd, capture_output=True, text=True,
-                             timeout=CLONE_TIMEOUT_SECONDS, env=env)
+                             timeout=CLONE_TIMEOUT_SECONDS, env=env, check=False)
     except FileNotFoundError:
         return False, "", f"No se encontró el ejecutable '{args[0]}'"
     except subprocess.TimeoutExpired:
@@ -97,10 +98,7 @@ def parse_github_url(url):
         return None
 
     owner = _check_segment(m.group("owner"), "Owner")
-    repo = m.group("repo")
-    if repo.endswith(".git"):
-        repo = repo[:-4]
-    repo = _check_segment(repo, "Repositorio")
+    repo = _check_segment(m.group("repo").removesuffix(".git"), "Repositorio")
 
     branch = m.group("branch")
     if branch is not None:
@@ -128,7 +126,7 @@ def search_awesome_skills(query):
         req = urllib.request.Request(AWESOME_REPO_README, headers={'User-Agent': 'Mozilla/5.0'})
         with urllib.request.urlopen(req, timeout=10) as resp:
             content = resp.read().decode('utf-8')
-    except Exception as e:
+    except (OSError, ValueError, http.client.HTTPException) as e:
         log(f"Error accediendo a awesome-agent-skills: {e}", "❌")
         return []
 
@@ -232,7 +230,7 @@ def install_skill_directory(src_skill_dir, skill_name=None, force=False, assume_
         try:
             target_gemini.symlink_to(target_claude, target_is_directory=True)
             log(f"Skill sincronizada con Antigravity: {target_gemini}", "🔗")
-        except Exception as e:
+        except OSError as e:
             log(f"Aviso al vincular con Antigravity: {e}", "⚠️")
 
     return True
@@ -251,7 +249,7 @@ def install_from_github(url, force=False, assume_yes=False):
         tmp_path = Path(tmpdir)
         log(f"Clonando repositorio {info['clone_url']}...", "📥")
 
-        ok, out, err = run_cmd(build_clone_cmd(info), cwd=tmpdir)
+        ok, _, err = run_cmd(build_clone_cmd(info), cwd=tmpdir)
         if not ok:
             log(f"Error al clonar repositorio: {err.strip()}", "❌")
             return False
