@@ -2,6 +2,28 @@
 
 All notable changes to god-mode are documented here. Versions follow [Semantic Versioning](https://semver.org/).
 
+## [1.0.1] - 2026-09-26
+
+Upgrading from a version before 1.0.0 now works: run the installer once more.
+
+### Security
+- Closed the six CodeQL alerts in the vendored archify skill: tag and `<iframe>` stripping repeats until nothing changes, a test fixture server no longer echoes request text into HTML, and two no-op replacements are gone.
+
+### Fixed
+- The installer upgrades pre-1.0 installs. It replaces the old links into `~/.gemini/config/plugins`, and lists the real folders with a god-mode skill's name and the old Antigravity plugin folders it won't touch, instead of silently keeping them. On a real pre-1.0 install, 1.0.0 linked 0 of 106 skills in Claude Code; 1.0.1 links 99.
+- CI passes on `main`: ruff is pinned to 0.16.9 with its findings fixed, and the smoke tests pass on release commits and on macOS.
+- `tests/smoke.sh` no longer rewrites the developer's `origin` remote.
+- archify: brand marks regenerated for simple-icons 16.32.0.
+- archify: four update-notifier tests that hold a network request open no longer time out on loaded CI runners (they used the 50 ms test default).
+
+### Added
+- CI runs archify's own test suite with `scripts/test_archify.py`, excluding only the tests that read files from the upstream archify repository (listed in `config/archify-tests.json`).
+- `AGENTS.md` tells agents such as Antigravity how to install god-mode: run the installer, never copy plugins by hand.
+
+### Changed
+- README rewritten: 30-second install, what `/god` routes to, the protocol in plain words, and an FAQ.
+- GitHub Actions `actions/checkout` and `actions/setup-python` v7; archify dev dependencies parse5 8.0.1 and simple-icons 16.32.0.
+
 ## [1.0.0] - 2026-09-26
 
 First release. Skills moved to a plugin marketplace (see README). If you installed with `install.sh` before this version, run it once more.

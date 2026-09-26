@@ -1,6 +1,6 @@
 {
   "name": "god-mode-core",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "DEV GOD-MODE core: the /god router, /thermos double review, /anti-slop, /security, /archify, TDD, debugging, scope cutting and 6 review subagents.",
   "author": {
     "name": "Gaston Chevarria"

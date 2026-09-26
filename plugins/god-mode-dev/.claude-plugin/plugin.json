@@ -1,6 +1,6 @@
 {
   "name": "god-mode-dev",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Full-stack engineering skills: backend and API design, Next.js, FastAPI, RAG and LLM evals, MCP servers, CI/CD, observability, planning and reviews.",
   "author": {
     "name": "Gaston Chevarria"
