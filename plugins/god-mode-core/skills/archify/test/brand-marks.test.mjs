@@ -465,13 +465,14 @@ test('rendering many pinned brands limits concurrent remote capture work', async
         active -= 1;
         response.end(icon);
       } else {
-        const siteId = /^\/site-(\d+)$/.exec(request.url)?.[1];
+        const match = /^\/site-(\d+)$/.exec(request.url);
         active -= 1;
-        if (siteId === undefined) {
+        if (!match) {
           response.writeHead(404);
           response.end();
           return;
         }
+        const siteId = Number(match[1]);
         response.writeHead(200, { 'content-type': 'text/html; charset=utf-8' });
         response.end(`<!doctype html><title>Site ${siteId}</title><link rel="icon" type="image/png" href="/mark-${siteId}.png">`);
       }
