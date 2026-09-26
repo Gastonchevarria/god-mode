@@ -1,6 +1,6 @@
 ---
 name: marketing-ideas
-description: "When the user needs marketing ideas, inspiration, or strategies for their SaaS or software product. Also use when the user asks for 'marketing ideas,' 'growth ideas,' 'how to market,' 'marketing strategies,' 'marketing tactics,' 'ways to promote,' 'ideas to grow,' 'what else can I try,' 'I don't know how to market this,' 'brainstorm marketing,' or 'what marketing should I do.' Use this as a starting point whenever someone is stuck or looking for inspiration on how to grow. For specific channel execution, see the relevant skill (ads, social, emails, etc.)."
+description: "Brainstorms a list of marketing tactics for SaaS and software products from a library of 139 proven ideas. Use when the user says 'marketing ideas,' 'growth ideas,' 'what else can I try,' or 'I don't know how to market this.' Not for a full written plan (use marketing-plan)."
 metadata:
   version: 2.0.0
 ---

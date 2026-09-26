@@ -1,6 +1,6 @@
 ---
 name: browser-testing-with-devtools
-description: Tests in real browsers via Chrome DevTools MCP. Use when building or debugging anything that runs in a browser. Use when you need to inspect the DOM, capture console errors, analyze network requests, profile performance, or verify visual output with real runtime data. Requires the chrome-devtools MCP server to be configured.
+description: "Tests and debugs pages in a real Chrome via the chrome-devtools MCP server: live DOM, console errors, network requests, performance traces, screenshots. Use when asked to \"check it in the browser\", \"inspect the network call\", \"profile page load\" or \"verify the UI fix\"."
 ---
 
 # Browser Testing with DevTools

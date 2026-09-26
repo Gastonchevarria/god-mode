@@ -8,7 +8,7 @@
 ### The Autonomous AI Engineering Squad for Claude Code, Cursor, Antigravity & Windsurf
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
-[![Skills Count](https://img.shields.io/badge/Skills-132%20Modular-blue.svg?style=for-the-badge&logo=anthropic)](https://github.com/Gastonchevarria/god-mode)
+[![Skills Count](https://img.shields.io/badge/Skills-106%20Modular-blue.svg?style=for-the-badge&logo=anthropic)](https://github.com/Gastonchevarria/god-mode)
 [![Autonomous Subagents](https://img.shields.io/badge/Subagents-6%20Specialized-purple.svg?style=for-the-badge)](https://github.com/Gastonchevarria/god-mode)
 [![Protocol](https://img.shields.io/badge/Protocol-Fable%205.1-critical.svg?style=for-the-badge)](https://github.com/Gastonchevarria/god-mode)
 [![Platform Support](https://img.shields.io/badge/Engines-Claude%20Code%20%7C%20Cursor%20%7C%20Antigravity%20%7C%20Windsurf-success.svg?style=for-the-badge)](https://github.com/Gastonchevarria/god-mode)
@@ -98,14 +98,13 @@ Most AI coding setups suffer from 4 fatal flaws:
 
 ### Claude Code and Cowork: plugin marketplace (recommended)
 
-god-mode ships as four plugins. Install only the ones you need, so the rest never takes up context:
+god-mode ships as three plugins. Install only the ones you need, so the rest never takes up context:
 
 ```bash
 /plugin marketplace add Gastonchevarria/god-mode
 /plugin install god-mode-core@god-mode      # always: /god, /thermos, /anti-slop, /security, /archify
 /plugin install god-mode-dev@god-mode       # optional: backend, frontend, AI, CI/CD, planning
 /plugin install god-mode-growth@god-mode    # optional: pricing, SEO, CRO, ads, email, launch
-/plugin install god-mode-video@god-mode     # optional: HyperFrames video production
 ```
 
 Plugins do not change your global `CLAUDE.md`. `/god` loads the Fable 5.1 protocol from its own references when it runs. If you also want the protocol active in every session, use the installer below.
@@ -141,8 +140,7 @@ Every installed skill adds its description to the agent's context. Packs and plu
 | **`core`** *(default)* | `god-mode-core` | **19** | Router, Thermos review, DevSecOps, Anti-Slop, TDD, debugging |
 | **`dev`** | core + `god-mode-dev` | **55** | Backend, FastAPI, Next.js, RAG and evals, MCP, CI/CD, planning |
 | **`growth`** | core + `god-mode-growth` | **71** | SaaS pricing, funnels, SEO, CRO, ads, email, sales |
-| **`video`** | core + `god-mode-video` | **44** | HyperFrames video, captions, motion graphics |
-| **`all`** | all four | **132** | Everything |
+| **`all`** | all three | **106** | Everything |
 
 Switch packs at any time:
 ```bash
@@ -173,7 +171,7 @@ The installation script deploys a global command line tool:
 god-mode status
 
 # Switch active skill packs instantly
-god-mode pack <core|dev|growth|video|all>
+god-mode pack <core|dev|growth|all>
 
 # Update from GitHub and re-apply protocol, subagents and pack (fails loudly if git fails)
 god-mode update

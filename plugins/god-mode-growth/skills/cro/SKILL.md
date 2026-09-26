@@ -1,6 +1,6 @@
 ---
 name: cro
-description: "When the user wants to optimize, improve, or increase conversions on any marketing page or form — including homepage, landing pages, pricing pages, feature pages, lead capture forms, or contact forms. Also use when the user says 'CRO,' 'conversion rate optimization,' 'this page isn't converting,' 'improve conversions,' 'why isn't this page working,' 'my landing page sucks,' 'form abandonment,' 'nobody's converting,' 'low conversion rate,' or 'this page needs work.' Use this even if the user just shares a URL and asks for feedback. For signup/registration flows, see signup. For post-signup activation, see onboarding. For popups/modals, see popups."
+description: "Audits marketing pages and forms for conversion: value prop, headlines, CTAs, trust, objections, friction, plus quick wins and test ideas. Use when the user shares a URL or says 'this page isn't converting' or 'form abandonment'. Not for signup flows (use signup)."
 metadata:
   version: 2.0.0
 ---

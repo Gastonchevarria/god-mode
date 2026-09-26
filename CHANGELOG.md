@@ -19,6 +19,16 @@ All notable changes to god-mode are documented here. Versions follow [Semantic V
 - `install.sh --version=vX.Y.Z` installs a published release. Releases include `install.sh.sha256`.
 - CI on every pull request: `scripts/validate.py`, unit tests, end-to-end install tests on Linux and macOS, ruff and shellcheck.
 - `THIRD_PARTY.md` and `licenses/` credit the upstream projects.
+- Claude Code plugin marketplace with three plugins: god-mode-core, god-mode-dev and god-mode-growth.
+- `scripts/eval_routing.py` and `tests/evals/routing.json` measure whether Claude picks the right skill. Results in `docs/evals/`.
+
+### Changed
+- Every skill description is now 300 characters or fewer, with concrete trigger phrases and a boundary against its closest sibling. Descriptions went from about 16,400 to 7,300 tokens, and CI enforces the limit.
+- Seven SKILL.md files over 3,000 words were split: long reference material moved verbatim into `references/`, with pointers saying when to read it.
+- The /god banner is one line instead of four.
+- The five rendered HTML examples of `archify` (3.5 MB) moved to `docs/archify-examples/` so they are not installed with the plugin.
 
 ### Removed
 - `zero` (upstream has no license) and `changelog-video` (ships commercial fonts).
+- The whole video toolkit (HyperFrames, captions, motion graphics, video production), 25 skills, plus the growth `video` skill, to keep the suite focused on engineering and growth.
+- `startup-god-router`, a duplicate of `god`.

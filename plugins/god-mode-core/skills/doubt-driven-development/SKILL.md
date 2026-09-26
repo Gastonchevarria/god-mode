@@ -1,6 +1,6 @@
 ---
 name: doubt-driven-development
-description: Subjects every non-trivial decision to a fresh-context adversarial review before it stands. Use when correctness matters more than speed, when working in unfamiliar code, when stakes are high (production, security-sensitive logic, irreversible operations), or any time a confident output would be cheaper to verify now than to debug later.
+description: "Sends each non-trivial decision to a fresh-context adversarial reviewer before it stands. Use when the user says 'doubt this', 'challenge this decision' or 'verify before we commit', or when stakes are high (production, security, irreversible changes) or the code is unfamiliar."
 ---
 
 # Doubt-Driven Development

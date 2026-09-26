@@ -1,6 +1,6 @@
 ---
 name: marketing-plan
-description: When the user needs a comprehensive marketing plan for a client, a company they advise, or their own product. Also use when the user mentions "marketing plan," "growth plan," "GTM plan," "go-to-market plan," "AARRR plan," "90-day marketing plan," "12-month marketing roadmap," "fractional CMO plan," or "fCMO plan." Generates an exhaustive 13-section plan structured by AARRR (Acquisition, Activation, Retention, Referral, Revenue), customized to the client's current budget, team, and stage, mapped to future funding milestones, cross-referenced with the 139-idea marketing-ideas library and an embedded 17-section current-state audit rubric, with a full marketing operations stack showing which skills and MCP/API integrations execute each part. Outputs a Notion-paste-ready markdown document. For positioning and ICP context before planning, see product-marketing. For stage-specific deep work, see onboarding, signup, emails, referrals, pricing.
+description: "Writes a complete 12-month marketing or go-to-market plan, structured by AARRR and fitted to the client's budget, team and stage. Use when the user says 'marketing plan,' 'GTM plan,' '90-day marketing plan,' or 'fCMO plan.' Not for a quick list of tactics (use marketing-ideas)."
 ---
 
 # Marketing Plan
@@ -138,22 +138,6 @@ Always add **10–20% experimental budget** on top — CAC is the main dependenc
 
 For VC-backed Series A+ clients, anchor the 12-month outlook against the **3-3-2-2-2 rule** (3× in years 1–2, 2× in years 3–7 from $1M ARR).
 
-## Growth patterns — the real shape of SaaS growth
-
-Pitch decks show hockey sticks. Real growth is a series of S-curves with plateaus between them. Full framework in `references/growth-patterns.md`. Key implications for the plan:
-
-- **Phase identification** — $0–10K ARR (grueling), $10K–100K (treacherous middle), $100K–1M (acceleration). Section 3 names the current phase; Section 10 sequences the next.
-- **Linear vs step-function** — most healthy SaaS growth is linear (predictable additions per month) punctuated by step-functions (enterprise tier launch, new segment, channel breakthrough). The plan should describe both honestly — not promise exponential.
-- **S-curve layering** — Channel × Product × Market. Start the next S-curve while the current one is still growing. Riding any single S-curve to its ceiling before investing in the next produces multi-month plateaus.
-
-## Team and agency model
-
-Strategy lives in-house. Execution can — and often should — be outsourced. Full framework in `references/team-and-agency-model.md`. Three implications for every plan:
-
-1. **First hire is a strategist, not a tactician.** Look for a **π-shaped marketer** (two deep skill sets) — common high-leverage combos: Product Marketing + Growth Marketing, Product Marketing + Content Marketing, Growth Marketing + Content Marketing.
-2. **Title conservatively.** First marketing hire is almost always Manager or Lead, not VP or CMO. Inflated titles paint the org into a corner when you scale.
-3. **Use contractors and small niche agencies for execution.** Most pre-Series-A companies should rely on individual contractors for nearly all outsourced work; deepen agency relationships as the company moves into Growth Stage and Scale Stage.
-
 ## What every plan must customize
 
 A generic plan is a failed plan. Every plan must explicitly customize for:
@@ -169,17 +153,6 @@ A generic plan is a failed plan. Every plan must explicitly customize for:
 9. **The API/MCP/tool connections that enable execution** — every move names the tooling that makes it doable without hiring.
 
 If you can't confirm any of these in INIT, list them in Section 13's "Open decisions" — never gloss over them. **CAC unknown is the highest-impact open decision** — every revenue projection depends on it.
-
-## Common client-type variations
-
-Plan structure stays consistent. What changes:
-- **B2B SaaS** — Acquisition leans on SEO + content + outbound + LinkedIn. Activation = signup + product trial. Retention = product engagement + CSM motion. Referral = customer advocacy. Revenue = expansion / NRR.
-- **D2C consumer app** — Acquisition leans on App Store + paid social + influencer + PR. Activation = onboarding + first session + paywall. Retention = lifecycle email + push. Referral = sharing mechanics. Revenue = subscription + upsell.
-- **Hardware-led** — Acquisition leans on PR + retail + Amazon + Shopify SEO. Activation = unboxing + setup + first use. Retention = software companion + community. Referral = gifting + reviews. Revenue = blended LTV hardware + accessories + subscription.
-- **Marketplace** — Activation has two sides (supply + demand). Retention is repeat transaction frequency. Revenue is take-rate × GMV.
-- **Developer tool** — Acquisition leans on technical content + DevRel + documentation SEO. Activation = first build / first integration. Retention = depth of integration. Referral = team adoption.
-
-Detail in `references/client-types.md`.
 
 ## Quality bar
 
@@ -268,3 +241,11 @@ That said: don't pad. Every section should be **dense, not bloated**. If a secti
 This plan is written for founders who are sharp, busy, and skeptical of marketing-speak. Write like a thoughtful colleague, not a deck-slide-writer. No jargon for jargon's sake. Direct claims, named tradeoffs, explicit assumptions. When unsure, name the open question rather than guessing.
 
 The exec summary should be short enough to read in 60 seconds. The rest should reward deep reading.
+
+## References
+
+Quick guides moved out of this file (each links on to its full framework in `references/`):
+
+- `references/growth-patterns-summary.md` — read before naming the client's SaaS growth phase in Section 3 and sequencing Section 10 (phases, linear vs step-function growth, S-curve layering).
+- `references/team-and-agency-summary.md` — read before assessing the team in Section 3 and recommending the first hire or agency model (π-shaped marketers, conservative titles, contractors vs agencies).
+- `references/client-type-variations.md` — read once the client type is known in INIT, before drafting the AARRR sections 4–8 (B2B SaaS, D2C app, hardware-led, marketplace, developer tool).

@@ -1,6 +1,6 @@
 ---
 name: thermo-nuclear-code-quality-review
-description: Run an extremely strict maintainability review for abstraction quality, giant files, and spaghetti-condition growth. Use for a thermo-nuclear code quality review, thermonuclear review, deep code quality audit, or especially harsh maintainability review.
+description: "Strict maintainability audit of a branch diff: abstractions, files over 1k lines, spaghetti conditionals; usually launched by thermos. Use when the user says 'thermonuclear code quality review' or 'harsh maintainability review'. For bugs and security use thermo-nuclear-review."
 ---
 
 # Thermo-Nuclear Code Quality Review

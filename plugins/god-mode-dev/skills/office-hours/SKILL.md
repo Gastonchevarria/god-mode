@@ -1,6 +1,6 @@
 ---
 name: office-hours
-description: Uncovers the real user problem, target customer ICP, and core value proposition before writing any code. Use during early product discovery, feature ideation, or when defining whether a new feature or pivot is truly worth building.
+description: "YC-style test of whether a raw idea is worth building: narrow ICP, hair-on-fire problem, why now, value metric, 48-hour smoke test; verdict proceed, pivot or kill. Use when asked \"is this worth building?\", \"validate this idea\", \"who is the customer?\" or \"office hours\"."
 ---
 
 # Office Hours (YC / Founder Discovery)

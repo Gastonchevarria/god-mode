@@ -1,6 +1,6 @@
 ---
 name: idea-refine
-description: Refines raw ideas into sharp, actionable concepts through structured divergent and convergent thinking. Use when an idea is still vague, when you need to stress-test assumptions before committing to a plan, or when you want to expand options before converging on one. Triggers on "ideate", "refine this idea", or "stress-test my plan".
+description: "Turns a raw idea into a sharp concept: 5-8 variations, 2-3 stress-tested directions and a one-pager with MVP scope and a Not Doing list. Use when asked to \"help me refine this idea\", \"ideate on\", \"give me variations\" or \"explore other angles\". To validate demand use office-hours."
 ---
 
 # Idea Refine

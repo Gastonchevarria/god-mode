@@ -1,6 +1,6 @@
 ---
 name: autoplan
-description: Orchestrates an end-to-end automated planning pipeline spanning CEO Review, Design Review, Engineering Review, and Atomic Task Breakdown in a single unified workflow. Triggered automatically or via /goal and /autoplan.
+description: "Runs the full planning chain in one pass: CEO, design and eng reviews, then spec and task breakdown, merged into one implementation_plan.md. Use when asked to \"plan this end to end\", \"full plan for this feature\", /autoplan or /goal. For one lens, use that plan-*-review."
 ---
 
 # Autoplan (Unified Product Planning Pipeline)

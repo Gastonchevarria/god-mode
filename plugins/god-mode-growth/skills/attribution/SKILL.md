@@ -1,6 +1,6 @@
 ---
 name: attribution
-description: When the user wants to figure out which marketing actually drives conversions and revenue, choose or interpret an attribution model, or reconcile conflicting numbers across tools. Also use when the user mentions "attribution," "attribution model," "first-touch vs last-touch," "multi-touch," "which channel drives revenue," "what's my real CAC," "my dashboards disagree," "Google/Meta says X but GA says Y," "media mix model," "MMM," "incrementality," "geo lift," "holdout test," "how did you hear about us," "self-reported attribution," "dark social," or wants to instrument attribution themselves — "stitch my bookings to their source," "SavvyCal/Calendly attribution," "close the identify gap," "track conversions on a third-party domain," "first-party / self-hosted attribution." For event tracking setup and UTMs, see analytics. For ad-platform pixels/CAPI, see ads. For pipeline and CRM revenue reporting, see revops. For the AI-search attribution blind spot, see ai-seo.
+description: "Measures which marketing drives revenue: attribution models, MMM, incrementality, self-reported data, reconciling dashboards, first-party stitching. Use when the user says 'my dashboards disagree', 'first-touch vs last-touch' or 'holdout test'. Not for UTM setup (use analytics)."
 metadata:
   version: 1.1.0
 ---
@@ -198,20 +198,9 @@ Deliver an **attribution readout**, not a data dump:
 [Allocation call with confidence levels; the tiebreaker test worth running]
 ```
 
-## Tool Integrations
+## References
 
-For implementation, see the [tools registry](../../tools/REGISTRY.md). Key tools:
-
-| Tool | Best For | MCP | Guide |
-|------|----------|:---:|-------|
-| **PostHog** | First-party attribution, identify/merge, funnels | - | [posthog.md](../../tools/integrations/posthog.md) |
-| **GA4** | Web analytics, model comparison, user-id stitching | ✓ | [ga4.md](../../tools/integrations/ga4.md) |
-| **Dub** | Short-link + click attribution | ✓ | [dub-co.md](../../tools/integrations/dub-co.md) |
-| **Segment** | CDP — route identify/track to every destination | - | [segment.md](../../tools/integrations/segment.md) |
-| **HubSpot** | CRM lead-source + self-reported fields | ✓ | [hubspot.md](../../tools/integrations/hubspot.md) |
-| **Salesforce** | CRM as revenue source of truth | - | [salesforce.md](../../tools/integrations/salesforce.md) |
-| **Supermetrics** | Pull platform numbers into one place to reconcile | ✓ | [supermetrics.md](../../tools/integrations/supermetrics.md) |
-| **RB2B** | De-anonymize B2B website visitors | - | [rb2b.md](../../tools/integrations/rb2b.md) |
+- `references/tool-integrations.md` — read when picking the tool to implement with (PostHog, GA4, Segment, HubSpot, Salesforce, Dub, Supermetrics, RB2B).
 
 ---
 

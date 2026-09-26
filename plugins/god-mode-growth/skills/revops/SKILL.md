@@ -1,6 +1,6 @@
 ---
 name: revops
-description: "When the user wants help with revenue operations, lead lifecycle management, or marketing-to-sales handoff processes. Also use when the user mentions 'RevOps,' 'revenue operations,' 'lead scoring,' 'lead routing,' 'MQL,' 'SQL,' 'pipeline stages,' 'deal desk,' 'CRM automation,' 'marketing-to-sales handoff,' 'data hygiene,' 'leads aren't getting to sales,' 'pipeline management,' 'lead qualification,' or 'when should marketing hand off to sales.' Use this for anything involving the systems and processes that connect marketing to revenue. For cold outreach emails, see cold-email. For email drip campaigns, see emails. For pricing decisions, see pricing."
+description: "Designs revenue operations: lead lifecycle, MQL and SQL stages, lead scoring and routing, pipeline stages, CRM automation, deal desk and data hygiene. Use when the user says 'lead scoring,' 'lead routing,' 'leads aren't getting to sales,' or 'marketing-to-sales handoff.'"
 metadata:
   version: 2.0.0
 ---

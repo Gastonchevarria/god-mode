@@ -1,6 +1,6 @@
 ---
 name: mvp-scope-killer
-description: Ruthlessly identifies and prunes premature over-engineering, unnecessary microservices, unneeded dashboards, complex permission hierarchies, and speculative abstractions to deliver the leanest viable product that validates the core business hypothesis. Triggered by /scope-kill, /prune, /lean, or when cutting product scope.
+description: "Cuts premature over-engineering from an MVP plan (microservices, custom RBAC, in-house dashboards, hand-rolled auth, speculative abstractions) into a lean core. Use when the user says /scope-kill, 'cut scope', 'is this overkill for an MVP' or 'what can we drop'."
 ---
 
 # MVP Scope Killer

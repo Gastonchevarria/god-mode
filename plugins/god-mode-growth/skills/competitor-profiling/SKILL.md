@@ -1,6 +1,6 @@
 ---
 name: competitor-profiling
-description: "When the user wants to research, profile, or analyze competitors from their URLs. Also use when the user mentions 'competitor profile,' 'competitor research,' 'competitor analysis,' 'profile this competitor,' 'analyze competitor,' 'competitive intelligence,' 'competitor deep dive,' 'who are my competitors,' 'competitor landscape,' 'competitor dossier,' 'competitive audit,' or 'research these competitors.' Input is a list of competitor URLs. Output is structured competitor profile markdown files. For creating comparison/alternative pages from profiles, see competitors. For sales-specific battle cards, see sales-enablement."
+description: "Researches competitors from their URLs, combining site scraping with SEO data, into structured profile files. Use when the user says 'profile this competitor', 'competitive intelligence' or 'research these competitors'. Not for comparison pages (use competitors)."
 metadata:
   version: 2.0.0
 ---

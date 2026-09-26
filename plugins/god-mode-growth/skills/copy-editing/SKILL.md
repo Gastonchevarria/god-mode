@@ -1,6 +1,6 @@
 ---
 name: copy-editing
-description: "When the user wants to edit, review, or improve existing marketing copy, or refresh outdated content. Also use when the user mentions 'edit this copy,' 'review my copy,' 'copy feedback,' 'proofread,' 'polish this,' 'make this better,' 'copy sweep,' 'tighten this up,' 'this reads awkwardly,' 'clean up this text,' 'too wordy,' 'sharpen the messaging,' 'refresh this content,' 'update this page,' 'this content is outdated,' or 'content audit.' Use this when the user already has copy and wants it improved or refreshed rather than rewritten from scratch. For writing new copy, see copywriting."
+description: "Edits and refreshes existing marketing copy with seven focused sweeps (clarity, voice, proof, specificity and more) and expert scoring. Use when the user says 'edit this copy', 'tighten this up', 'too wordy' or 'this content is outdated'. Not for new copy (use copywriting)."
 metadata:
   version: 2.0.0
 ---

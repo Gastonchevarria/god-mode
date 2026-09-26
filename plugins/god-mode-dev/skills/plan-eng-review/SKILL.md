@@ -1,6 +1,6 @@
 ---
 name: plan-eng-review
-description: Evaluates system architecture, failure modes, data modeling, concurrency, rate limits, testing strategy, error handling, and API contract boundaries from a Principal/Staff Engineer perspective.
+description: "Stress-tests a technical design before coding: data integrity, failure modes and retries, concurrency, rate limits, test plan, with a risk matrix and verdict. Use when asked for an \"eng review\", \"what could break?\", \"review this architecture\" or \"check failure modes\"."
 ---
 
 # Plan Engineering Review

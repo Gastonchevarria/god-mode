@@ -1,6 +1,6 @@
 ---
 name: aso
-description: "When the user wants to audit or optimize an App Store or Google Play listing. Also use when the user mentions 'ASO audit,' 'app store optimization,' 'optimize my app listing,' 'improve app visibility,' 'app store ranking,' 'audit my listing,' 'why aren't people downloading my app,' 'improve my app conversion,' 'keyword optimization for app,' or 'compare my app to competitors.' Use when the user shares an App Store or Google Play URL and wants to improve it."
+description: "Audits App Store and Google Play listings, scoring metadata, keywords, visuals and ratings into a prioritized action plan. Use when the user shares an app store URL or says 'ASO audit', 'optimize my app listing' or 'why aren't people downloading my app'."
 metadata:
   version: 2.0.0
 ---

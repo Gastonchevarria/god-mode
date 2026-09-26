@@ -1,6 +1,6 @@
 ---
 name: ai-product-architect
-description: Architect production-grade AI systems, LLM inference pipelines, model selection, prompt token optimization, latency budgets, streaming UX, semantic caching, RAG architecture, eval harnesses, and prompt injection security. Triggered by /ai-arch, /llm-arch, /rag-arch, or when designing AI product architectures.
+description: "Designs production LLM system architecture: model routing, streaming and latency, semantic caching, RAG, schema-checked output, guardrails and evals. Use when the user says /ai-arch, 'architect my LLM app', 'design a RAG pipeline', 'cut token costs' or 'which model should I use'."
 ---
 
 # AI Product Architect

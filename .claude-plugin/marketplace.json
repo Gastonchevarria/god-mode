@@ -4,7 +4,7 @@
     "name": "Gaston Chevarria"
   },
   "metadata": {
-    "description": "DEV GOD-MODE (Fable 5.1): engineering, growth and video skills for Claude Code and Cowork.",
+    "description": "DEV GOD-MODE (Fable 5.1): engineering and growth skills for Claude Code and Cowork.",
     "version": "1.0.0"
   },
   "plugins": [
@@ -28,13 +28,6 @@
       "description": "SaaS growth skills: pricing, CRO, SEO and AI SEO, ads, email, onboarding, paywalls, launch, sales and customer research.",
       "version": "1.0.0",
       "license": "MIT"
-    },
-    {
-      "name": "god-mode-video",
-      "source": "./plugins/god-mode-video",
-      "description": "Video production with HyperFrames: captions, motion graphics, explainers, product launch and PR videos, music-synced edits.",
-      "version": "1.0.0",
-      "license": "Apache-2.0"
     }
   ]
 }

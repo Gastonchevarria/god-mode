@@ -1,6 +1,6 @@
 ---
 name: ai-seo
-description: "When the user wants to optimize content for AI search engines, get cited by LLMs, or appear in AI-generated answers. Also use when the user mentions 'AI SEO,' 'AEO,' 'GEO,' 'LLMO,' 'answer engine optimization,' 'generative engine optimization,' 'LLM optimization,' 'AI Overviews,' 'optimize for ChatGPT,' 'optimize for Perplexity,' 'AI citations,' 'AI visibility,' 'zero-click search,' 'how do I show up in AI answers,' 'LLM mentions,' 'optimize for Claude/Gemini,' 'llms.txt,' 'OKF,' 'Open Knowledge Format,' 'knowledge bundle,' or 'agent-readable site.' Use this whenever someone wants their content to be cited or surfaced by AI assistants and AI search engines. For traditional technical and on-page SEO audits, see seo-audit. For structured data implementation, see schema."
+description: "Gets content cited in AI answers (ChatGPT, Perplexity, Gemini, AI Overviews): audits, extractable structure, authority, llms.txt, bot access. Use when the user says 'AEO', 'GEO', 'show up in AI answers' or 'optimize for ChatGPT'. Not for technical SEO audits (use seo-audit)."
 metadata:
   version: 2.2.0
 ---
@@ -265,58 +265,6 @@ AI systems don't just cite your website — they cite where you appear.
 - Create YouTube content for key how-to queries
 - Answer relevant Quora questions with depth
 
-### Machine-Readable Files for AI Agents
-
-> **Google's stance**: not required for AI Overviews or AI Mode. Their guide explicitly says you don't need new markup, AI files, or markdown to appear in generative AI search.
->
-> **Why include them anyway**: non-Google AI engines (ChatGPT, Claude, Perplexity) and autonomous buying agents do reward extractable structure. The files below help with those engines without harming Google.
-
-AI agents aren't just answering questions — they're becoming buyers. When an AI agent evaluates tools on behalf of a user, it needs structured, parseable information. If your pricing is locked in a JavaScript-rendered page or a "contact sales" wall, agents will skip you and recommend competitors whose information they can actually read.
-
-Add these machine-readable files to your site root:
-
-**`/pricing.md` or `/pricing.txt`** — Structured pricing data for AI agents
-
-```markdown
-# Pricing — [Your Product Name]
-
-## Free
-- Price: $0/month
-- Limits: 100 emails/month, 1 user
-- Features: Basic templates, API access
-
-## Pro
-- Price: $29/month (billed annually) | $35/month (billed monthly)
-- Limits: 10,000 emails/month, 5 users
-- Features: Custom domains, analytics, priority support
-
-## Enterprise
-- Price: Custom — contact sales@example.com
-- Limits: Unlimited emails, unlimited users
-- Features: SSO, SLA, dedicated account manager
-```
-
-**Why this matters now:**
-- AI agents increasingly compare products programmatically before a human ever visits your site
-- Opaque pricing gets filtered out of AI-mediated buying journeys
-- A simple markdown file is trivially parseable by any LLM — no rendering, no JavaScript, no login walls
-- Same principle as `robots.txt` (for crawlers), `llms.txt` (for AI context), and `AGENTS.md` (for agent capabilities)
-
-**Best practices:**
-- Use consistent units (monthly vs. annual, per-seat vs. flat)
-- Include specific limits and thresholds, not just feature names
-- List what's included at each tier, not just what's different
-- Keep it updated — stale pricing is worse than no file
-- Link to it from your sitemap and main pricing page
-
-**`/llms.txt`** — Context file for AI systems (see [llmstxt.org](https://llmstxt.org))
-
-If you don't have one yet, add an `llms.txt` that gives AI systems a quick overview of what your product does, who it's for, and links to key pages (including your pricing).
-
-**`/okf/` — Open Knowledge Format bundle (Google-backed, v0.1)**
-
-Google [introduced OKF](https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing) in June 2026 — a markdown spec for representing site content as a directory of cross-linked files with YAML frontmatter, agent-readable without scraping. Built primarily for data-team catalog metadata; the site-readable-by-agents repurposing was popularized by Suganthan Mohanadasan. No confirmed AI-search ranking signal today — treat it as protocol-layer registration like early schema.org. **For the full breakdown, implementation paths (free generator, WordPress plugin, by-hand), hosting guidance, and when to skip, see [references/okf.md](references/okf.md).**
-
 ### Schema Markup for AI
 
 Structured data helps AI systems understand your content. Key schemas:
@@ -332,92 +280,6 @@ Structured data helps AI systems understand your content. Key schemas:
 | Organization | `Organization` | Entity recognition |
 
 Content with proper schema shows 30-40% higher AI visibility on non-Google AI engines. **Google's note**: structured data is "not required for generative AI search" but is recommended for overall SEO strategy. For implementation, use the **schema** skill.
-
----
-
-## Agentic Experiences
-
-Beyond AI search engines summarizing content, autonomous agents are starting to access sites directly — clicking, reading, comparing, even buying on behalf of users. Google's guide flags this as an emerging category to plan for.
-
-**How agents access your site:**
-- **Visual rendering** — they screenshot/read the page like a user would
-- **DOM inspection** — they parse the page's HTML structure
-- **Accessibility tree** — they rely on the same semantic information assistive tech uses (labels, roles, landmarks, headings)
-
-**What to do:**
-- **Render meaningful content without heavy JS gymnastics** — if the page is blank until 4 frameworks finish loading, agents see blank
-- **Semantic HTML** — use `<main>`, `<nav>`, `<article>`, `<button>`, proper heading hierarchy, `alt` text on images
-- **Clean accessibility tree** — every interactive element labelled; ARIA used correctly (or not at all when native HTML suffices)
-- **Stable selectors / predictable layouts** — agents struggle with sites that re-render every interaction
-- **Visible pricing, specs, contact info** — anything an agent would need to make a buying recommendation should be on a public, indexable page (this is where `/pricing.md` and similar files help)
-
-**Emerging — Universal Commerce Protocol (UCP):**
-Google references UCP as a forthcoming protocol that will give agents standardized hooks for commerce interactions (catalog discovery, pricing, checkout). Watch for adoption; for now, the structural recommendations above are the precursor.
-
-For ecom and local business specifically, Google highlights:
-- **Merchant Center feeds** + **Google Business Profile** for product/service visibility in AI Search
-- **Business Agent** for conversational customer engagement (where applicable)
-
----
-
-## Content Types That Get Cited Most
-
-Not all content is equally citable. Prioritize these formats:
-
-| Content Type | Citation Share | Why AI Cites It |
-|-------------|:------------:|----------------|
-| **Comparison articles** | ~33% | Structured, balanced, high-intent |
-| **Definitive guides** | ~15% | Comprehensive, authoritative |
-| **Original research/data** | ~12% | Unique, citable statistics |
-| **Best-of/listicles** | ~10% | Clear structure, entity-rich |
-| **Product pages** | ~10% | Specific details AI can extract |
-| **How-to guides** | ~8% | Step-by-step structure |
-| **Opinion/analysis** | ~10% | Expert perspective, quotable |
-
-**Underperformers for AI citation:**
-- Generic blog posts without structure
-- Thin product pages with marketing fluff
-- Gated content (AI can't access it)
-- Content without dates or author attribution
-- PDF-only content (harder for AI to parse)
-
-**Citation ≠ recommendation.** Getting cited means your content was useful to consult; getting *recommended* — onto the buyer's actual shortlist — is governed by web-wide consensus (reviews, forums, analysts, press) and is largely independent of your own content. Self-promotional "best [category]" listicles can even backfire for emerging brands: in one 100-query B2B study, 69% of the AI Overview citations that self-promotional listicles earned came in answers that recommended competitors instead of the publishing brand. See [references/citations-vs-recommendations.md](references/citations-vs-recommendations.md) for the visibility ladder (retrieved → cited → mentioned → recommended), stage-dependent buyer's-guide strategy, what earns recommendations, and the attribution blind spot.
-
----
-
-## Monitoring AI Visibility
-
-### What to Track
-
-| Metric | What It Measures | How to Check |
-|--------|-----------------|-------------|
-| AI Overview presence | Do AI Overviews appear for your queries? | Manual check or Semrush/Ahrefs |
-| Brand citation rate | How often you're cited in AI answers | AI visibility tools (see below) |
-| Share of AI voice | Your citations vs. competitors | Peec AI, Otterly, ZipTie |
-| Citation sentiment | How AI describes your brand | Manual review + monitoring tools |
-| Recommendation rate | Whether you're on the shortlist, not just cited (see [citations-vs-recommendations.md](references/citations-vs-recommendations.md)) | Prompt tracking + mention framing |
-| Source attribution | Which of your pages get cited | Track referral traffic from AI sources |
-
-### AI Visibility Monitoring Tools
-
-| Tool | Coverage | Best For |
-|------|----------|----------|
-| **Otterly AI** | ChatGPT, Perplexity, Google AI Overviews | Share of AI voice tracking |
-| **Peec AI** | ChatGPT, Gemini, Perplexity, Claude, Copilot+ | Multi-platform monitoring at scale |
-| **ZipTie** | Google AI Overviews, ChatGPT, Perplexity | Brand mention + sentiment tracking |
-| **LLMrefs** | ChatGPT, Perplexity, AI Overviews, Gemini | SEO keyword → AI visibility mapping |
-
-### DIY Monitoring (No Tools)
-
-Monthly manual check:
-1. Pick your top 20 queries
-2. Run each through ChatGPT, Perplexity, and Google
-3. Record: Are you cited? Who is? What page?
-4. Log in a spreadsheet, track month-over-month
-
-### Search Console expectations
-
-Google's guide is explicit: **there is no AI-specific Search Console reporting**. AI Overviews and AI Mode use core Search ranking, so the standard Search Console reports (Performance, Coverage, Core Web Vitals) are still what you measure with for Google. The third-party tools above are the only way to see cross-platform AI citation behavior.
 
 ---
 
@@ -479,6 +341,15 @@ For implementation, see the [tools registry](../../tools/REGISTRY.md).
 4. What content types do you publish? (Blog, docs, comparisons, etc.)
 5. Are competitors being cited by AI where you're not?
 6. Do you have a Wikipedia page or presence on review sites?
+
+---
+
+## References
+
+- `references/machine-readable-files.md` — read when adding `/pricing.md`, `llms.txt` or an `/okf/` bundle so AI agents can parse the site (Pillar 3).
+- `references/agentic-experiences.md` — read when the site must work for autonomous agents that browse, compare or buy for a user.
+- `references/most-cited-content-types.md` — read when choosing which content formats to create or prioritize for AI citation.
+- `references/monitoring-ai-visibility.md` — read when setting up ongoing tracking of AI citations, share of AI voice and monitoring tools.
 
 ---
 

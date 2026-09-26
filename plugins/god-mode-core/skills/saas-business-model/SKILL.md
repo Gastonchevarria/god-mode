@@ -1,6 +1,6 @@
 ---
 name: saas-business-model
-description: Designs value-based SaaS monetization models, pricing tiers, feature gates, usage-based metering, unit economics (CAC, LTV, payback), and payment gateway integration architecture (Stripe, Mercado Pago, Lemon Squeezy). Triggered by /monetize, /pricing, /billing, or when designing SaaS revenue models.
+description: "Chooses the SaaS business and monetization model: value metric, tiers, usage metering and unit economics. Use when the user says /monetize, 'how should we charge' or 'per seat or usage-based'. For price points use pricing; for billing code use saas-launch-revenue."
 ---
 
 # SaaS Business Model & Monetization Architecture

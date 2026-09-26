@@ -1,6 +1,6 @@
 ---
 name: plan-design-review
-description: Evaluates and elevates UX/UI design, information hierarchy, emotional resonance, design tokens, micro-interactions, and eliminates generic AI-generated aesthetics. Use before writing frontend code.
+description: "Reviews planned screens and flows before frontend code: tokens, typography, spacing, micro-interactions, empty states, WCAG contrast, no generic AI look. Use when asked for a \"design review\", \"review this UX\" or \"plan the onboarding screens\". Building the UI: frontend-ui-engineering."
 ---
 
 # Plan Design Review (UX/UI & Anti-AI Aesthetics)

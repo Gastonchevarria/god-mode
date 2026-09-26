@@ -1,6 +1,6 @@
 ---
 name: launch-growth-loop
-description: Designs and implements product-led growth (PLG) mechanics, high-converting landing pages, lead capture, onboarding activation events, lifecycle email triggers, referral loops, and programmatic SEO. Triggered by /growth, /plg, /funnel, or when designing user acquisition loops.
+description: "Builds product-led growth into the product: landing pages, activation events, referral loops and lifecycle triggers. Use when the user says /growth, 'add a referral loop', 'define our activation event' or 'PLG funnel'. Not for recurring marketing workflows (use marketing-loops)."
 ---
 
 # Launch & Growth Loop Architecture

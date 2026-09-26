@@ -1,6 +1,6 @@
 ---
 name: onboarding
-description: When the user wants to optimize post-signup onboarding, user activation, first-run experience, or time-to-value. Also use when the user mentions "onboarding flow," "activation rate," "user activation," "first-run experience," "empty states," "onboarding checklist," "aha moment," "new user experience," "users aren't activating," "nobody completes setup," "low activation rate," "users sign up but don't use the product," "time to value," or "first session experience." Use this whenever users are signing up but not sticking around. For signup/registration optimization, see signup. For ongoing email sequences, see emails.
+description: "Optimizes post-signup onboarding and activation: aha moment, checklists, empty states, time-to-value. Use when the user says 'activation rate,' 'onboarding flow,' 'nobody completes setup,' or 'users sign up but don't use the product.' Not for the signup form (use signup)."
 metadata:
   version: 2.0.0
 ---

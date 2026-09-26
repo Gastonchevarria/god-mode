@@ -1,6 +1,6 @@
 ---
 name: god
-description: Master intent classifier and autonomous orchestrator for DEV GOD-MODE. Automatically analyzes user requests, selects the optimal engineering skills and subagents, and executes to completion under the Fable 5.1 Protocol. Triggered via /god or when asking for full autonomous execution.
+description: "Routes a request to the right god-mode skills and subagents and runs it end to end under the Fable 5.1 Protocol. Use when the user types /god or asks for 'full autonomous mode' or 'handle this end to end'. Not for ordinary single-skill requests; use that skill directly."
 ---
 
 # DEV GOD-MODE Router (El Orquestador Maestro Inteligente — Fable 5.1 Tier)
@@ -23,14 +23,13 @@ Antes de ejecutar cualquier ruta, leé [`references/protocol.md`](references/pro
 
 > [!IMPORTANT]
 > **REGLA CRÍTICA PARA EL AGENTE**: 
-> Cada vez que se active `/god`, **DEBES EMPEZAR TU RESPUESTA MOSTRANDO EXPLÍCITAMENTE AL USUARIO EL DIAGNÓSTICO Y LA RUTA ELEGIDA** antes de realizar herramientas complejas o en silencio:
+> Cada vez que se active `/god`, **DEBES EMPEZAR TU RESPUESTA CON UNA LÍNEA QUE MUESTRE LA RUTA Y LAS SKILLS ELEGIDAS** antes de realizar herramientas complejas o en silencio:
 > 
 > ```markdown
-> ⚡ **[GOD Router Activado - Fable 5.1]**
-> - **Diagnóstico**: [Explicación breve del problema planteado]
-> - **Ruta & Skill Seleccionada**: [e.g. Pre-Launch Security Audit / System Mapping / Research / Debugging / Full-Build]
-> - **Estrategia**: [Qué vamos a hacer y por qué es la mejor opción]
+> ⚡ **GOD** · Ruta: [ruta elegida] · Skills: [skills que se activan] · [qué se va a hacer, en una frase]
 > ```
+>
+> Una sola línea: el diagnóstico largo va solo si el usuario lo pide.
 
 ---
 

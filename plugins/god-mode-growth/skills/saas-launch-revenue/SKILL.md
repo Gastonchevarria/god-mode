@@ -1,6 +1,6 @@
 ---
 name: saas-launch-revenue
-description: Implements SaaS go-to-market revenue systems, pricing checkout flows, Stripe billing webhooks, dunning management, trial-to-paid conversion, and churn prevention mechanisms.
+description: "Implements SaaS billing: Stripe or Mercado Pago checkout, customer portal, idempotent webhooks, usage quotas, dunning and trial-to-paid. Use when the user says 'set up Stripe billing,' 'handle payment webhooks,' or 'retry failed payments.' Not for choosing price points (use pricing)."
 ---
 
 # SaaS Launch & Revenue Engine

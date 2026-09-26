@@ -1,6 +1,6 @@
 ---
 name: plan-ceo-review
-description: Evaluates product strategy, market opportunity, monetization leverage, unit economics, and ruthless scope prioritization from an executive CEO/Founder perspective. Use before approving implementation plans or architectural roadmaps.
+description: "Reviews a drafted plan, PRD or roadmap as a founder-CEO: KPI impact, 80/20 scope cuts, pricing tier, moat, build vs buy; verdict approve, reduce or reject. Use when asked for a \"CEO review\", \"cut this scope\", \"how does this make money?\" or \"build or buy?\". Raw idea: office-hours."
 ---
 
 # Plan CEO Review

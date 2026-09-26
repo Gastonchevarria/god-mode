@@ -1,6 +1,6 @@
 ---
 name: directory-submissions
-description: When the user wants to submit their product to startup, SaaS, AI, agent, MCP, no-code, or review directories for backlinks, domain rating, and discovery. Also use when the user mentions "directory submissions," "submit to directories," "backlinks from directories," "list my product," "submit to Product Hunt," "BetaList," "TAAFT," "Futurepedia," "G2 listing," "Capterra listing," "AlternativeTo," "SaaSHub," "AI directories," "MCP registry," "agent directory," "dofollow backlinks," "launch directories," or "directory tracker." Use this whenever someone is planning the directory layer of a product launch or an ongoing backlink campaign. For the broader launch moment, see launch. For programmatic SEO pages that should live behind these backlinks, see programmatic-seo. For AI citation optimization, see ai-seo.
+description: "Plans directory submissions for backlinks across startup, SaaS, AI, MCP and review sites: readiness, tiers, positioning, tracker. Use when the user says 'submit to directories', 'directory backlinks', 'list us on G2' or 'MCP registry'. Not for the whole launch (use launch)."
 metadata:
   version: 2.0.0
 ---
@@ -132,37 +132,6 @@ Per submission:
 
 ---
 
-## Product Hunt Deep Dive (The Anchor Event)
-
-Product Hunt is the single highest-leverage submission but also the most easily wasted. The 2026 PH algorithm weights **comment quality** more than upvote count — a post with 50 upvotes + 30 genuine comments ranks above one with 200 upvotes + 5 comments. **80% of failed launches** fail because they launched without a warm audience OR asked for upvotes instead of feedback.
-
-### 3-week prep timeline
-
-- **Day -21 to -14:** Warm up hunter account. Upvote + thoughtfully comment on 3 launches/day. Follow 100+ active makers. Build history so your account looks real to the algorithm.
-- **Day -14:** Create "Upcoming" page on PH. Drive traffic to it to collect "notify on launch" subscribers.
-- **Day -10:** (Optional) book a hunter. Don't pay cash — trade a feature, shoutout, or intro. A known hunter adds ~15% to day-one momentum but isn't required.
-- **Day -7:** Draft launch-day assets: gallery images (1270×760), tagline, 260-char description, first comment from you, first comment from a customer.
-- **Day -3:** Email list warm-up. "We're launching Tuesday. Here's what to expect. Reply if you want a heads up."
-- **Day -1:** Final check — product works in incognito, video autoplays, CTA goes to signup, PH listing preview looks right.
-
-### Launch day execution
-
-- **Launch at 12:01 AM Pacific Time.** Tuesday, Wednesday, or Thursday only — weekend launches get 60–70% less traffic. The 12:01 AM PT start maximizes your 24-hour window.
-- **First 2 hours are everything.** Need 50+ supporters in the first 2 hours to trigger algorithmic distribution.
-- **Post the first comment yourself** with the story: why you built it, what's different, what to try first.
-- **Reply to every comment** in under 30 minutes. PH measures maker responsiveness.
-- **Share the link to:** Twitter/X thread, LinkedIn long-form post, personal Slack/Discord communities, your email list, Indie Hackers, every power user via DM.
-- **Never ask for upvotes.** Ask for **feedback**. "Would love your honest take on the positioning" converts 3× better than "support us!" and doesn't trigger the algorithm's anti-manipulation filters.
-- **Don't message strangers.** The community flags this and moderators will hide your post.
-
-### Post-launch
-
-- Write a launch recap blog post with numbers + lessons. Honest, not bragging. Publish on day 2.
-- Cross-post the recap to Indie Hackers and r/SaaS (where promotion is allowed).
-- Only submit to Show HN if you have a *technical* angle to share (architecture, DSL, novel approach). A generic "we launched a SaaS" post will get flagged to death.
-
----
-
 ## Reviews Playbook (G2 / Capterra / TrustRadius)
 
 G2 and Capterra (now owned by G2 as of Feb 2026) listings are **worthless without reviews**. 10 reviews is the magic threshold for Grid appearance. Run the 10-in-30 protocol during launch month.
@@ -235,72 +204,6 @@ Every integration = one landing page at `/integrations/[partner]`. Follows the Z
 
 ---
 
-## GEO (Generative Engine Optimization)
-
-In 2026, 30–50% of "research a tool" queries happen inside ChatGPT, Claude, Perplexity, or Google AI Overviews without ever touching a traditional search page. Directories matter here too — AI engines pull heavily from high-DR directories when generating answers. But the *destination pages* also need to be GEO-optimized.
-
-### Tactics that get pages cited
-
-1. **One H1 per page, sequential heading hierarchy.** 2.8× higher citation rate. 87% of cited pages use a single H1.
-2. **Dense, factual content with citable stats.** AI engines prefer specific numbers ("3× faster than X") over vague claims.
-3. **FAQ schema on every landing page.** AI engines heavily weight `FAQPage` JSON-LD for answer extraction.
-4. **Comparison tables.** Extractable, structured — exactly what an AI answer needs.
-5. **Explicit "what it is" paragraph in the first 100 words.**
-6. **Get cited on Reddit and Hacker News.** Claude and Perplexity index these heavily. Genuine mentions on r/SaaS and HN count as training fuel.
-7. **Publish original research.** "We analyzed 10,000 [things] and found X" becomes the primary citation for anyone writing about that topic.
-8. **Claim Crunchbase, LinkedIn company page, and Wikidata entries.** All three feed AI training corpora.
-9. **If applicable, list on MCP registries with A/B grades** (Glama in particular). LLMs pull from these when answering MCP questions.
-
-### Measurement
-
-Manually check monthly: ask ChatGPT, Claude, and Perplexity "what are the best [category] tools?" and log where the product appears. Free GEO tracking tools (GeoTracker, llmrefs) automate this.
-
----
-
-## Community & Ongoing Distribution
-
-Directories are one-shot. Community is ongoing. Both feed the same funnel.
-
-### Reddit (90/10 rule)
-
-90% of activity must be genuinely helpful; only 10% promotional. Violating this gets shadowbanned.
-
-**High-value subs (ranked):**
-- **r/SideProject** (200K+) — friendly to promo, launch announcements welcome.
-- **r/SaaS** (300K+) — "Share Your SaaS" threads are explicit promo windows.
-- **r/startups** (1.7M) — Feedback Friday thread.
-- **r/Entrepreneur** (3.5M) — weekly promo thread.
-- **r/nocode**, **r/IndieHackers**, **r/alphaandbetausers** — friendly.
-- **r/webdev**, **r/artificial**, **r/LocalLLaMA** — strict, technical only.
-
-**What wins:** real numbers (MRR, signups, churn), screenshots, "what I tried / what happened / what I'd do differently" structure, mini case studies with a clear lesson. **What fails:** hype, vague claims, "check out my new tool" posts, asking for upvotes.
-
-### LinkedIn (B2B primary channel)
-
-80% of B2B social leads come from LinkedIn. Cadence: **3–5 posts/week** — fewer loses momentum, more causes fatigue.
-
-Content types ranked by 2026 engagement:
-1. Personal stories with business lessons (1.5–2× avg engagement)
-2. Original data / research (1.3–1.5×)
-3. Contrarian industry takes (1.2–1.5×)
-4. Document carousels with 8–12 slides (1.3–1.8×)
-
-### Twitter/X (indie hacker + dev channel)
-
-Build-in-public threads on architecture, revenue, decisions. Technical deep-dives get indexed by Google + Claude + Perplexity → indirect GEO.
-
-### Indie Hackers
-
-- Launch a build-in-public thread on PH launch day.
-- Post weekly updates: revenue, ships, lessons. Zero-revenue posts work if the lesson is honest.
-- Comment 10× more than you post to build karma before your own links.
-
-### Dev.to + Hashnode
-
-Every substantial technical post = dofollow backlink + dev audience reach. Cross-post with canonical URL back to main blog.
-
----
-
 ## KPIs & Tracking
 
 Track weekly. If a number isn't moving, investigate — don't just submit more directories.
@@ -366,6 +269,14 @@ When the user asks for a directory plan, return:
 9. **Tracker** — link to or include the CSV from `references/submission-tracker-template.csv`
 
 Keep the plan actionable. Every item should be something the user can do today.
+
+---
+
+## References
+
+- `references/product-hunt-playbook.md` — read before planning the Tier 1 Product Hunt launch or writing the PH 3-week prep timeline (output item 6).
+- `references/geo-for-destination-pages.md` — read when making destination pages citable by AI engines or measuring AI citations.
+- `references/community-distribution.md` — read when planning ongoing Reddit, LinkedIn, X, Indie Hackers or Dev.to distribution alongside the directory batches.
 
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: sms
-description: When the user wants to plan, build, or optimize SMS or MMS marketing — including welcome flows, abandoned cart texts, post-purchase, win-back, promotional sends, or transactional/auth SMS. Also use when the user mentions "SMS marketing," "text message campaigns," "SMS sequence," "SMS automation," "abandoned cart text," "post-purchase SMS," "Klaviyo SMS," "Postscript," "Attentive," "Twilio," "A2P 10DLC," "TCPA," "SMS compliance," "short code," "toll-free SMS," "MMS campaign," "should I do SMS," or "SMS vs email." For email sequences, see emails. For SMS copy framing, see copywriting. For opt-in popups that capture phone numbers, see popups.
+description: "Plans and optimizes SMS and MMS marketing: welcome, abandoned cart, post-purchase and win-back flows, plus TCPA and A2P 10DLC compliance. Use when the user says 'SMS marketing,' 'abandoned cart text,' 'Klaviyo SMS,' or 'SMS compliance.' Not for email sequences (use emails)."
 metadata:
   version: 1.0.0
 ---

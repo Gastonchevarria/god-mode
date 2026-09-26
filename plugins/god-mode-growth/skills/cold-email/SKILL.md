@@ -1,6 +1,6 @@
 ---
 name: cold-email
-description: Write B2B cold emails and follow-up sequences that get replies. Use when the user wants to write cold outreach emails, prospecting emails, cold email campaigns, sales development emails, or SDR emails. Also use when the user mentions "cold outreach," "prospecting email," "outbound email," "email to leads," "reach out to prospects," "sales email," "follow-up email sequence," "nobody's replying to my emails," or "how do I write a cold email." Covers subject lines, opening lines, body copy, CTAs, personalization, and multi-touch follow-up sequences. For warm/lifecycle email sequences, see emails. For sales collateral beyond emails, see sales-enablement.
+description: "Writes B2B cold emails and follow-up sequences that get replies: subject lines, openers, personalization, one clear ask. Use when the user says 'write a cold email', 'prospecting email', 'outbound sequence' or 'nobody's replying'. Not for lifecycle emails (use emails)."
 metadata:
   version: 2.0.0
 ---

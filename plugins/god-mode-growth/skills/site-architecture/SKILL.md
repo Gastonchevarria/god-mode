@@ -1,6 +1,6 @@
 ---
 name: site-architecture
-description: When the user wants to plan, map, or restructure their website's page hierarchy, navigation, URL structure, or internal linking. Also use when the user mentions "sitemap," "site map," "visual sitemap," "site structure," "page hierarchy," "information architecture," "IA," "navigation design," "URL structure," "breadcrumbs," "internal linking strategy," "website planning," "what pages do I need," "how should I organize my site," or "site navigation." Use this whenever someone is planning what pages a website should have and how they connect. NOT for XML sitemaps (that's technical SEO — see seo-audit). For SEO audits, see seo-audit. For structured data, see schema.
+description: "Plans a website's page hierarchy, navigation, URL structure and internal linking, with a visual Mermaid sitemap. Use when the user says 'site structure,' 'information architecture,' 'what pages do I need,' or 'how should I organize my site.' Not for XML sitemaps (use seo-audit)."
 metadata:
   version: 2.0.0
 ---

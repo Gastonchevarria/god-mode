@@ -1,6 +1,6 @@
 ---
 name: content-strategy
-description: When the user wants to plan a content strategy, decide what content to create, or figure out what topics to cover. Also use when the user mentions "content strategy," "what should I write about," "content ideas," "blog strategy," "topic clusters," "content planning," "editorial calendar," "content marketing," "content roadmap," "what content should I create," "blog topics," "content pillars," or "I don't know what to write." Use this whenever someone needs help deciding what content to produce, not just writing it. For writing individual pieces, see copywriting. For SEO-specific audits, see seo-audit. For social media content specifically, see social.
+description: "Plans what content to create: searchable vs shareable, pillars and topic clusters, keywords by buyer stage, prioritized topics. Use when the user says 'what should I write about', 'content strategy', 'topic clusters' or 'blog topics'. Not for writing the pieces (use copywriting)."
 metadata:
   version: 2.0.0
 ---

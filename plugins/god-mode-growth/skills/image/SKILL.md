@@ -1,6 +1,6 @@
 ---
 name: image
-description: "When the user wants to create, generate, edit, or optimize images for marketing — blog heroes, social graphics, product mockups, profile banners, listing visuals, or brand assets. Also use when the user mentions 'AI image generation,' 'generate an image,' 'create a graphic,' 'product mockup,' 'hero image,' 'social media graphic,' 'banner image,' 'cover photo,' 'profile banner,' 'listing screenshot,' 'Flux,' 'Flux Kontext,' 'Midjourney,' 'DALL-E,' 'GPT Image,' 'ChatGPT Images,' 'Ideogram,' 'Gemini image,' 'Nano Banana,' 'Recraft,' 'Stable Diffusion,' 'Canva,' 'Figma,' 'image optimization,' 'compress images,' 'WebP,' or 'OG image.' Use this for general-purpose marketing image creation and optimization. For paid ad image creative and platform-specific ad specs, see ad-creative. For video production, see video."
+description: "Creates and optimizes marketing images with AI models and design tools: blog heroes, social graphics, mockups, OG images, WebP compression. Use when the user says 'generate an image', 'hero image', 'product mockup' or 'compress images'. Not for paid ad creative (use ad-creative)."
 metadata:
   version: 2.0.1
 ---
@@ -332,7 +332,6 @@ Generate OG images programmatically for pages with dynamic content (blog posts, 
 ## Related Skills
 
 - **ad-creative**: For paid ad image creative, platform-specific ad specs, and scaled ad production
-- **video**: For AI video production and programmatic video
 - **social**: For what to post and content strategy
 - **cro**: For image placement and conversion optimization on landing pages
 - **seo-audit**: For image SEO (alt text, file names, lazy loading)

@@ -1,6 +1,6 @@
 ---
 name: thermo-nuclear-review
-description: Comprehensive security and correctness audit of a branch's changes. Use for thermo nuclear, thermonuclear, or deep review requests, or branch/PR diff audits focused on bugs, breaking changes, security issues, devex regressions, and feature-gate leaks.
+description: "Strict audit of a branch diff for bugs, breaking changes, security, devex regressions and feature-gate leaks; usually launched by thermos. Use when the user says 'thermonuclear review' or 'will this PR break anything'. For maintainability use thermo-nuclear-code-quality-review."
 ---
 
 # Thermo Nuclear Review

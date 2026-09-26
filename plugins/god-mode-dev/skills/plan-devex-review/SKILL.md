@@ -1,6 +1,6 @@
 ---
 name: plan-devex-review
-description: Evaluates developer experience, API ergonomics, SDK/CLI usability, configuration simplicity, setup friction, and documentation clarity. Use when building APIs, developer tools, libraries, or internal frameworks.
+description: "Reviews an API, SDK, CLI or library from the consuming developer's side: time to first success, typing, actionable errors, copy-paste quickstart. Use when asked for a \"DevEx review\", \"is this API easy to use?\", \"improve these error messages\" or \"review the SDK ergonomics\"."
 ---
 
 # Plan DevEx Review (Developer Experience & Ergonomics)

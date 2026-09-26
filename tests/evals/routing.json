@@ -1,0 +1,167 @@
+{
+  "description": "Routing eval: each request with the skill(s) that should handle it. Run with scripts/eval_routing.py.",
+  "cases": [
+    {
+      "plugin": "god-mode-core",
+      "query": "Revisá a fondo los cambios de mi rama antes de mergear: bugs, seguridad y calidad del código.",
+      "expected": [
+        "thermos",
+        "thermo-nuclear-review"
+      ]
+    },
+    {
+      "plugin": "god-mode-core",
+      "query": "Mi proyecto en TypeScript está lleno de `as any` y wrappers inútiles que generó la IA. Limpialo.",
+      "expected": "anti-slop"
+    },
+    {
+      "plugin": "god-mode-core",
+      "query": "Before we launch next week, audit the app for leaked secrets, injection risks and missing auth checks.",
+      "expected": "security"
+    },
+    {
+      "plugin": "god-mode-core",
+      "query": "Dibujame un diagrama de arquitectura del sistema: API, cola de mensajes, workers y base de datos.",
+      "expected": "archify"
+    },
+    {
+      "plugin": "god-mode-core",
+      "query": "The test suite started failing after the last merge and I can't figure out why.",
+      "expected": "debugging-and-error-recovery"
+    },
+    {
+      "plugin": "god-mode-core",
+      "query": "Quiero escribir primero los tests y después la implementación de este parser de CSV.",
+      "expected": "test-driven-development"
+    },
+    {
+      "plugin": "god-mode-core",
+      "query": "Tengo 40 features en el roadmap del MVP y solo 3 semanas. Ayudame a recortar.",
+      "expected": "mvp-scope-killer"
+    },
+    {
+      "plugin": "god-mode-core",
+      "query": "This endpoint takes 4 seconds to respond. Profile it and make it faster.",
+      "expected": "performance-optimization"
+    },
+    {
+      "plugin": "god-mode-core",
+      "query": "Instalame esta skill: https://github.com/owner/repo/tree/main/skills/foo",
+      "expected": "skill-installer"
+    },
+    {
+      "plugin": "god-mode-core",
+      "query": "Before I write any code, help me write a spec for the new billing feature.",
+      "expected": "spec-driven-development"
+    },
+    {
+      "plugin": "god-mode-dev",
+      "query": "Diseñá el esquema de base de datos y la cola de trabajos para procesar webhooks de pagos con reintentos.",
+      "expected": "backend-architect"
+    },
+    {
+      "plugin": "god-mode-dev",
+      "query": "Set up a GitHub Actions pipeline that runs the tests and deploys on merge to main.",
+      "expected": "ci-cd-and-automation"
+    },
+    {
+      "plugin": "god-mode-dev",
+      "query": "Armame un servidor MCP que exponga nuestra API de clientes como herramientas para agentes.",
+      "expected": "agent-mcp-builder"
+    },
+    {
+      "plugin": "god-mode-dev",
+      "query": "We need a RAG pipeline over our support docs that answers with citations.",
+      "expected": [
+        "rag-implementation",
+        "ai-product-architect"
+      ]
+    },
+    {
+      "plugin": "god-mode-dev",
+      "query": "Creá una API en FastAPI con Pydantic v2, inyección de dependencias y tareas en background.",
+      "expected": "fastapi-pro"
+    },
+    {
+      "plugin": "god-mode-dev",
+      "query": "Migrate our Next.js pages router app to the app router with server components.",
+      "expected": "nextjs-app-router"
+    },
+    {
+      "plugin": "god-mode-dev",
+      "query": "Our LLM feature hallucinates. Set up an eval dataset and regression tests for it.",
+      "expected": "ai-product-eval-ops"
+    },
+    {
+      "plugin": "god-mode-dev",
+      "query": "Agregá logs estructurados, métricas y tracing a este servicio.",
+      "expected": "observability-and-instrumentation"
+    },
+    {
+      "plugin": "god-mode-dev",
+      "query": "Quiero deprecar la v1 de la API y migrar a los clientes a la v2 sin romper nada.",
+      "expected": "deprecation-and-migration"
+    },
+    {
+      "plugin": "god-mode-dev",
+      "query": "Split this big feature into small ordered tasks I can ship one by one.",
+      "expected": [
+        "planning-and-task-breakdown",
+        "incremental-implementation"
+      ]
+    },
+    {
+      "plugin": "god-mode-growth",
+      "query": "¿Cuánto debería cobrar por mi SaaS? Tengo tres planes y no sé cómo armar los precios.",
+      "expected": [
+        "pricing",
+        "saas-business-model"
+      ]
+    },
+    {
+      "plugin": "god-mode-growth",
+      "query": "My landing page gets plenty of traffic but almost nobody signs up.",
+      "expected": "cro"
+    },
+    {
+      "plugin": "god-mode-growth",
+      "query": "Escribime una secuencia de emails de bienvenida para usuarios nuevos.",
+      "expected": "emails"
+    },
+    {
+      "plugin": "god-mode-growth",
+      "query": "Write a cold outreach email to CTOs of fintech startups.",
+      "expected": "cold-email"
+    },
+    {
+      "plugin": "god-mode-growth",
+      "query": "Hacé una auditoría SEO técnica de mi sitio.",
+      "expected": "seo-audit"
+    },
+    {
+      "plugin": "god-mode-growth",
+      "query": "How do I get my product cited in ChatGPT and Perplexity answers?",
+      "expected": "ai-seo"
+    },
+    {
+      "plugin": "god-mode-growth",
+      "query": "Quiero lanzar en Product Hunt el mes que viene. Armame la estrategia de lanzamiento.",
+      "expected": "launch"
+    },
+    {
+      "plugin": "god-mode-growth",
+      "query": "Users cancel after the first month. Build a cancel flow with save offers.",
+      "expected": "churn-prevention"
+    },
+    {
+      "plugin": "god-mode-growth",
+      "query": "Create 20 variations of Google Ads headlines for our product.",
+      "expected": "ad-creative"
+    },
+    {
+      "plugin": "god-mode-growth",
+      "query": "Configurá el tracking de eventos de GA4 para nuestro funnel de registro.",
+      "expected": "analytics"
+    }
+  ]
+}
