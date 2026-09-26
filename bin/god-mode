@@ -24,8 +24,11 @@ GEMINI_SKILLS = GEMINI_DIR / "config" / "skills"
 GEMINI_RULES = GEMINI_DIR / "config" / "rules" / "dev_god_mode.md"
 CACHE_REPO = HOME / ".cache" / "god-mode-repo"
 STATE_FILE = CLAUDE_DIR / ".god-mode-state.json"
+LOCAL_BIN = HOME / ".local" / "bin" / "god-mode"
+# Older installers also copied the CLI here; an outdated copy earlier on PATH could still run.
+LEGACY_BIN = Path(os.environ.get("GOD_MODE_LEGACY_BIN", "/usr/local/bin/god-mode"))
 
-GITHUB_REPO = "https://github.com/Gastonchevarria/god-mode.git"
+GITHUB_REPO = os.environ.get("GOD_MODE_REPO_URL", "https://github.com/Gastonchevarria/god-mode.git")
 
 BLOCK_START = "<!-- god-mode:start (bloque gestionado por god-mode; se reemplaza en cada update) -->"
 BLOCK_END = "<!-- god-mode:end -->"
@@ -44,6 +47,24 @@ NC = "\033[0m"
 def fail(msg, code=1):
     print(f"{RED}❌ {msg}{NC}", file=sys.stderr)
     sys.exit(code)
+
+
+def run_git(args, cwd=None, capture=False):
+    try:
+        return subprocess.run(["git", *args], cwd=cwd, capture_output=capture, text=True)
+    except FileNotFoundError:
+        fail("git no está instalado o no está en el PATH.")
+
+
+def atomic_write(path, text):
+    """Write text to path (following a symlink to its target) without ever leaving a half-written file."""
+    target = path.resolve() if path.is_symlink() else path
+    target.parent.mkdir(parents=True, exist_ok=True)
+    tmp = target.with_name(f".{target.name}.god-mode-tmp-{os.getpid()}")
+    tmp.write_text(text, encoding="utf-8")
+    if target.exists():
+        shutil.copymode(target, tmp)
+    os.replace(tmp, target)
 
 
 def load_state():
@@ -85,11 +106,25 @@ def ensure_source_dir():
         return repo
     print(f"{YELLOW}📥 Descargando god-mode en {CACHE_REPO}...{NC}")
     CACHE_REPO.parent.mkdir(parents=True, exist_ok=True)
-    res = subprocess.run(["git", "clone", "--depth", "1", "--", GITHUB_REPO, str(CACHE_REPO)])
+    res = run_git(["clone", "--depth", "1", "--", GITHUB_REPO, str(CACHE_REPO)])
     if res.returncode != 0 or not is_repo(CACHE_REPO):
         fail("No se pudo descargar el repositorio de god-mode. Revisá tu conexión y que git esté instalado.")
-    save_state(source_dir=str(CACHE_REPO))
+    remember_source(CACHE_REPO)
     return CACHE_REPO
+
+
+def remember_source(repo):
+    """Record repo as the active source and as a root whose links god-mode owns."""
+    repo = str(Path(os.path.abspath(repo)))
+    roots = load_state().get("managed_roots", [])
+    if repo not in roots:
+        roots.append(repo)
+    save_state(source_dir=repo, managed_roots=roots)
+
+
+def managed_roots(repo):
+    roots = {Path(r) for r in load_state().get("managed_roots", [])}
+    return roots | {Path(os.path.abspath(repo)), Path(os.path.abspath(CACHE_REPO))}
 
 
 def discover_skills(repo):
@@ -151,7 +186,7 @@ def apply_pack(pack_name):
     repo = ensure_source_dir()
     selected, missing = pack_skills(repo, pack_name)
     targets = load_state().get("targets") or detect_targets()
-    roots = {Path(os.path.abspath(repo)), Path(os.path.abspath(CACHE_REPO))}
+    roots = managed_roots(repo)
 
     print(f"\n{PURPLE}{BOLD}⚡ Aplicando pack '{pack_name.upper()}' ({len(selected)} skills)...{NC}")
     if missing:
@@ -186,70 +221,119 @@ def apply_pack(pack_name):
 
 
 def backup_path(path):
-    stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-    return path.with_name(f"{path.name}.bak-{stamp}")
+    stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S-%f")
+    candidate = path.with_name(f"{path.name}.bak-{stamp}")
+    n = 1
+    while candidate.exists() or candidate.is_symlink():
+        candidate = path.with_name(f"{path.name}.bak-{stamp}-{n}")
+        n += 1
+    return candidate
+
+
+def backup(path):
+    bak = backup_path(path)
+    shutil.copy2(path, bak)
+    return bak
+
+
+def legacy_protocols(repo):
+    """Every CLAUDE.md the pre-1.0 installer could have written, newest first."""
+    return [f.read_text(encoding="utf-8").replace("\r\n", "\n").strip()
+            for f in sorted((repo / "config" / "legacy").glob("*.md"), reverse=True)]
 
 
 def sync_claude_md(repo):
     src = repo / "config" / "CLAUDE.md"
     if not src.exists():
         fail(f"No existe {src}")
-    block = f"{BLOCK_START}\n{src.read_text(encoding='utf-8').strip()}\n{BLOCK_END}\n"
-    CLAUDE_MD.parent.mkdir(parents=True, exist_ok=True)
+    block = f"{BLOCK_START}\n{src.read_text(encoding='utf-8').strip()}\n{BLOCK_END}"
 
-    if not CLAUDE_MD.exists():
-        CLAUDE_MD.write_text(block, encoding="utf-8")
+    if not CLAUDE_MD.exists() and not CLAUDE_MD.is_symlink():
+        atomic_write(CLAUDE_MD, block + "\n")
         print(f"  {GREEN}✓ Creado {CLAUDE_MD}{NC}")
         return
+    try:
+        current = CLAUDE_MD.read_text(encoding="utf-8")
+    except FileNotFoundError:
+        fail(f"{CLAUDE_MD} es un enlace simbólico roto. Corregilo y volvé a correr.")
+    except UnicodeDecodeError:
+        fail(f"{CLAUDE_MD} no está en UTF-8. Convertilo a UTF-8 y volvé a correr; no se modificó nada.")
 
-    current = CLAUDE_MD.read_text(encoding="utf-8")
-    has_start, has_end = BLOCK_START in current, BLOCK_END in current
-    if has_start and has_end:
+    starts, ends = current.count(BLOCK_START), current.count(BLOCK_END)
+    if starts > 1 or ends > 1:
+        fail(f"{CLAUDE_MD} tiene más de un bloque de god-mode. Dejá uno solo y volvé a correr; no se modificó nada.")
+    if starts == 1 and ends == 1:
         start = current.index(BLOCK_START)
         end = current.index(BLOCK_END) + len(BLOCK_END)
         if end < start:
             fail(f"Los marcadores de god-mode en {CLAUDE_MD} están desordenados. Corregilos a mano.")
-        updated = current[:start] + block.rstrip("\n") + current[end:]
+        updated = current[:start] + block + current[end:]
         if updated == current:
             print(f"  {BLUE}ℹ {CLAUDE_MD} ya tiene la última versión del protocolo{NC}")
             return
-        CLAUDE_MD.write_text(updated, encoding="utf-8")
+        atomic_write(CLAUDE_MD, updated)
         print(f"  {GREEN}✓ Protocolo actualizado en {CLAUDE_MD}{NC}")
         return
-    if has_start or has_end:
+    if starts or ends:
         fail(f"{CLAUDE_MD} tiene solo uno de los marcadores de god-mode. Corregilo a mano y volvé a correr.")
 
-    legacy = LEGACY_HEADER.search(current)
+    normalized = current.replace("\r\n", "\n")
+    for old in legacy_protocols(repo):
+        if old and old in normalized:
+            bak = backup(CLAUDE_MD)
+            atomic_write(CLAUDE_MD, normalized.replace(old, block, 1))
+            print(f"  {GREEN}✓ Protocolo anterior reemplazado en {CLAUDE_MD}; tus reglas propias se conservaron{NC}")
+            print(f"  {YELLOW}  Copia de la versión anterior: {bak}{NC}")
+            return
+
+    legacy = LEGACY_HEADER.search(normalized)
+    bak = backup(CLAUDE_MD)
+    atomic_write(CLAUDE_MD, current.rstrip() + "\n\n" + block + "\n")
+    print(f"  {GREEN}✓ Protocolo agregado al final de {CLAUDE_MD}{NC}  (copia previa: {bak})")
     if legacy:
-        bak = backup_path(CLAUDE_MD)
-        shutil.copy2(CLAUDE_MD, bak)
-        kept = current[:legacy.start()].rstrip()
-        CLAUDE_MD.write_text((kept + "\n\n" if kept else "") + block, encoding="utf-8")
-        print(f"  {GREEN}✓ Protocolo anterior reemplazado en {CLAUDE_MD}{NC}")
-        print(f"  {YELLOW}  Copia de la versión anterior: {bak}{NC}")
-        return
-
-    CLAUDE_MD.write_text(current.rstrip() + "\n\n" + block, encoding="utf-8")
-    print(f"  {GREEN}✓ Protocolo agregado al final de {CLAUDE_MD}{NC}")
+        line = normalized[:legacy.start()].count("\n") + 1
+        print(f"{YELLOW}{BOLD}⚠️  {CLAUDE_MD} todavía tiene una copia modificada del protocolo anterior (línea {line}).{NC}")
+        print(f"{YELLOW}   No la borré para no perder cambios tuyos, pero sigue activa y contradice al protocolo nuevo")
+        print(f"   (por ejemplo, instalar skills sin pedir confirmación). Borrá a mano la sección que empieza en la línea {line}.{NC}")
 
 
-def install_file(src, dest, label):
+def install_file(src, dest, label, keep_backup=True):
     dest.parent.mkdir(parents=True, exist_ok=True)
     if dest.exists() and dest.read_bytes() == src.read_bytes():
         return False
-    if dest.exists():
-        bak = backup_path(dest)
-        shutil.copy2(dest, bak)
+    if dest.exists() and keep_backup:
+        bak = backup(dest)
         print(f"  {YELLOW}  {label}: copia de la versión anterior en {bak}{NC}")
     shutil.copy2(src, dest)
     return True
 
 
+def install_cli(repo):
+    cli = repo / "bin" / "god-mode"
+    if not cli.exists():
+        return
+    if install_file(cli, LOCAL_BIN, "CLI", keep_backup=False):
+        print(f"  {GREEN}✓ CLI actualizado en {LOCAL_BIN}{NC}")
+    LOCAL_BIN.chmod(0o755)
+    if LEGACY_BIN.exists() and LEGACY_BIN.read_bytes() != cli.read_bytes():
+        if os.access(LEGACY_BIN, os.W_OK):
+            shutil.copy2(cli, LEGACY_BIN)
+            print(f"  {GREEN}✓ También se actualizó la copia vieja en {LEGACY_BIN}{NC}")
+        else:
+            print(f"{YELLOW}⚠️  Hay una versión vieja del CLI en {LEGACY_BIN} que no puedo actualizar.")
+            print(f"   Borrala con: sudo rm {LEGACY_BIN}{NC}")
+    found = shutil.which("god-mode")
+    if found and Path(found).resolve() != LOCAL_BIN.resolve():
+        print(f"{YELLOW}⚠️  En tu PATH, 'god-mode' apunta a {found} y no a {LOCAL_BIN}. Poné ~/.local/bin primero en el PATH.{NC}")
+
+
 def cmd_setup(targets):
     repo = ensure_source_dir()
-    save_state(source_dir=str(repo), targets=targets)
+    remember_source(repo)
+    save_state(targets=targets)
     print(f"\n{BOLD}🧠 Configurando protocolo, agentes e instalador de skills...{NC}")
 
+    install_cli(repo)
     sync_claude_md(repo)
 
     installer = repo / "scripts" / "install-skill.py"
@@ -273,17 +357,25 @@ def cmd_update():
     repo = ensure_source_dir()
     if not (repo / ".git").exists():
         fail(f"{repo} no es un repositorio git; no se puede actualizar. Reinstalá con install.sh.")
-    on_branch = subprocess.run(["git", "symbolic-ref", "-q", "HEAD"], cwd=repo, capture_output=True).returncode == 0
-    if not on_branch:
-        tag = subprocess.run(["git", "describe", "--tags", "--exact-match"], cwd=repo,
-                             capture_output=True, text=True).stdout.strip() or "un commit fijo"
+    ref = run_git(["symbolic-ref", "-q", "HEAD"], cwd=repo, capture=True)
+    if ref.returncode == 1:
+        tag = run_git(["describe", "--tags", "--exact-match"], cwd=repo, capture=True).stdout.strip() or "un commit fijo"
         print(f"{YELLOW}ℹ La instalación está fijada en {tag}; no se actualiza sola.{NC}")
         print("  Para cambiar de versión: curl -fsSL https://raw.githubusercontent.com/Gastonchevarria/god-mode/main/install.sh"
               " | bash -s -- --version=vX.Y.Z")
         return
-    res = subprocess.run(["git", "pull", "--ff-only"], cwd=repo)
+    if ref.returncode != 0:
+        fail(f"git no pudo leer {repo} (código {ref.returncode}): {ref.stderr.strip()}")
+    res = run_git(["pull", "--ff-only"], cwd=repo)
     if res.returncode != 0:
         fail(f"git pull falló en {repo} (código {res.returncode}). No se aplicó ningún cambio.")
+    new_cli = repo / "bin" / "god-mode"
+    if new_cli.exists():
+        os.execv(sys.executable, [sys.executable, str(new_cli), "_finish-update"])
+    finish_update()
+
+
+def finish_update():
     state = load_state()
     cmd_setup(state.get("targets") or detect_targets())
     apply_pack(state.get("active_pack", "core"))
@@ -360,6 +452,8 @@ def main():
         apply_pack(args[1].lower())
     elif cmd == "update":
         cmd_update()
+    elif cmd == "_finish-update":
+        finish_update()
     elif cmd == "cursor":
         cmd_cursor(args[1] if len(args) > 1 else ".")
     elif cmd == "setup":
@@ -371,7 +465,7 @@ def main():
                 src = Path(a.split("=", 1)[1]).expanduser().resolve()
                 if not is_repo(src):
                     fail(f"{src} no es un repositorio de god-mode (falta config/packs.json).")
-                save_state(source_dir=str(src))
+                remember_source(src)
         cmd_setup(targets)
     elif cmd == "add":
         if len(args) < 2:
@@ -380,6 +474,9 @@ def main():
         if not installer.exists():
             fail(f"No existe {installer}. Corré `god-mode setup` primero.")
         sys.exit(subprocess.run([sys.executable, str(installer), *args[1:]]).returncode)
+    elif cmd == "packs":
+        repo = ensure_source_dir()
+        print(" ".join(load_packs(repo)))
     else:
         fail(f"Comando desconocido: {cmd}. Ejecutá 'god-mode --help'")
 

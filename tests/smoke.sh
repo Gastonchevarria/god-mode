@@ -111,6 +111,72 @@ cli cursor "$WORK/proyecto" >/dev/null
 check "guarda copia del .cursorrules existente" bash -c "grep -q 'reglas viejas' '$WORK/proyecto/'.cursorrules.bak-*"
 check "copia el .cursorrules nuevo" grep -q "Autonomy Limits" "$WORK/proyecto/.cursorrules"
 
+echo "== CLAUDE.md: reglas propias después del bloque viejo"
+fresh_home legacy-after
+mkdir -p "$HOME/.claude"
+{ git -C "$REPO" show 4f3d08f:config/CLAUDE.md; printf '\n## MIS REGLAS PERSONALES\n- Nunca tocar producción.\n'; } >"$HOME/.claude/CLAUDE.md"
+run_install --pack=core
+check "conserva las reglas escritas debajo del protocolo viejo" grep -q "MIS REGLAS PERSONALES" "$HOME/.claude/CLAUDE.md"
+check "y reemplaza el protocolo viejo" bash -c "! grep -q 'sin pedir confirmación' '$HOME/.claude/CLAUDE.md'"
+
+echo "== CLAUDE.md: protocolo viejo modificado a mano"
+fresh_home legacy-edited
+mkdir -p "$HOME/.claude"
+git -C "$REPO" show 4f3d08f:config/CLAUDE.md | sed 's/Súper Mega Agente/Agente editado/' >"$HOME/.claude/CLAUDE.md"
+echo "- Regla mía al final" >>"$HOME/.claude/CLAUDE.md"
+run_install --pack=core
+check "no borra un protocolo viejo que el usuario editó" grep -q "Agente editado" "$HOME/.claude/CLAUDE.md"
+check "conserva el resto del texto del usuario" grep -q "Regla mía al final" "$HOME/.claude/CLAUDE.md"
+check "agrega el bloque nuevo" grep -q "god-mode:start" "$HOME/.claude/CLAUDE.md"
+check "y avisa que quedó una copia vieja activa" grep -q "copia modificada del protocolo anterior" "$WORK/install.log"
+
+echo "== CLAUDE.md: dos bloques gestionados"
+fresh_home two-blocks
+run_install --pack=core
+cat "$HOME/.claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md" >"$WORK/doble.md" && cp "$WORK/doble.md" "$HOME/.claude/CLAUDE.md"
+check "falla sin tocar el archivo" bash -c "! python3 '$HOME/.local/bin/god-mode' setup >/dev/null 2>&1 && cmp -s '$WORK/doble.md' '$HOME/.claude/CLAUDE.md'"
+
+echo "== Copias de respaldo en el mismo segundo"
+mkdir -p "$WORK/proyecto2"
+echo "original" >"$WORK/proyecto2/.cursorrules"
+cli cursor "$WORK/proyecto2" >/dev/null
+echo "edicion 2" >"$WORK/proyecto2/.cursorrules"
+cli cursor "$WORK/proyecto2" >/dev/null
+check "dos respaldos seguidos no se pisan" test "$(find "$WORK/proyecto2" -name '.cursorrules.bak-*' | wc -l | tr -d ' ')" = 2
+check "y el original sigue guardado" bash -c "grep -lq '^original$' '$WORK/proyecto2/'.cursorrules.bak-*"
+
+echo "== curl | bash desde una carpeta que parece un repo"
+fresh_home piped
+mkdir -p "$WORK/falso/config" && echo '{"packs": {"core": []}}' >"$WORK/falso/config/packs.json"
+[ -d "$WORK/remote.git" ] || git clone -q --bare "$REPO" "$WORK/remote.git"
+(cd "$WORK/falso" && GOD_MODE_REPO_URL="file://$WORK/remote.git" bash -s -- --pack=core <"$REPO/install.sh" >"$WORK/piped.log" 2>&1)
+check "no usa la carpeta actual como repo" bash -c "! grep -q '\"source_dir\": \"$WORK/falso\"' '$HOME/.claude/.god-mode-state.json'"
+check "descarga su propia copia" test -f "$HOME/.cache/god-mode-repo/config/packs.json"
+
+echo "== Cambio de origen sin enlaces huérfanos"
+fresh_home switch
+run_install --pack=core
+git -C "$REPO" worktree add -q --detach "$WORK/otro" HEAD 2>/dev/null
+cli setup --source="$WORK/otro" >/dev/null
+cli pack core >/dev/null
+check "no quedan enlaces al origen anterior" test "$(find "$HOME/.claude/skills" -maxdepth 1 -type l -lname "$REPO/*" | wc -l | tr -d ' ')" = 0
+check "y el pack apunta al origen nuevo" test "$(find "$HOME/.claude/skills" -maxdepth 1 -type l -lname "$WORK/otro/*" | wc -l | tr -d ' ')" = "$(pack_size core)"
+git -C "$REPO" worktree remove --force "$WORK/otro" 2>/dev/null
+
+echo "== El CLI se actualiza a sí mismo"
+fresh_home selfupdate
+run_install --pack=core
+echo "# versión vieja" >>"$HOME/.local/bin/god-mode"
+mkdir -p "$WORK/usrbin" && cp "$HOME/.local/bin/god-mode" "$WORK/usrbin/god-mode"
+GOD_MODE_LEGACY_BIN="$WORK/usrbin/god-mode" python3 "$REPO/bin/god-mode" setup >/dev/null
+check "setup reemplaza el CLI instalado por el del repo" cmp -s "$REPO/bin/god-mode" "$HOME/.local/bin/god-mode"
+check "y también la copia vieja fuera de ~/.local/bin" cmp -s "$REPO/bin/god-mode" "$WORK/usrbin/god-mode"
+
+echo "== Pack inválido antes de tocar nada"
+fresh_home badpack
+check "install.sh con un pack inexistente falla" bash -c "! (cd '$WORK' && bash '$REPO/install.sh' --pack=cor >/dev/null 2>&1)"
+check "y no creó CLAUDE.md" test ! -e "$HOME/.claude/CLAUDE.md"
+
 echo
 echo "Resultado: $PASS ok, $FAIL fallas"
 [ "$FAIL" -eq 0 ]

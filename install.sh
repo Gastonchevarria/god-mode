@@ -60,8 +60,21 @@ echo -e "${CYAN}⚡ The Autonomous DEV GOD-MODE Suite for Claude Code, Cursor, A
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 
 
+# Replace the cache only after the new clone succeeded, and never leave it half-deleted.
+swap_cache() {
+    rm -rf "$CACHE_REPO.old"
+    if [ -e "$CACHE_REPO" ]; then mv "$CACHE_REPO" "$CACHE_REPO.old"; fi
+    mv "$CACHE_REPO.tmp" "$CACHE_REPO"
+    rm -rf "$CACHE_REPO.old"
+}
+
 CURRENT_STEP="descarga del repositorio"
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]:-$0}" )" 2>/dev/null && pwd || echo "" )"
+# With `curl ... | bash` there is no script file: BASH_SOURCE is empty and $0 is "bash", so never
+# fall back to the current directory, which may be an unrelated or outdated checkout.
+SCRIPT_DIR=""
+if [ -n "${BASH_SOURCE[0]:-}" ] && [ -f "${BASH_SOURCE[0]}" ]; then
+    SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+fi
 CACHE_REPO="$HOME/.cache/god-mode-repo"
 
 if [ -z "$SCRIPT_DIR" ] || [ ! -f "$SCRIPT_DIR/config/packs.json" ]; then
@@ -70,8 +83,7 @@ if [ -z "$SCRIPT_DIR" ] || [ ! -f "$SCRIPT_DIR/config/packs.json" ]; then
         rm -rf "$CACHE_REPO.tmp"
         mkdir -p "$(dirname "$CACHE_REPO")"
         git clone --depth 1 --branch "$VERSION" -- "$REPO_URL" "$CACHE_REPO.tmp"
-        rm -rf "$CACHE_REPO"
-        mv "$CACHE_REPO.tmp" "$CACHE_REPO"
+        swap_cache
     elif [ -d "$CACHE_REPO/.git" ] && git -C "$CACHE_REPO" symbolic-ref -q HEAD >/dev/null; then
         echo -e "${YELLOW}📥 Actualizando la copia local de god-mode...${NC}"
         git -C "$CACHE_REPO" pull --ff-only
@@ -80,12 +92,17 @@ if [ -z "$SCRIPT_DIR" ] || [ ! -f "$SCRIPT_DIR/config/packs.json" ]; then
         rm -rf "$CACHE_REPO.tmp"
         mkdir -p "$(dirname "$CACHE_REPO")"
         git clone --depth 1 -- "$REPO_URL" "$CACHE_REPO.tmp"
-        rm -rf "$CACHE_REPO"
-        mv "$CACHE_REPO.tmp" "$CACHE_REPO"
+        swap_cache
     fi
     SCRIPT_DIR="$CACHE_REPO"
 elif [ -n "$VERSION" ]; then
     echo -e "${YELLOW}⚠️  --version se ignora al instalar desde una copia local ($SCRIPT_DIR).${NC}"
+fi
+
+if ! python3 -c 'import json,sys; sys.exit(0 if sys.argv[2] in json.load(open(sys.argv[1]))["packs"] else 1)' \
+        "$SCRIPT_DIR/config/packs.json" "$PACK"; then
+    echo -e "${RED}❌ Pack desconocido: $PACK. Opciones: $(python3 -c 'import json,sys; print(", ".join(json.load(open(sys.argv[1]))["packs"]))' "$SCRIPT_DIR/config/packs.json")${NC}" >&2
+    exit 1
 fi
 
 CURRENT_STEP="detección de entornos"
