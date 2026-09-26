@@ -273,6 +273,14 @@ def cmd_update():
     repo = ensure_source_dir()
     if not (repo / ".git").exists():
         fail(f"{repo} no es un repositorio git; no se puede actualizar. Reinstalá con install.sh.")
+    on_branch = subprocess.run(["git", "symbolic-ref", "-q", "HEAD"], cwd=repo, capture_output=True).returncode == 0
+    if not on_branch:
+        tag = subprocess.run(["git", "describe", "--tags", "--exact-match"], cwd=repo,
+                             capture_output=True, text=True).stdout.strip() or "un commit fijo"
+        print(f"{YELLOW}ℹ La instalación está fijada en {tag}; no se actualiza sola.{NC}")
+        print("  Para cambiar de versión: curl -fsSL https://raw.githubusercontent.com/Gastonchevarria/god-mode/main/install.sh"
+              " | bash -s -- --version=vX.Y.Z")
+        return
     res = subprocess.run(["git", "pull", "--ff-only"], cwd=repo)
     if res.returncode != 0:
         fail(f"git pull falló en {repo} (código {res.returncode}). No se aplicó ningún cambio.")

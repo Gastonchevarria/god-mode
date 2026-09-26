@@ -76,15 +76,31 @@ check "se guarda una copia del CLAUDE.md anterior" bash -c "ls '$HOME/.claude/'C
 echo "== Errores visibles"
 fresh_home update
 run_install --pack=core
-git -C "$REPO" worktree add -q "$WORK/wt" HEAD 2>/dev/null
+SMOKE_BRANCH="smoke-test-$$"
+git -C "$REPO" worktree add -q -b "$SMOKE_BRANCH" "$WORK/wt" HEAD 2>/dev/null
 git -C "$WORK/wt" remote set-url origin "$WORK/remoto-inexistente" 2>/dev/null || git -C "$WORK/wt" remote add origin "$WORK/remoto-inexistente"
 git -C "$WORK/wt" branch -q --set-upstream-to=origin/main 2>/dev/null || true
 cli setup --source="$WORK/wt" >/dev/null
 cli update >"$WORK/update.log" 2>&1
 check "god-mode update con git roto sale con código distinto de 0" test $? -ne 0
 check "y no anuncia una actualización exitosa" bash -c "! grep -q 'god-mode actualizado' '$WORK/update.log'"
+git -C "$WORK/wt" checkout -q --detach
+cli update >"$WORK/update-pinned.log" 2>&1
+check "una instalación fijada en un commit avisa y no falla" test $? -eq 0
+check "y explica cómo cambiar de versión" grep -q "fijada" "$WORK/update-pinned.log"
 git -C "$REPO" worktree remove --force "$WORK/wt" 2>/dev/null
+git -C "$REPO" branch -q -D "$SMOKE_BRANCH" 2>/dev/null
 check "pack inexistente sale con código distinto de 0" bash -c "! python3 '$HOME/.local/bin/god-mode' pack no-existe >/dev/null 2>&1"
+
+echo "== Instalación de una versión fija (como con curl | bash)"
+fresh_home pinned
+git clone -q --bare "$REPO" "$WORK/remote.git"
+mkdir -p "$WORK/solo" && cp "$REPO/install.sh" "$WORK/solo/install.sh"
+git -C "$WORK/remote.git" tag v9.9.9 HEAD
+(cd "$WORK/solo" && GOD_MODE_REPO_URL="file://$WORK/remote.git" bash install.sh --version=v9.9.9 --pack=core >"$WORK/pinned.log" 2>&1)
+check "install.sh --version clona el tag pedido" test "$(git -C "$HOME/.cache/god-mode-repo" describe --tags --exact-match 2>/dev/null)" = v9.9.9
+check "y activa el pack" test "$(count_links "$HOME/.claude/skills")" = "$(pack_size core)"
+check "una versión con formato inválido se rechaza" bash -c "! bash '$WORK/solo/install.sh' --version=latest >/dev/null 2>&1"
 
 echo "== god-mode cursor"
 fresh_home cursor

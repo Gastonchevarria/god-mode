@@ -19,21 +19,29 @@ trap 'echo -e "\n${RED}❌ La instalación falló durante: ${CURRENT_STEP}. No s
 
 PACK="core"
 WITH_CURSOR=false
-REPO_URL="https://github.com/Gastonchevarria/god-mode.git"
+VERSION=""
+REPO_URL="${GOD_MODE_REPO_URL:-https://github.com/Gastonchevarria/god-mode.git}"
 
 for arg in "$@"; do
     case $arg in
         --pack=*) PACK="${arg#*=}" ;;
         --cursor) WITH_CURSOR=true ;;
+        --version=*) VERSION="${arg#*=}" ;;
         --help|-h)
-            echo "Uso: ./install.sh [--pack=core|dev|growth|all] [--cursor]"
+            echo "Uso: ./install.sh [--pack=core|dev|growth|all] [--cursor] [--version=vX.Y.Z]"
             echo "  --pack=<nombre>  Pack de skills a activar (por defecto: core). 'god-mode status' muestra cuántas trae cada uno."
             echo "  --cursor         Además copia .cursorrules y AGENTS.md a la carpeta actual (guarda copia de los existentes)."
+            echo "  --version=vX.Y.Z Instala una versión publicada en lugar de la rama main."
             exit 0
             ;;
         *) echo -e "${RED}Opción desconocida: $arg (usá --help)${NC}" >&2; exit 1 ;;
     esac
 done
+
+if [ -n "$VERSION" ] && ! [[ "$VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    echo -e "${RED}❌ Versión inválida: $VERSION (formato esperado: v1.2.3)${NC}" >&2
+    exit 1
+fi
 
 command -v git >/dev/null 2>&1 || { echo -e "${RED}❌ Se necesita git instalado.${NC}" >&2; exit 1; }
 command -v python3 >/dev/null 2>&1 || { echo -e "${RED}❌ Se necesita python3 instalado.${NC}" >&2; exit 1; }
@@ -57,15 +65,27 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]:-$0}" )" 2>/dev/null && pwd || e
 CACHE_REPO="$HOME/.cache/god-mode-repo"
 
 if [ -z "$SCRIPT_DIR" ] || [ ! -f "$SCRIPT_DIR/config/packs.json" ]; then
-    if [ -d "$CACHE_REPO/.git" ]; then
+    if [ -n "$VERSION" ]; then
+        echo -e "${YELLOW}📥 Descargando god-mode $VERSION desde GitHub...${NC}"
+        rm -rf "$CACHE_REPO.tmp"
+        mkdir -p "$(dirname "$CACHE_REPO")"
+        git clone --depth 1 --branch "$VERSION" -- "$REPO_URL" "$CACHE_REPO.tmp"
+        rm -rf "$CACHE_REPO"
+        mv "$CACHE_REPO.tmp" "$CACHE_REPO"
+    elif [ -d "$CACHE_REPO/.git" ] && git -C "$CACHE_REPO" symbolic-ref -q HEAD >/dev/null; then
         echo -e "${YELLOW}📥 Actualizando la copia local de god-mode...${NC}"
         git -C "$CACHE_REPO" pull --ff-only
     else
         echo -e "${YELLOW}📥 Descargando god-mode desde GitHub...${NC}"
+        rm -rf "$CACHE_REPO.tmp"
         mkdir -p "$(dirname "$CACHE_REPO")"
-        git clone --depth 1 -- "$REPO_URL" "$CACHE_REPO"
+        git clone --depth 1 -- "$REPO_URL" "$CACHE_REPO.tmp"
+        rm -rf "$CACHE_REPO"
+        mv "$CACHE_REPO.tmp" "$CACHE_REPO"
     fi
     SCRIPT_DIR="$CACHE_REPO"
+elif [ -n "$VERSION" ]; then
+    echo -e "${YELLOW}⚠️  --version se ignora al instalar desde una copia local ($SCRIPT_DIR).${NC}"
 fi
 
 CURRENT_STEP="detección de entornos"

@@ -27,11 +27,11 @@ python3 ~/.claude/scripts/install-skill.py <GITHUB_URL> [--force --yes]
 **Ejemplos de URLs soportadas:**
 - Repositorio completo:
   ```bash
-  python3 ~/.claude/scripts/install-skill.py https://github.com/officialzeroxyz/zero-plugins
+  python3 ~/.claude/scripts/install-skill.py https://github.com/owner/repo
   ```
 - Subcarpeta específica de una skill:
   ```bash
-  python3 ~/.claude/scripts/install-skill.py https://github.com/officialzeroxyz/zero-plugins/tree/main/plugins/zero/skills/zero
+  python3 ~/.claude/scripts/install-skill.py https://github.com/owner/repo/tree/main/skills/mi-skill
   ```
 - Archivo `SKILL.md`:
   ```bash

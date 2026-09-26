@@ -83,7 +83,7 @@ Mostrá al usuario el origen exacto (owner/repo, rama y ruta) y esperá su confi
 python3 ~/.claude/scripts/install-skill.py "<GITHUB_URL_O_REPO>"
 ```
 *Ejemplos soportados:*
-- Repositorio completo: `python3 ~/.claude/scripts/install-skill.py "https://github.com/officialzeroxyz/zero-plugins"`
+- Repositorio completo: `python3 ~/.claude/scripts/install-skill.py "https://github.com/owner/repo"`
 - Subcarpeta o skill específica: `python3 ~/.claude/scripts/install-skill.py "https://github.com/Linked-API/linkedin-skills/tree/main/linkedin"`
 - Archivo SKILL.md directo: `python3 ~/.claude/scripts/install-skill.py "https://github.com/owner/repo/blob/main/skills/foo/SKILL.md"`
 - Reemplazar una skill ya instalada: `--force --yes`, solo después de que el usuario confirme que quiere sobrescribirla.
