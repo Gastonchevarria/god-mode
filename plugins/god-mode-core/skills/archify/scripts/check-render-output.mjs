@@ -832,5 +832,11 @@ function isPoint(point) {
 }
 
 function stripTags(value) {
-  return value.replace(/<[^>]*>/g, '');
+  let text = value;
+  let previous;
+  do {
+    previous = text;
+    text = text.replace(/<[^>]*>/g, '');
+  } while (text !== previous);
+  return text;
 }

@@ -280,6 +280,7 @@ We measure it. In the latest [routing eval](docs/evals/routing-2026-09-26.md) (3
    python3 scripts/validate.py
    python3 -m unittest discover -s tests
    bash tests/smoke.sh
+   npm ci --prefix plugins/god-mode-core/skills/archify && python3 scripts/test_archify.py
    ```
 5. Open a pull request.
 

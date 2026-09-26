@@ -6,13 +6,9 @@ import http from 'node:http';
 import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { BRAND_MARKS } from '../renderers/shared/generated-brand-marks.mjs';
 import { isPrivateBrandAddress, prepareDiagramBrandMarks } from '../renderers/shared/brand-marks.mjs';
-import {
-  THIRD_PARTY_NOTICE_DISCLOSURE_COUNT,
-  validateThirdPartyNotices,
-} from '../../scripts/third-party-notices-contract.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const skillRoot = path.resolve(here, '..');
@@ -26,7 +22,14 @@ const cases = {
   lifecycle: ['agent-run.lifecycle.json', 'states'],
 };
 
-test('third-party notices cover every recorded individual mark license', () => {
+test('third-party notices cover every recorded individual mark license', async (t) => {
+  // The notices contract lives in the archify repository's scripts/, which is not vendored with the skill.
+  const contractPath = path.resolve(skillRoot, '..', 'scripts', 'third-party-notices-contract.mjs');
+  if (!fs.existsSync(contractPath)) {
+    t.skip('third-party-notices-contract.mjs ships only with the archify repository');
+    return;
+  }
+  const { THIRD_PARTY_NOTICE_DISCLOSURE_COUNT, validateThirdPartyNotices } = await import(pathToFileURL(contractPath));
   const notices = fs.readFileSync(path.join(skillRoot, 'THIRD_PARTY_NOTICES.md'), 'utf8');
   const licensedMarks = BRAND_MARKS.filter((mark) => mark.provenance?.license);
 
@@ -462,10 +465,16 @@ test('rendering many pinned brands limits concurrent remote capture work', async
         active -= 1;
         response.end(icon);
       } else {
-        const suffix = request.url.replace(/^\/site-/, '');
-        response.writeHead(200, { 'content-type': 'text/html; charset=utf-8' });
+        const match = /^\/site-(\d+)$/.exec(request.url);
         active -= 1;
-        response.end(`<!doctype html><title>Site ${suffix}</title><link rel="icon" type="image/png" href="/mark-${suffix}.png">`);
+        if (!match) {
+          response.writeHead(404);
+          response.end();
+          return;
+        }
+        const siteId = Number(match[1]);
+        response.writeHead(200, { 'content-type': 'text/html; charset=utf-8' });
+        response.end(`<!doctype html><title>Site ${siteId}</title><link rel="icon" type="image/png" href="/mark-${siteId}.png">`);
       }
     }, 40);
   });
