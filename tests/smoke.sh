@@ -77,9 +77,10 @@ check "se guarda una copia del CLAUDE.md anterior" bash -c "ls '$HOME/.claude/'C
 echo "== Errores visibles"
 fresh_home update
 run_install --pack=core
-SMOKE_BRANCH="smoke-test-$$"
-git -C "$REPO" worktree add -q -b "$SMOKE_BRANCH" "$WORK/wt" HEAD 2>/dev/null
-git -C "$WORK/wt" remote set-url origin "$WORK/remoto-inexistente" 2>/dev/null || git -C "$WORK/wt" remote add origin "$WORK/remoto-inexistente"
+# A clone, not a worktree: worktrees share .git/config, so set-url would rewrite the developer's own origin.
+git clone -q "$REPO" "$WORK/wt"
+git -C "$WORK/wt" checkout -q -B smoke-test
+git -C "$WORK/wt" remote set-url origin "$WORK/remoto-inexistente"
 git -C "$WORK/wt" branch -q --set-upstream-to=origin/main 2>/dev/null || true
 cli setup --source="$WORK/wt" >/dev/null
 cli update >"$WORK/update.log" 2>&1
@@ -89,8 +90,6 @@ git -C "$WORK/wt" checkout -q --detach
 cli update >"$WORK/update-pinned.log" 2>&1
 check "una instalación fijada en un commit avisa y no falla" test $? -eq 0
 check "y explica cómo cambiar de versión" grep -q "fijada" "$WORK/update-pinned.log"
-git -C "$REPO" worktree remove --force "$WORK/wt" 2>/dev/null
-git -C "$REPO" branch -q -D "$SMOKE_BRANCH" 2>/dev/null
 check "pack inexistente sale con código distinto de 0" bash -c "! python3 '$HOME/.local/bin/god-mode' pack no-existe >/dev/null 2>&1"
 
 echo "== Instalación de una versión fija (como con curl | bash)"
