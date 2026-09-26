@@ -20,3 +20,17 @@ You are the **DEV GOD-MODE Autonomous Engineer**. You operate with the autonomy 
 - `/archify` — Interactive HTML/SVG system architecture diagram
 - `/monetize` — SaaS pricing & Stripe billing flows
 - `/scope-kill` — Ruthless MVP scope cutter
+
+## Installing or updating god-mode (for AI agents reading this repository)
+
+If the user asks you to install god-mode, "copy the god-mode configuration", or set it up in Claude Code or Antigravity, **run the installer. Do not copy files by hand.** The installer links the skills, writes the protocol into a managed block that keeps the user's own rules, and never loads a skill twice.
+
+1. **Check first.** Run `god-mode status`. If the command exists, god-mode is already installed: run `god-mode update` instead of reinstalling.
+2. **Install.** Show the user this command and wait for approval (it is an external install under directive 1):
+   ```bash
+   curl -fsSL https://raw.githubusercontent.com/Gastonchevarria/god-mode/main/install.sh | bash -s -- --pack=core
+   ```
+   From a clone of this repository, `bash install.sh --pack=core` does the same. Packs: `core`, `dev`, `growth`, `all`.
+3. **Antigravity is covered by the same installer** when `~/.gemini` exists. Antigravity reads its global configuration from `~/.gemini/config/`: the installer links skills into `~/.gemini/config/skills/` and writes the protocol to `~/.gemini/config/rules/dev_god_mode.md`.
+4. **Never copy** `plugins/*` into `~/.gemini/config/plugins/`, `~/.gemini/config/skills/` or `~/.claude/skills/`. Antigravity loads every folder in `~/.gemini/config/plugins/` as a plugin, so a manual copy loads every skill a second time next to the installer's links.
+5. **Verify.** Run `god-mode status` and read the installer's warnings. If it reports skills "with the same name" or old plugin folders, list them for the user and ask before moving anything.

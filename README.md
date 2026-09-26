@@ -245,7 +245,7 @@ You have both the installer and the Claude Code plugins. Keep one: uninstall the
 
 <br/>
 
-It never overwrites skills it didn't create, so older copies with the same names (for example from a pre-1.0 install) take priority. Move those folders out of `~/.claude/skills`, run the installer again and check with `god-mode status`.
+It never overwrites folders it didn't create, so a real copy with the same name as a god-mode skill (for example from a pre-1.0 install) takes priority, and the installer lists each one. Move those folders out of `~/.claude/skills` or `~/.gemini/config/skills`, run `god-mode pack <pack>` and check with `god-mode status`.
 
 </details>
 
@@ -254,7 +254,16 @@ It never overwrites skills it didn't create, so older copies with the same names
 
 <br/>
 
-Run the installer once more. Skills moved from `skills/` to `plugins/`, and older `god-mode update` commands can't follow that change on their own. Your own rules in `CLAUDE.md` are kept, with a backup.
+Run the installer once more. It replaces the links the old installer created, keeps your own rules in `CLAUDE.md` (with a backup), and lists anything it won't touch on its own: real folders with a god-mode skill's name, and old plugin folders in `~/.gemini/config/plugins` that Antigravity would keep loading. Older `god-mode update` commands can't follow the move from `skills/` to `plugins/`, so use the installer for this one upgrade.
+
+</details>
+
+<details>
+<summary><b>Can I ask Antigravity (or another agent) to install it by reading this repo?</b></summary>
+
+<br/>
+
+Yes. [`AGENTS.md`](AGENTS.md) tells any agent that reads the repo to check `god-mode status`, run the installer after your approval, and never copy skills or plugins by hand, which would load every skill twice. Antigravity reads its global setup from `~/.gemini/config/`, which is exactly where the installer puts the skills and the protocol.
 
 </details>
 
