@@ -2,7 +2,9 @@
 
 All notable changes to god-mode are documented here. Versions follow [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [1.0.0] - 2026-09-26
+
+First release. Skills moved to a plugin marketplace (see README). If you installed with `install.sh` before this version, run it once more.
 
 ### Security
 - `scripts/install-skill.py` no longer runs git through a shell. A crafted URL could execute arbitrary commands.
@@ -14,6 +16,8 @@ All notable changes to god-mode are documented here. Versions follow [Semantic V
 - `god-mode update` reports git failures and exits non-zero instead of claiming success.
 - `install.sh` detects tools before creating their folders and no longer writes `.cursorrules` or `AGENTS.md` into the current folder unless `--cursor` is passed.
 - Existing `~/.claude/CLAUDE.md` files now receive protocol updates through a managed block. Older installs are migrated, keeping the user's own rules and a backup.
+- `god-mode update` now also updates the CLI itself, and an outdated copy in `/usr/local/bin` is updated or reported.
+- Backups never overwrite each other, and `curl | bash` no longer mistakes the current folder for the repository.
 
 ### Added
 - `install.sh --version=vX.Y.Z` installs a published release. Releases include `install.sh.sha256`.
