@@ -22,6 +22,9 @@ CLAUDE_MD = CLAUDE_DIR / "CLAUDE.md"
 GEMINI_DIR = HOME / ".gemini"
 GEMINI_SKILLS = GEMINI_DIR / "config" / "skills"
 GEMINI_RULES = GEMINI_DIR / "config" / "rules" / "dev_god_mode.md"
+# Installers before 1.0 copied skill packs here and linked each skill from it. Antigravity loads every
+# folder here as a plugin, so an old copy keeps loading next to the linked skills.
+LEGACY_GEMINI_PLUGINS = GEMINI_DIR / "config" / "plugins"
 CACHE_REPO = HOME / ".cache" / "god-mode-repo"
 STATE_FILE = CLAUDE_DIR / ".god-mode-state.json"
 LOCAL_BIN = HOME / ".local" / "bin" / "god-mode"
@@ -182,22 +185,61 @@ def _managed_link(link, roots):
     return any(target == r or r in target.parents for r in roots)
 
 
+def _legacy_link(link, known, roots):
+    """A link named after a god-mode skill that a pre-1.0 install left behind.
+
+    Those links point into ~/.gemini/config/plugins/<pack>/skills/, or chain through the other
+    skills folder (~/.claude/skills <-> ~/.gemini/config/skills). Links with other names are never touched.
+    """
+    if link.name not in known:
+        return False
+    first_hop = Path(os.readlink(link))
+    if not first_hop.is_absolute():
+        first_hop = link.parent / first_hop
+    first_hop = Path(os.path.abspath(first_hop))
+    chains_to_other_folder = first_hop.parent in (CLAUDE_SKILLS, GEMINI_SKILLS) and first_hop.parent != link.parent
+    if chains_to_other_folder and (first_hop.is_symlink() or not os.path.lexists(first_hop)):
+        return True
+    resolved = Path(os.path.realpath(link))
+    legacy_roots = {Path(os.path.realpath(r)) for r in (*roots, LEGACY_GEMINI_PLUGINS)}
+    return any(resolved == r or r in resolved.parents for r in legacy_roots)
+
+
+def legacy_gemini_plugins(known):
+    """Plugin folders in ~/.gemini/config/plugins that repeat god-mode skills, with how many they repeat."""
+    if not LEGACY_GEMINI_PLUGINS.is_dir():
+        return []
+    found = []
+    for plugin in sorted(p for p in LEGACY_GEMINI_PLUGINS.iterdir() if p.is_dir()):
+        repeated = {s.parent.name for s in plugin.glob("skills/*/SKILL.md")} & known
+        if repeated:
+            found.append((plugin, len(repeated)))
+    return found
+
+
 def apply_pack(pack_name):
     repo = ensure_source_dir()
     selected, missing = pack_skills(repo, pack_name)
     targets = load_state().get("targets") or detect_targets()
     roots = managed_roots(repo)
+    known = set(discover_skills(repo))
 
     print(f"\n{PURPLE}{BOLD}⚡ Aplicando pack '{pack_name.upper()}' ({len(selected)} skills)...{NC}")
     if missing:
         print(f"{YELLOW}⚠️  El pack menciona skills que no existen en el repo: {', '.join(missing)}{NC}")
 
     conflicts = []
+    migrated = 0
     for skills_dir in target_dirs(targets):
         skills_dir.mkdir(parents=True, exist_ok=True)
         for item in skills_dir.iterdir():
-            if item.is_symlink() and _managed_link(item, roots):
+            if not item.is_symlink():
+                continue
+            if _managed_link(item, roots):
                 item.unlink()
+            elif _legacy_link(item, known, roots):
+                item.unlink()
+                migrated += 1
         for name, src in selected.items():
             dest = skills_dir / name
             if dest.is_symlink() or dest.exists():
@@ -208,13 +250,24 @@ def apply_pack(pack_name):
     save_state(active_pack=pack_name, skills_count=len(selected), targets=targets)
 
     print(f"{GREEN}✓ Pack '{pack_name}' activado.{NC}")
+    if migrated:
+        print(f"  {GREEN}✓ {migrated} enlaces de una instalación anterior a 1.0 reemplazados por los de esta versión{NC}")
     for skills_dir in target_dirs(targets):
         managed = sum(1 for i in skills_dir.iterdir() if i.is_symlink() and _managed_link(i, roots))
         print(f"  • {skills_dir}: {managed} skills de god-mode")
+        if managed < len(selected):
+            print(f"{YELLOW}⚠️  Solo {managed} de las {len(selected)} skills del pack quedaron activas en {skills_dir}.{NC}")
     if conflicts:
-        print(f"{YELLOW}⚠️  Se mantuvieron {len(conflicts)} skills propias con el mismo nombre:{NC}")
+        print(f"{YELLOW}⚠️  Se mantuvieron {len(conflicts)} skills propias con el mismo nombre que una de god-mode."
+              f" Tienen prioridad sobre la versión de god-mode:{NC}")
         for c in conflicts:
             print(f"     {c}")
+        print(f"   Si son copias de una instalación anterior, movelas a otra carpeta y corré"
+              f" `god-mode pack {pack_name}`.")
+    if "gemini" in targets:
+        for plugin, repeated in legacy_gemini_plugins(known):
+            print(f"{YELLOW}⚠️  Antigravity también carga {plugin}, que repite {repeated} de las skills de god-mode."
+                  f" Si es de una instalación anterior, movelo fuera de {LEGACY_GEMINI_PLUGINS}.{NC}")
     if pack_name != "all":
         print(f"{CYAN}💡 Pack parcial: solo {len(selected)} skills ocupan contexto.{NC}")
     print()

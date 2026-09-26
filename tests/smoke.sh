@@ -173,6 +173,29 @@ GOD_MODE_LEGACY_BIN="$WORK/usrbin/god-mode" python3 "$REPO/bin/god-mode" setup >
 check "setup reemplaza el CLI instalado por el del repo" cmp -s "$REPO/bin/god-mode" "$HOME/.local/bin/god-mode"
 check "y también la copia vieja fuera de ~/.local/bin" cmp -s "$REPO/bin/god-mode" "$WORK/usrbin/god-mode"
 
+echo "== Migración desde una instalación anterior a 1.0"
+fresh_home legacy
+LEGACY="$HOME/.gemini/config/plugins"
+mkdir -p "$LEGACY/agent-skills/skills/code-simplification" "$LEGACY/mis-plugins/skills/mi-skill" \
+    "$HOME/.claude/skills/god" "$HOME/.claude/skills/anti-slop" "$HOME/.gemini/config/skills"
+for d in "$LEGACY/agent-skills/skills/code-simplification" "$LEGACY/mis-plugins/skills/mi-skill" \
+    "$HOME/.claude/skills/god" "$HOME/.claude/skills/anti-slop"; do
+    printf '%s\n' '---' 'name: copia' '---' >"$d/SKILL.md"
+done
+ln -s "$LEGACY/agent-skills/skills/code-simplification" "$HOME/.claude/skills/code-simplification"
+ln -s "$HOME/.claude/skills/code-simplification" "$HOME/.gemini/config/skills/code-simplification"
+ln -s "$HOME/.claude/skills/anti-slop" "$HOME/.gemini/config/skills/anti-slop"
+run_install --pack=core
+NEW="$REPO/plugins/god-mode-core/skills"
+check "reemplaza el enlace viejo a ~/.gemini/config/plugins" test "$(readlink "$HOME/.claude/skills/code-simplification")" = "$NEW/code-simplification"
+check "reemplaza el enlace encadenado de Antigravity" test "$(readlink "$HOME/.gemini/config/skills/code-simplification")" = "$NEW/code-simplification"
+check "no toca una copia real con el mismo nombre" test -f "$HOME/.claude/skills/god/SKILL.md" -a ! -L "$HOME/.claude/skills/god"
+check "no toca un enlace de Antigravity a una skill propia de Claude Code" test "$(readlink "$HOME/.gemini/config/skills/anti-slop")" = "$HOME/.claude/skills/anti-slop"
+check "avisa que las copias con el mismo nombre tienen prioridad" grep -q "Tienen prioridad" "$WORK/install.log"
+check "avisa del plugin viejo que Antigravity sigue cargando" grep -q "plugins/agent-skills, que repite 1 de las skills" "$WORK/install.log"
+check "no avisa de plugins sin skills de god-mode" bash -c "! grep -q 'mis-plugins' '$WORK/install.log'"
+check "no mueve ni borra el plugin viejo" test -f "$LEGACY/agent-skills/skills/code-simplification/SKILL.md"
+
 echo "== Pack inválido antes de tocar nada"
 fresh_home badpack
 check "install.sh con un pack inexistente falla" bash -c "! (cd '$WORK' && bash '$REPO/install.sh' --pack=cor >/dev/null 2>&1)"
