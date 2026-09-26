@@ -1,0 +1,36 @@
+{
+  "_about": "archify is vendored as a skill (plugins/god-mode-core/skills/archify). Some of its tests check files of the upstream archify repository (READMEs, docs site, benchmarks, release manifests, .github) that are not shipped with the skill. scripts/test_archify.py runs every other test and fails if an entry below goes stale. 'needs' names the upstream path the test reads, relative to the archify repository root.",
+  "excluded_files": [
+    {"file": "test/checkout-line-endings.test.mjs", "needs": ".gitattributes"},
+    {"file": "test/clean-skill-staging.test.mjs", "needs": "scripts/stage-clean-skill.mjs"},
+    {"file": "test/community-proof-intake.test.mjs", "needs": ".github/ISSUE_TEMPLATE/"},
+    {"file": "test/cursor-onboarding.test.mjs", "needs": "README.md"},
+    {"file": "test/gallery.test.mjs", "needs": "scripts/build-gallery.mjs"},
+    {"file": "test/guide-page.test.mjs", "needs": "scripts/build-guide.mjs"},
+    {"file": "test/landing.test.mjs", "needs": "docs/index.html"},
+    {"file": "test/ordinary-model-floor.test.mjs", "needs": "benchmarks/ordinary-model-floor/"},
+    {"file": "test/preview-contract.test.mjs", "needs": "README.md"},
+    {"file": "test/proof-aperture.test.mjs", "needs": "docs/index.html"},
+    {"file": "test/readme-showcase.test.mjs", "needs": "scripts/build-readme-showcase.mjs"},
+    {"file": "test/real-repository-proof.test.mjs", "needs": "docs/cases/"},
+    {"file": "test/release-identity.test.mjs", "needs": "scripts/check-release-identity.mjs"},
+    {"file": "test/release-package-gates.test.mjs", "needs": "scripts/stage-clean-skill.mjs"},
+    {"file": "test/repository-language-metadata.test.mjs", "needs": ".gitattributes"},
+    {"file": "test/site-language-continuity.test.mjs", "needs": "scripts/site-copy.mjs"},
+    {"file": "test/stable-update-manifest.test.mjs", "needs": "scripts/check-stable-update-manifest.mjs"},
+    {"file": "test/start-page.test.mjs", "needs": "scripts/build-start.mjs"}
+  ],
+  "excluded_tests": [
+    {"file": "test/architecture-delta.test.mjs", "name": "checked-in Checkout compare artifact is reproducible from its authoritative inputs", "needs": "examples/checkout-platform-delta.html"},
+    {"file": "test/automatic-port-spread.test.mjs", "name": "skill and READMEs describe automatic port spread as bounded default behavior", "needs": "README.md"},
+    {"file": "test/cli.test.mjs", "name": "cli: inspect emits architecture layout json", "needs": "examples/archify-repo-grid.architecture.json"},
+    {"file": "test/cli.test.mjs", "name": "render rejects a mistyped option instead of writing a file named after it", "needs": "examples/archify-repo.architecture.json"},
+    {"file": "test/cli.test.mjs", "name": "render rejects an extra positional argument", "needs": "examples/archify-repo.architecture.json"},
+    {"file": "test/generated-artifact-xml.test.mjs", "name": "tracked browsable HTML embeds well-formed XML SVG", "needs": "examples/"},
+    {"file": "test/generated-artifact-xml.test.mjs", "name": "legacy example URLs redirect to the current canonical artifacts", "needs": "examples/"},
+    {"file": "test/reach-share-card.test.mjs", "name": "Skill, product docs, and READMEs keep the optional truthful boundary explicit", "needs": "README.md"},
+    {"file": "test/route-share-card.test.mjs", "name": "skill and READMEs describe the optional Export variant and show one real card without changing the hero", "needs": "README.md"},
+    {"file": "test/share-card-export.test.mjs", "name": "the skill and every README make the optional Share Card discoverable", "needs": "README.md"},
+    {"file": "test/skill-metadata.test.mjs", "name": "skill description is portable across 1024-character runtimes and remains searchable", "reason": "god-mode rewrites every skill description to 300 characters or fewer (scripts/validate.py), so the upstream description checks do not apply"}
+  ]
+}

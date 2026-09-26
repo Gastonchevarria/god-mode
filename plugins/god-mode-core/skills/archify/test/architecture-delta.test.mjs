@@ -318,7 +318,12 @@ test('compare CLI writes a deterministic three-state artifact and complete sidec
   assert.match(firstHtml, /window\.addEventListener\('beforeprint', overview\)/);
   assert.match(firstHtml, /aria-current', 'step'/);
   assert.match(firstHtml, /event\.key === 'Enter' \|\| event\.key === ' '/);
-  const deltaShell = firstHtml.replace(/<iframe\b[^>]*><\/iframe>/g, '');
+  let deltaShell = firstHtml;
+  let previousShell;
+  do {
+    previousShell = deltaShell;
+    deltaShell = deltaShell.replace(/<iframe\b[^>]*><\/iframe>/g, '');
+  } while (deltaShell !== previousShell);
   assert.doesNotMatch(deltaShell, /localStorage|sessionStorage|history\.(?:pushState|replaceState)/);
   assert.doesNotMatch(deltaShell, /setInterval\(/);
   assert.doesNotMatch(deltaShell, /\b(?:SAFE|LOW RISK|MERGEABLE|NO IMPACT|VERIFIED PR)\b/i);

@@ -50,3 +50,20 @@ jobs:
         run: python3 -m unittest discover -s tests -v
       - name: End-to-end install tests
         run: bash tests/smoke.sh
+
+  archify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: plugins/god-mode-core/skills/archify/package-lock.json
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install archify dev dependencies
+        run: npm ci --prefix plugins/god-mode-core/skills/archify
+      - name: Archify skill tests
+        run: python3 scripts/test_archify.py
