@@ -1,0 +1,14 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "grep -qs 'god-mode:start' \"$HOME/.claude/CLAUDE.md\" || cat \"${CLAUDE_PLUGIN_ROOT}/hooks/session-context.md\""
+          }
+        ]
+      }
+    ]
+  }
+}

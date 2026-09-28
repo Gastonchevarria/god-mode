@@ -42,7 +42,7 @@ Pick **one** way to install. Both give you the same skills.
 | | **A. Installer** (recommended) | **B. Claude Code plugins** |
 | :--- | :--- | :--- |
 | **Best for** | Using god-mode everywhere, with the protocol always on | Trying it in Claude Code with nothing global changed |
-| **Protocol** | Active in every session (managed block in `~/.claude/CLAUDE.md`, your own rules kept) | Loaded only when you run `/god` |
+| **Protocol** | Active in every session (managed block in `~/.claude/CLAUDE.md`, your own rules kept) | Active in every session (god-mode-core loads it when the session starts) |
 | **Antigravity** | ✅ Installed automatically if `~/.gemini` exists | ❌ |
 | **Cursor / Windsurf** | ✅ With `--cursor` or `god-mode cursor <project>` | ❌ |
 | **Updates** | `god-mode update` | `/plugin marketplace update god-mode` |
@@ -63,7 +63,7 @@ curl -fsSL https://raw.githubusercontent.com/Gastonchevarria/god-mode/main/insta
 ```
 
 > [!WARNING]
-> Don't use both at once. You would load every skill twice.
+> Don't use both at once. You would load every skill twice. `god-mode doctor` flags it.
 
 **Check that it worked:** open Claude Code in any project and type `/god`. The first line of the reply should start with `⚡ GOD · Ruta:`.
 
@@ -164,21 +164,28 @@ Switch packs anytime with `god-mode pack dev`.
 
 god-mode keeps sessions lean:
 
-- **`config/rules/token-optimization.md`**: global rule for brevity, context hygiene, tool-call discipline, output frugality, compaction triggers and skill loading. `install.sh` adds it to the managed block in `~/.claude/CLAUDE.md` and to Antigravity's rules.
+- **`config/rules/token-optimization.md`**: global rule for brevity, context hygiene, tool-call discipline, output frugality, compaction triggers and skill loading. `install.sh` adds it to the managed block in `~/.claude/CLAUDE.md` and to Antigravity's rules; the god-mode-core plugin loads it when the session starts.
 - **`auto-compact` skill** (god-mode-core): rates the session 🟢🟡🔴 from observable signals (tool calls, back-and-forth, re-read files, topic changes) and, with your OK, compacts it with a structured summary that keeps decisions and dead ends.
 - **CONTEXT-HEALTH route in `/god`**: triggered by "the session feels heavy", "I'm running out of tokens" or "compact"; it runs `auto-compact` together with `context-engineering`.
-- **`god-mode doctor`**: checks the installation and the recommended settings below, and prints the exact fix for anything missing. It changes nothing.
+- **`god-mode doctor`**: checks the installation and the recommended settings below, and prints the exact fix for anything missing. It changes nothing unless you add `--fix`, which writes the settings below into `~/.claude/settings.json` (backup first, every other key kept).
 
 ### Recommended settings
 
-```bash
-# ~/.zshrc
-export CLAUDE_CODE_SUBAGENT_MODEL="claude-sonnet-5"   # Claude Code runs subagents on Sonnet instead of the main model
-export AUTOHARNESS_REFLECT_EVERY_N=75                 # only if you use AutoHarness (default 50)
-export AUTOHARNESS_CONSOLIDATE_EVERY_N=300            # only if you use AutoHarness (default 250)
+`god-mode doctor --fix` writes them for you:
+
+```jsonc
+// ~/.claude/settings.json
+{
+  "outputStyle": "Concise",                          // built-in style: results first, no narration
+  "env": {
+    "CLAUDE_CODE_SUBAGENT_MODEL": "claude-sonnet-5", // subagents run on Sonnet instead of the main model
+    "AUTOHARNESS_REFLECT_EVERY_N": "75",             // only if you use AutoHarness (default 50)
+    "AUTOHARNESS_CONSOLIDATE_EVERY_N": "300"         // only if you use AutoHarness (default 250)
+  }
+}
 ```
 
-- **Output style**: choose **Concise** in Claude Code (`"outputStyle": "Concise"` in `~/.claude/settings.json`).
+Exporting the same variables in `~/.zshrc` works too. For a single project, put these keys in the project's `.claude/settings.json`, next to rules such as `"permissions": {"deny": ["Bash(git push:*)", "Read(./**/.env)"]}`.
 - **[AutoHarness](https://github.com/tigerless-labs/autoharness)** (optional, third-party, MIT): a Claude Code plugin that learns skills from your sessions. Each reflection runs a background session that uses tokens; the higher values above make it run less often.
 
   ```
@@ -207,7 +214,7 @@ The installer adds a small CLI to `~/.local/bin`:
 
 ```bash
 god-mode status                 # active pack, skill counts, subagents
-god-mode doctor                 # checks the install and the recommended settings (read-only)
+god-mode doctor [--fix]         # checks the install and the recommended settings; --fix writes the settings
 god-mode pack <core|dev|growth|all>
 god-mode update                 # pull from GitHub, re-apply protocol, subagents and pack
 god-mode cursor <project>       # copy .cursorrules and AGENTS.md into a project
@@ -265,7 +272,7 @@ No. The protocol lets it finish reversible work without interrupting you, but it
 
 <br/>
 
-You have both the installer and the Claude Code plugins. Keep one: uninstall the plugins with `/plugin uninstall god-mode-core@god-mode` (and `-dev`, `-growth`), or remove the uploaded plugins from your Claude app settings.
+You have both the installer and the Claude Code plugins (`god-mode doctor` reports it). Keep one: uninstall the plugins with `/plugin uninstall god-mode-core@god-mode` (and `-dev`, `-growth`), or remove the uploaded plugins from your Claude app settings.
 
 </details>
 

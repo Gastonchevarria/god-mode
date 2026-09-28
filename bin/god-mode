@@ -510,10 +510,75 @@ def _shell_rc_value(name):
     return None, None
 
 
-def _check_skills_dir(skills_dir, expected, label, results):
+def _managed_links(skills_dir):
     repo = source_dir()
     roots = managed_roots(repo) if repo else set()
-    links = [i for i in skills_dir.iterdir() if i.is_symlink() and _managed_link(i, roots)] if skills_dir.exists() else []
+    return [i for i in skills_dir.iterdir() if i.is_symlink() and _managed_link(i, roots)] if skills_dir.exists() else []
+
+
+def _read_settings(path):
+    """Claude Code user settings as a dict; None when the file exists but is not a JSON object."""
+    if not path.exists():
+        return {}
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    return data if isinstance(data, dict) else None
+
+
+def fix_claude_settings(path):
+    """Writes the recommended outputStyle and env into Claude Code's settings, keeping every other key."""
+    data = _read_settings(path)
+    if data is None or not isinstance(data.get("env", {}), dict):
+        fail(f"No toco {path}: no es un JSON válido con \"env\" como objeto. Corregilo a mano y volvé a correr.")
+    env = dict(data.get("env", {}))
+    changes = []
+    if data.get("outputStyle") != "Concise":
+        changes.append(f"outputStyle: {data.get('outputStyle') or '—'} → Concise")
+        data["outputStyle"] = "Concise"
+    for name, value in RECOMMENDED_ENV.items():
+        if env.get(name) != value:
+            changes.append(f"env.{name}: {env.get(name) or '—'} → {value}")
+            env[name] = value
+    if not changes:
+        print(f"{GREEN}✓ {path} ya tenía la configuración recomendada.{NC}")
+        return
+    data["env"] = env
+    bak = backup(path) if path.exists() else None
+    target = path.resolve()  # a settings.json symlinked from a dotfiles repo stays a symlink
+    target.parent.mkdir(parents=True, exist_ok=True)
+    tmp = target.with_name(f"{target.name}.tmp-god-mode")
+    tmp.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    if target.exists():
+        shutil.copymode(target, tmp)
+    os.replace(tmp, target)
+    print(f"{GREEN}✓ {path} actualizado{NC}" + (f"  (copia previa: {bak})" if bak else ""))
+    for change in changes:
+        print(f"  • {change}")
+    print(f"  {CYAN}Abrí una sesión nueva de Claude Code para que tome efecto.{NC}")
+
+
+def _claude_plugins():
+    """Enabled Claude Code plugin ids, or None when `claude` is missing or does not answer."""
+    if not shutil.which("claude"):
+        return None
+    try:
+        out = subprocess.run(["claude", "plugin", "list", "--json"], capture_output=True, text=True, timeout=60,
+                             check=False).stdout
+        return [p["id"] for p in json.loads(out) if p.get("enabled", True) and p.get("id")]
+    except (subprocess.TimeoutExpired, OSError, json.JSONDecodeError, TypeError, KeyError):
+        pass
+    try:
+        out = subprocess.run(["claude", "plugin", "list"], capture_output=True, text=True, timeout=60,
+                             check=False).stdout
+    except (subprocess.TimeoutExpired, OSError):
+        return None
+    return re.findall(r"^\s*>\s*(\S+@\S+)", out, re.MULTILINE)
+
+
+def _check_skills_dir(skills_dir, expected, label, results):
+    links = _managed_links(skills_dir)
     broken = [i.name for i in links if not i.exists()]
     ok = len(links) == len(expected) and not broken
     detail = f"{len(links)} enlazadas, se esperaban {len(expected)} del pack activo"
@@ -529,12 +594,16 @@ def _check_skills_dir(skills_dir, expected, label, results):
                     "god-mode update"))
 
 
-def cmd_doctor():
+def cmd_doctor(fix=False):
     results = []
     state = load_state()
     repo = source_dir()
     if not repo:
         fail("No encontré el repositorio de god-mode. Instalalo con install.sh.")
+    settings_path = CLAUDE_DIR / "settings.json"
+    if fix:
+        print(f"\n{PURPLE}{BOLD}⚡ god-mode doctor --fix{NC}")
+        fix_claude_settings(settings_path)
     targets = state.get("targets") or detect_targets()
     expected = pack_skills(repo, state.get("active_pack", "core"))[0]
 
@@ -561,43 +630,45 @@ def cmd_doctor():
                         "completo" if not missing else f"faltan: {', '.join(missing)}", "god-mode update"))
         _check_skills_dir(GEMINI_SKILLS, expected, "Antigravity", results)
 
+    settings = _read_settings(settings_path)
+    settings_env = (settings or {}).get("env")
+    settings_env = settings_env if isinstance(settings_env, dict) else {}
     for name, value in RECOMMENDED_ENV.items():
         current, where = os.environ.get(name), "entorno actual"
+        if current is None and name in settings_env:
+            current, where = str(settings_env[name]), str(settings_path)
         if current is None:
             current, rc = _shell_rc_value(name)
             where = str(rc) if rc else "no definida"
-        results.append((current == value, f"Variable {name}", f"{current or '—'} ({where})",
-                        f"echo 'export {name}=\"{value}\"' >> ~/.zshrc && source ~/.zshrc"))
+        results.append((current == value, f"Variable {name}", f"{current or '—'} ({where})", "god-mode doctor --fix"))
 
-    settings = CLAUDE_DIR / "settings.json"
-    style = None
-    try:
-        style = json.loads(settings.read_text(encoding="utf-8")).get("outputStyle")
-    except (OSError, json.JSONDecodeError, AttributeError):
-        pass
-    results.append(((style or "").lower() == "concise", "Claude Code: output style Concise", style or "sin definir",
-                    'elegí "Concise" en el selector de output style de Claude Code, o "outputStyle": "Concise" en ~/.claude/settings.json'))
+    style = (settings or {}).get("outputStyle")
+    results.append(((style or "").lower() == "concise", "Claude Code: output style Concise",
+                    style or ("settings.json inválido" if settings is None else "sin definir"), "god-mode doctor --fix"))
 
-    if shutil.which("claude"):
-        try:
-            out = subprocess.run(["claude", "plugin", "list"], capture_output=True, text=True, timeout=60,
-                                 check=False).stdout
-            has = "autoharness" in out.lower()
-            results.append((has, "Claude Code: plugin AutoHarness", "instalado" if has else "no instalado",
-                            "/plugin marketplace add tigerless-labs/autoharness y /plugin install autoharness@autoharness"))
-        except (subprocess.TimeoutExpired, OSError) as e:
-            results.append((False, "Claude Code: plugin AutoHarness", f"no se pudo consultar ({e})", "claude plugin list"))
+    plugins = _claude_plugins()
+    if plugins is None:
+        results.append((None, "Claude Code: plugins", "claude no está en el PATH o no respondió", ""))
     else:
-        results.append((None, "Claude Code: plugin AutoHarness", "claude no está en el PATH", ""))
+        own = sorted(p for p in plugins if p.endswith("@god-mode"))
+        links = len(_managed_links(CLAUDE_SKILLS))
+        if own:
+            dup = links > 0
+            detail = f"plugins {', '.join(own)}" + (f" y además {links} skills enlazadas por el CLI" if dup else "")
+            results.append((not dup, "Claude Code: god-mode cargado una sola vez", detail,
+                            f"quedate con una ruta: claude plugin uninstall {' '.join(own)}  (el CLI ya carga todo)"))
+        has = any("autoharness" in p.lower() for p in plugins)
+        results.append((has, "Claude Code: plugin AutoHarness", "instalado" if has else "no instalado",
+                        "/plugin marketplace add tigerless-labs/autoharness y /plugin install autoharness@autoharness"))
 
     print(f"\n{PURPLE}{BOLD}⚡ god-mode doctor{NC}\n")
     failed = 0
-    for ok, name, detail, fix in results:
+    for ok, name, detail, remedy in results:
         mark = f"{GREEN}✓{NC}" if ok else (f"{BLUE}–{NC}" if ok is None else f"{RED}✗{NC}")
         print(f"  {mark} {name}: {detail}")
         if ok is False:
             failed += 1
-            print(f"      → {fix}")
+            print(f"      → {remedy}")
     total = sum(1 for r in results if r[0] is not None)
     print(f"\n{total - failed}/{total} verificaciones en verde.\n")
     sys.exit(1 if failed else 0)
@@ -615,7 +686,8 @@ USAGE = f"""
   {CYAN}update{NC}                 Actualiza desde GitHub y reaplica protocolo, agentes y pack.
   {CYAN}cursor [ruta]{NC}          Copia .cursorrules y AGENTS.md a un proyecto (con copia de respaldo).
   {CYAN}add <github-url>{NC}       Instala una skill desde GitHub (pide confirmación).
-  {CYAN}doctor{NC}                 Verifica la instalación y la configuración recomendada (no cambia nada).
+  {CYAN}doctor [--fix]{NC}         Verifica la instalación; con --fix escribe outputStyle y env recomendados
+                         en ~/.claude/settings.json (con copia de respaldo).
   {CYAN}setup [--targets=claude,gemini] [--source=<repo>]{NC}
                          Instala protocolo, agentes e instalador (lo usa install.sh).
 """
@@ -658,7 +730,7 @@ def main():
             fail(f"No existe {installer}. Corré `god-mode setup` primero.")
         sys.exit(subprocess.run([sys.executable, str(installer), *args[1:]], check=False).returncode)
     elif cmd == "doctor":
-        cmd_doctor()
+        cmd_doctor(fix="--fix" in args[1:])
     elif cmd == "packs":
         repo = ensure_source_dir()
         print(" ".join(load_packs(repo)))

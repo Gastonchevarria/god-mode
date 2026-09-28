@@ -4,6 +4,8 @@ Generates files derived from the plugin layout and config/third_party.json:
 
 - config/packs.json            pack -> skill names, for install.sh and the god-mode CLI
 - THIRD_PARTY.md               credits for the whole repository
+- plugins/god-mode-core/hooks/session-context.md
+                               protocol + global rules injected at session start
 - plugins/<name>/THIRD_PARTY.md and plugins/<name>/licenses/*
                                credits shipped with each plugin, so a plugin installed
                                on its own still carries the notices MIT and Apache-2.0 require
@@ -94,6 +96,23 @@ def credits_markdown(meta, skills, agents, license_prefix, archify_license):
     return "\n".join(lines)
 
 
+SESSION_CONTEXT_HEADER = """# god-mode: protocolo activo en esta sesión
+
+Cargado por el plugin god-mode-core al iniciar la sesión.
+
+- Al activar /god o cualquier orquestación, empezá con una sola línea: `⚡ **GOD** · Ruta: [ruta] · Skills: [skills] · [qué se va a hacer]`.
+- Nunca muestres claves privadas, tokens, credenciales ni secretos.
+"""
+
+
+def session_context():
+    """What the god-mode-core SessionStart hook injects: the protocol plus every global rule."""
+    protocol = (PLUGINS / "god-mode-core" / "skills" / "god" / "references" / "protocol.md").read_text(encoding="utf-8")
+    parts = [SESSION_CONTEXT_HEADER.strip(), protocol.split("\n", 1)[1].strip()]
+    parts += [r.read_text(encoding="utf-8").strip() for r in sorted((ROOT / "config" / "rules").glob("*.md"))]
+    return "\n\n".join(parts[:2]) + "".join(f"\n\n---\n\n{x}" for x in parts[2:]) + "\n"
+
+
 def build():
     meta = json.loads((ROOT / "config" / "third_party.json").read_text(encoding="utf-8"))
     skills_by_plugin = plugin_skills()
@@ -123,6 +142,7 @@ def build():
                 continue
             if any(s in skills for s in src["skills"]) or any(a in agents for a in src["agents"]):
                 files[pdir / "licenses" / Path(src["license_file"]).name] = (ROOT / src["license_file"]).read_text(encoding="utf-8")
+    files[PLUGINS / "god-mode-core" / "hooks" / "session-context.md"] = session_context()
     return files
 
 

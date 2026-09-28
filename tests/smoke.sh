@@ -210,16 +210,69 @@ check "CLAUDE.md incluye la regla de optimización de tokens" grep -q "Token Opt
 check "Antigravity recibe token-optimization.md" test -f "$HOME/.gemini/config/rules/token-optimization.md"
 check "auto-compact queda instalada en Claude Code y Antigravity" test -f "$HOME/.claude/skills/auto-compact/SKILL.md" -a -f "$HOME/.gemini/config/skills/auto-compact/SKILL.md"
 mkdir -p "$WORK/fakebin"
-printf '#!/bin/sh\necho "autoharness@autoharness"\n' >"$WORK/fakebin/claude" && chmod +x "$WORK/fakebin/claude"
+# Fake `claude plugin list [--json]`: FAKE_PLUGINS holds the enabled plugin ids.
+cat >"$WORK/fakebin/claude" <<'EOF'
+#!/bin/sh
+ids="${FAKE_PLUGINS-autoharness@autoharness}"
+case " $* " in
+  *" --json "*) printf '['; sep=''; for id in $ids; do printf '%s{"id": "%s", "enabled": true}' "$sep" "$id"; sep=','; done; echo ']' ;;
+  *) echo "Installed plugins:"; for id in $ids; do echo "  > $id"; done ;;
+esac
+EOF
+chmod +x "$WORK/fakebin/claude"
 doctor_run() { env -u CLAUDE_CODE_SUBAGENT_MODEL -u AUTOHARNESS_REFLECT_EVERY_N -u AUTOHARNESS_CONSOLIDATE_EVERY_N PATH="$WORK/fakebin:$PATH" python3 "$HOME/.local/bin/god-mode" doctor >"$WORK/doctor.log" 2>&1; }
 doctor_run
 check "doctor falla mientras falte la configuración recomendada" test $? -ne 0
 check "pero marca en verde todo lo que instala god-mode" bash -c "! grep -E '✗.*(Claude Code|Antigravity): (protocolo|límites|regla|skills|skill|ruta|subagentes|dev_god_mode|token-optimization)' '$WORK/doctor.log'"
-check "e indica cómo agregar la variable que falta" grep -q "export CLAUDE_CODE_SUBAGENT_MODEL" "$WORK/doctor.log"
+check "e indica cómo arreglarlo" grep -q "god-mode doctor --fix" "$WORK/doctor.log"
 printf 'export CLAUDE_CODE_SUBAGENT_MODEL="claude-sonnet-5"\nexport AUTOHARNESS_REFLECT_EVERY_N=75\nexport AUTOHARNESS_CONSOLIDATE_EVERY_N=300\n' >"$HOME/.zshrc"
 echo '{"outputStyle": "Concise"}' >"$HOME/.claude/settings.json"
 doctor_run
 check "con la configuración recomendada doctor queda todo en verde" test $? -eq 0
+dup_detected() {
+    ! FAKE_PLUGINS="autoharness@autoharness god-mode-core@god-mode" doctor_run && grep -q 'god-mode cargado una sola vez: plugins god-mode-core@god-mode y además' "$WORK/doctor.log"
+}
+check "doctor avisa si god-mode está cargado dos veces (plugins + CLI)" dup_detected
+mkdir -p "$WORK/fakebin-text"
+printf '#!/bin/sh\ncase " $* " in *" --json "*) echo "error: unknown option" >&2; exit 1 ;; esac\necho "  > autoharness@autoharness"\n' >"$WORK/fakebin-text/claude"
+chmod +x "$WORK/fakebin-text/claude"
+text_fallback() {
+    PATH="$WORK/fakebin-text:$PATH" python3 -c "import runpy; print(runpy.run_path('$HOME/.local/bin/god-mode', run_name='t')['_claude_plugins']())" | grep -q "'autoharness@autoharness'"
+}
+check "si plugin list no acepta --json, lee la salida en texto" text_fallback
+
+echo "== god-mode doctor --fix"
+fresh_home fix
+run_install --pack=core
+echo '{"permissions": {"deny": ["Bash(rm -rf:*)"]}, "env": {"MI_VAR": "1"}, "outputStyle": "Explanatory"}' >"$HOME/.claude/settings.json"
+env -u CLAUDE_CODE_SUBAGENT_MODEL -u AUTOHARNESS_REFLECT_EVERY_N -u AUTOHARNESS_CONSOLIDATE_EVERY_N PATH="$WORK/fakebin:$PATH" python3 "$HOME/.local/bin/god-mode" doctor --fix >"$WORK/fix.log" 2>&1
+check "doctor --fix deja todo en verde" test $? -eq 0
+check "escribe outputStyle y las tres variables en settings.json" python3 -c "
+import json; d = json.load(open('$HOME/.claude/settings.json'))
+assert d['outputStyle'] == 'Concise' and d['env']['CLAUDE_CODE_SUBAGENT_MODEL'] == 'claude-sonnet-5'
+assert d['env']['AUTOHARNESS_REFLECT_EVERY_N'] == '75' and d['env']['AUTOHARNESS_CONSOLIDATE_EVERY_N'] == '300'"
+check "conserva el resto de la configuración" python3 -c "
+import json; d = json.load(open('$HOME/.claude/settings.json'))
+assert d['permissions'] == {'deny': ['Bash(rm -rf:*)']} and d['env']['MI_VAR'] == '1'"
+check "guarda una copia de la versión anterior" bash -c "grep -q Explanatory '$HOME'/.claude/settings.json.bak-*"
+check "no toca el shell" test ! -e "$HOME/.zshrc"
+mkdir -p "$WORK/dotfiles" && echo '{"outputStyle": "Concise"}' >"$WORK/dotfiles/settings.json"
+ln -sf "$WORK/dotfiles/settings.json" "$HOME/.claude/settings.json"
+PATH="$WORK/fakebin:$PATH" python3 "$HOME/.local/bin/god-mode" doctor --fix >/dev/null 2>&1
+check "si settings.json es un enlace, lo mantiene y escribe en el archivo real" bash -c "test -L '$HOME/.claude/settings.json' && grep -q CLAUDE_CODE_SUBAGENT_MODEL '$WORK/dotfiles/settings.json'"
+rm -f "$HOME/.claude/settings.json"
+printf '{"outputStyle": ' >"$HOME/.claude/settings.json"
+check "con un settings.json inválido --fix falla sin tocarlo" bash -c "! PATH='$WORK/fakebin:$PATH' python3 '$HOME/.local/bin/god-mode' doctor --fix >/dev/null 2>&1 && test \"\$(cat '$HOME/.claude/settings.json')\" = '{\"outputStyle\": '"
+
+echo "== Hook de sesión del plugin god-mode-core"
+HOOK_CMD="$(python3 -c "import json; print(json.load(open('$REPO/plugins/god-mode-core/hooks/hooks.json'))['hooks']['SessionStart'][0]['hooks'][0]['command'])")"
+fresh_home hook
+hook_out() { CLAUDE_PLUGIN_ROOT="$REPO/plugins/god-mode-core" bash -c "$HOOK_CMD"; }
+hook_has() { hook_out | grep -q "$1"; }
+check "sin CLAUDE.md de god-mode, el hook carga el protocolo" hook_has "Límites de autonomía"
+check "y la regla de optimización de tokens" hook_has "Token Optimization Protocol"
+mkdir -p "$HOME/.claude" && printf 'mis reglas\n<!-- god-mode:start -->\nx\n<!-- god-mode:end -->\n' >"$HOME/.claude/CLAUDE.md"
+check "con el protocolo ya en CLAUDE.md, el hook no repite nada" test -z "$(hook_out)"
 
 echo "== Las pruebas no tocan el repo"
 check "la configuración git del repo quedó igual" test "$(git -C "$REPO" config --local -l 2>/dev/null)" = "$CONFIG_BEFORE"

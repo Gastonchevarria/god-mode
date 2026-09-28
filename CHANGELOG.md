@@ -10,6 +10,9 @@ All notable changes to god-mode are documented here. Versions follow [Semantic V
 - CONTEXT-HEALTH route in `/god` (`auto-compact` + `context-engineering`).
 - `god-mode doctor`: read-only check of the installation and the recommended settings, with the exact fix for each failure.
 - README section on token optimization and the recommended `CLAUDE_CODE_SUBAGENT_MODEL`, output style and optional AutoHarness settings.
+- The god-mode-core plugin loads the protocol and the global rules when a session starts (a `SessionStart` hook), so the plugins alone, in Claude Code or in the Claude app, enforce the autonomy limits and the token rules. The hook stays silent when `~/.claude/CLAUDE.md` already has the installer's block, so the protocol never loads twice.
+- `god-mode doctor --fix` writes the recommended output style and variables into `~/.claude/settings.json`, with a backup, keeping every other key.
+- `god-mode doctor` reads the variables from `~/.claude/settings.json` too, and warns when god-mode is loaded twice in Claude Code (plugins plus the installer's links).
 
 ### Changed
 - `context-engineering` moved from god-mode-dev to god-mode-core. The suite now has 107 skills.
