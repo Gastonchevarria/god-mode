@@ -4,6 +4,7 @@
 set -uo pipefail
 
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+CONFIG_BEFORE="$(git -C "$REPO" config --local -l 2>/dev/null)"
 # Physical path: on macOS mktemp returns /var/..., a symlink to /private/var/..., and the CLI resolves --source.
 WORK="$(cd "$(mktemp -d)" && pwd -P)"
 trap 'rm -rf "$WORK"' EXIT
@@ -200,6 +201,28 @@ echo "== Pack inválido antes de tocar nada"
 fresh_home badpack
 check "install.sh con un pack inexistente falla" bash -c "! (cd '$WORK' && bash '$REPO/install.sh' --pack=cor >/dev/null 2>&1)"
 check "y no creó CLAUDE.md" test ! -e "$HOME/.claude/CLAUDE.md"
+
+echo "== Optimización de tokens y god-mode doctor"
+fresh_home doctor
+mkdir -p "$HOME/.gemini"
+run_install --pack=all
+check "CLAUDE.md incluye la regla de optimización de tokens" grep -q "Token Optimization Protocol" "$HOME/.claude/CLAUDE.md"
+check "Antigravity recibe token-optimization.md" test -f "$HOME/.gemini/config/rules/token-optimization.md"
+check "auto-compact queda instalada en Claude Code y Antigravity" test -f "$HOME/.claude/skills/auto-compact/SKILL.md" -a -f "$HOME/.gemini/config/skills/auto-compact/SKILL.md"
+mkdir -p "$WORK/fakebin"
+printf '#!/bin/sh\necho "autoharness@autoharness"\n' >"$WORK/fakebin/claude" && chmod +x "$WORK/fakebin/claude"
+doctor_run() { env -u CLAUDE_CODE_SUBAGENT_MODEL -u AUTOHARNESS_REFLECT_EVERY_N -u AUTOHARNESS_CONSOLIDATE_EVERY_N PATH="$WORK/fakebin:$PATH" python3 "$HOME/.local/bin/god-mode" doctor >"$WORK/doctor.log" 2>&1; }
+doctor_run
+check "doctor falla mientras falte la configuración recomendada" test $? -ne 0
+check "pero marca en verde todo lo que instala god-mode" bash -c "! grep -E '✗.*(Claude Code|Antigravity): (protocolo|límites|regla|skills|skill|ruta|subagentes|dev_god_mode|token-optimization)' '$WORK/doctor.log'"
+check "e indica cómo agregar la variable que falta" grep -q "export CLAUDE_CODE_SUBAGENT_MODEL" "$WORK/doctor.log"
+printf 'export CLAUDE_CODE_SUBAGENT_MODEL="claude-sonnet-5"\nexport AUTOHARNESS_REFLECT_EVERY_N=75\nexport AUTOHARNESS_CONSOLIDATE_EVERY_N=300\n' >"$HOME/.zshrc"
+echo '{"outputStyle": "Concise"}' >"$HOME/.claude/settings.json"
+doctor_run
+check "con la configuración recomendada doctor queda todo en verde" test $? -eq 0
+
+echo "== Las pruebas no tocan el repo"
+check "la configuración git del repo quedó igual" test "$(git -C "$REPO" config --local -l 2>/dev/null)" = "$CONFIG_BEFORE"
 
 echo
 echo "Resultado: $PASS ok, $FAIL fallas"

@@ -6,12 +6,12 @@
 
 ### Describe the problem. `/god` picks the right skills and sees the job through.
 
-106 expert skills, 6 review subagents and one execution protocol for **Claude Code, Antigravity, Cursor and Windsurf**.<br/>
+107 expert skills, 6 review subagents and one execution protocol for **Claude Code, Antigravity, Cursor and Windsurf**.<br/>
 It finishes reversible work end to end, and asks you before anything it can't undo.
 
 [![Release](https://img.shields.io/github/v/release/Gastonchevarria/god-mode?style=for-the-badge&color=00b4d8)](https://github.com/Gastonchevarria/god-mode/releases)
 [![CI](https://img.shields.io/github/actions/workflow/status/Gastonchevarria/god-mode/ci.yml?branch=main&style=for-the-badge&label=CI)](https://github.com/Gastonchevarria/god-mode/actions/workflows/ci.yml)
-[![Skills](https://img.shields.io/badge/skills-106-7b2cbf?style=for-the-badge)](#-pick-a-pack)
+[![Skills](https://img.shields.io/badge/skills-107-7b2cbf?style=for-the-badge)](#-pick-a-pack)
 [![License: MIT](https://img.shields.io/badge/license-MIT-f4d35e?style=for-the-badge)](LICENSE)
 
 **[Install in 30 seconds](#-install-in-30-seconds)** · [See it work](#-see-it-work) · [The 5 commands](#-the-5-commands-worth-memorizing) · [How it works](#-how-it-works) · [FAQ](#-faq)
@@ -30,7 +30,7 @@ AI coding agents are powerful, but you have probably hit these walls:
 | The agent stops halfway: *"now you implement steps 4 and 5"* | It finishes every reversible step, then checks its own last paragraph for loose ends |
 | It says "done" while a test quietly failed | Failures go on the **first line** of the reply, never buried in a summary |
 | An eager agent pushes, deploys or deletes on its own | It **stops and asks** before push, deploy, delete, migrations, money, credentials, messages or installs |
-| Every skill you add eats context | Pick a pack. All 106 descriptions fit in about 7,300 tokens |
+| Every skill you add eats context | Pick a pack. All 107 descriptions fit in about 7,300 tokens |
 | Your rules only work in one editor | One protocol for Claude Code, Antigravity, Cursor and Windsurf |
 
 ---
@@ -124,7 +124,7 @@ flowchart TD
     R -->|pre-merge| T["/thermos<br/>2 review subagents"]
     R -->|bug| D["debugging + TDD"]
     R -->|idea| V["discovery skills"]
-    R -->|anything else| S["106 skills"]
+    R -->|anything else| S["107 skills"]
     T --> P["Fable 5.1 protocol"]
     D --> P
     V --> P
@@ -151,12 +151,40 @@ Each installed skill adds its description to the agent's context, so only instal
 
 | Pack (installer) | Plugins (Claude Code) | Skills | Good for |
 | :--- | :--- | :---: | :--- |
-| **`core`** *(default)* | `god-mode-core` | **19** | Router, reviews, security, anti-slop, TDD, debugging, architecture diagrams |
-| **`dev`** | core + `god-mode-dev` | **55** | Backend and API design, Next.js, FastAPI, RAG and evals, MCP servers, CI/CD, planning |
-| **`growth`** | core + `god-mode-growth` | **70** | Pricing, CRO, SEO and AI SEO, ads, email, onboarding, launch, sales |
-| **`all`** | all three | **106** | Everything |
+| **`core`** *(default)* | `god-mode-core` | **21** | Router, reviews, security, anti-slop, TDD, debugging, architecture diagrams |
+| **`dev`** | core + `god-mode-dev` | **56** | Backend and API design, Next.js, FastAPI, RAG and evals, MCP servers, CI/CD, planning |
+| **`growth`** | core + `god-mode-growth` | **72** | Pricing, CRO, SEO and AI SEO, ads, email, onboarding, launch, sales |
+| **`all`** | all three | **107** | Everything |
 
 Switch packs anytime with `god-mode pack dev`.
+
+---
+
+## 🪶 Token Optimization
+
+god-mode keeps sessions lean:
+
+- **`config/rules/token-optimization.md`**: global rule for brevity, context hygiene, tool-call discipline, output frugality, compaction triggers and skill loading. `install.sh` adds it to the managed block in `~/.claude/CLAUDE.md` and to Antigravity's rules.
+- **`auto-compact` skill** (god-mode-core): rates the session 🟢🟡🔴 from observable signals (tool calls, back-and-forth, re-read files, topic changes) and, with your OK, compacts it with a structured summary that keeps decisions and dead ends.
+- **CONTEXT-HEALTH route in `/god`**: triggered by "the session feels heavy", "I'm running out of tokens" or "compact"; it runs `auto-compact` together with `context-engineering`.
+- **`god-mode doctor`**: checks the installation and the recommended settings below, and prints the exact fix for anything missing. It changes nothing.
+
+### Recommended settings
+
+```bash
+# ~/.zshrc
+export CLAUDE_CODE_SUBAGENT_MODEL="claude-sonnet-5"   # Claude Code runs subagents on Sonnet instead of the main model
+export AUTOHARNESS_REFLECT_EVERY_N=75                 # only if you use AutoHarness (default 50)
+export AUTOHARNESS_CONSOLIDATE_EVERY_N=300            # only if you use AutoHarness (default 250)
+```
+
+- **Output style**: choose **Concise** in Claude Code (`"outputStyle": "Concise"` in `~/.claude/settings.json`).
+- **[AutoHarness](https://github.com/tigerless-labs/autoharness)** (optional, third-party, MIT): a Claude Code plugin that learns skills from your sessions. Each reflection runs a background session that uses tokens; the higher values above make it run less often.
+
+  ```
+  /plugin marketplace add tigerless-labs/autoharness
+  /plugin install autoharness@autoharness
+  ```
 
 ---
 
@@ -179,6 +207,7 @@ The installer adds a small CLI to `~/.local/bin`:
 
 ```bash
 god-mode status                 # active pack, skill counts, subagents
+god-mode doctor                 # checks the install and the recommended settings (read-only)
 god-mode pack <core|dev|growth|all>
 god-mode update                 # pull from GitHub, re-apply protocol, subagents and pack
 god-mode cursor <project>       # copy .cursorrules and AGENTS.md into a project
@@ -209,9 +238,9 @@ Installed in `~/.claude/agents/` and dispatched by the skills when a job needs a
 <br/>
 
 ```bash
-curl -fsSLO https://github.com/Gastonchevarria/god-mode/releases/download/v1.0.1/install.sh
-curl -fsSLO https://github.com/Gastonchevarria/god-mode/releases/download/v1.0.1/install.sh.sha256
-shasum -a 256 -c install.sh.sha256 && bash install.sh --version=v1.0.1 --pack=core
+curl -fsSLO https://github.com/Gastonchevarria/god-mode/releases/download/v1.1.0/install.sh
+curl -fsSLO https://github.com/Gastonchevarria/god-mode/releases/download/v1.1.0/install.sh.sha256
+shasum -a 256 -c install.sh.sha256 && bash install.sh --version=v1.1.0 --pack=core
 ```
 
 A pinned install doesn't update itself. To move to another version, run the installer again with `--version=vX.Y.Z`.

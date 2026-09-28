@@ -295,11 +295,22 @@ def legacy_protocols(repo):
             for f in sorted((repo / "config" / "legacy").glob("*.md"), reverse=True)]
 
 
-def sync_claude_md(repo):
+def rule_files(repo):
+    return sorted((repo / "config" / "rules").glob("*.md"))
+
+
+def protocol_text(repo):
+    """config/CLAUDE.md followed by every global rule in config/rules/."""
     src = repo / "config" / "CLAUDE.md"
     if not src.exists():
         fail(f"No existe {src}")
-    block = f"{BLOCK_START}\n{src.read_text(encoding='utf-8').strip()}\n{BLOCK_END}"
+    parts = [src.read_text(encoding="utf-8").strip()]
+    parts += [r.read_text(encoding="utf-8").strip() for r in rule_files(repo)]
+    return "\n\n---\n\n".join(parts)
+
+
+def sync_claude_md(repo):
+    block = f"{BLOCK_START}\n{protocol_text(repo)}\n{BLOCK_END}"
 
     if not CLAUDE_MD.exists() and not CLAUDE_MD.is_symlink():
         atomic_write(CLAUDE_MD, block + "\n")
@@ -402,7 +413,9 @@ def cmd_setup(targets):
         rules = repo / "config" / "GEMINI_RULES.md"
         if rules.exists():
             install_file(rules, GEMINI_RULES, "Reglas de Antigravity")
-            print(f"  {GREEN}✓ Reglas de Antigravity en {GEMINI_RULES}{NC}")
+        for rule in rule_files(repo):
+            install_file(rule, GEMINI_RULES.parent / rule.name, f"Regla {rule.name}")
+        print(f"  {GREEN}✓ Reglas de Antigravity en {GEMINI_RULES.parent}{NC}")
 
 
 def cmd_update():
@@ -474,6 +487,122 @@ def cmd_cursor(target_dir="."):
             print(f"  {BLUE}ℹ {target / name} ya estaba actualizado{NC}")
 
 
+RECOMMENDED_ENV = {
+    "CLAUDE_CODE_SUBAGENT_MODEL": "claude-sonnet-5",
+    "AUTOHARNESS_REFLECT_EVERY_N": "75",
+    "AUTOHARNESS_CONSOLIDATE_EVERY_N": "300",
+}
+TOKEN_RULE_SECTIONS = ["Brevedad Obligatoria", "Context Hygiene", "Tool Call Discipline",
+                       "Output Frugality", "Auto-Compact Triggers", "Smart Skill Loading"]
+
+
+def _shell_rc_value(name):
+    for rc in (HOME / ".zshrc", HOME / ".bashrc", HOME / ".profile"):
+        try:
+            text = rc.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        m = None
+        for m in re.finditer(rf"^\s*export\s+{name}=[\"']?([^\"'\s]+)", text, re.MULTILINE):
+            pass
+        if m:
+            return m.group(1), rc
+    return None, None
+
+
+def _check_skills_dir(skills_dir, expected, label, results):
+    repo = source_dir()
+    roots = managed_roots(repo) if repo else set()
+    links = [i for i in skills_dir.iterdir() if i.is_symlink() and _managed_link(i, roots)] if skills_dir.exists() else []
+    broken = [i.name for i in links if not i.exists()]
+    ok = len(links) == len(expected) and not broken
+    detail = f"{len(links)} enlazadas, se esperaban {len(expected)} del pack activo"
+    if broken:
+        detail += f"; {len(broken)} enlaces rotos"
+    results.append((ok, f"{label}: skills del pack", detail, "god-mode update"))
+    auto = skills_dir / "auto-compact" / "SKILL.md"
+    results.append((auto.exists(), f"{label}: skill auto-compact", str(auto) if auto.exists() else "no instalada",
+                    "god-mode update"))
+    god = skills_dir / "god" / "SKILL.md"
+    has_route = god.exists() and "CONTEXT-HEALTH" in god.read_text(encoding="utf-8", errors="replace")
+    results.append((has_route, f"{label}: ruta CONTEXT-HEALTH en /god", "presente" if has_route else "falta",
+                    "god-mode update"))
+
+
+def cmd_doctor():
+    results = []
+    state = load_state()
+    repo = source_dir()
+    if not repo:
+        fail("No encontré el repositorio de god-mode. Instalalo con install.sh.")
+    targets = state.get("targets") or detect_targets()
+    expected = pack_skills(repo, state.get("active_pack", "core"))[0]
+
+    text = CLAUDE_MD.read_text(encoding="utf-8", errors="replace") if CLAUDE_MD.exists() else ""
+    results.append((BLOCK_START in text, "Claude Code: protocolo en CLAUDE.md", str(CLAUDE_MD), "god-mode update"))
+    for needle, label in (("Límites de autonomía", "límites de autonomía"),
+                          ("Token Optimization Protocol", "regla de optimización de tokens")):
+        results.append((needle in text, f"Claude Code: {label} en CLAUDE.md", "presente" if needle in text else "falta",
+                        "god-mode update"))
+    _check_skills_dir(CLAUDE_SKILLS, expected, "Claude Code", results)
+    agents = len(list(CLAUDE_AGENTS.glob("*.md"))) if CLAUDE_AGENTS.exists() else 0
+    wanted = len(discover_agents(repo))
+    results.append((agents >= wanted, "Claude Code: subagentes", f"{agents} instalados, se esperaban {wanted}",
+                    "god-mode update"))
+
+    if "gemini" in targets:
+        dev = GEMINI_RULES.read_text(encoding="utf-8", errors="replace") if GEMINI_RULES.exists() else ""
+        ok = "Límites de autonomía" in dev and "⚡ **GOD** · Ruta" in dev
+        results.append((ok, "Antigravity: dev_god_mode.md", str(GEMINI_RULES) if dev else "no existe", "god-mode update"))
+        tok_path = GEMINI_RULES.parent / "token-optimization.md"
+        tok = tok_path.read_text(encoding="utf-8", errors="replace") if tok_path.exists() else ""
+        missing = [sec for sec in TOKEN_RULE_SECTIONS if sec not in tok]
+        results.append((not missing, "Antigravity: token-optimization.md",
+                        "completo" if not missing else f"faltan: {', '.join(missing)}", "god-mode update"))
+        _check_skills_dir(GEMINI_SKILLS, expected, "Antigravity", results)
+
+    for name, value in RECOMMENDED_ENV.items():
+        current, where = os.environ.get(name), "entorno actual"
+        if current is None:
+            current, rc = _shell_rc_value(name)
+            where = str(rc) if rc else "no definida"
+        results.append((current == value, f"Variable {name}", f"{current or '—'} ({where})",
+                        f"echo 'export {name}=\"{value}\"' >> ~/.zshrc && source ~/.zshrc"))
+
+    settings = CLAUDE_DIR / "settings.json"
+    style = None
+    try:
+        style = json.loads(settings.read_text(encoding="utf-8")).get("outputStyle")
+    except (OSError, json.JSONDecodeError, AttributeError):
+        pass
+    results.append(((style or "").lower() == "concise", "Claude Code: output style Concise", style or "sin definir",
+                    'elegí "Concise" en el selector de output style de Claude Code, o "outputStyle": "Concise" en ~/.claude/settings.json'))
+
+    if shutil.which("claude"):
+        try:
+            out = subprocess.run(["claude", "plugin", "list"], capture_output=True, text=True, timeout=60,
+                                 check=False).stdout
+            has = "autoharness" in out.lower()
+            results.append((has, "Claude Code: plugin AutoHarness", "instalado" if has else "no instalado",
+                            "/plugin marketplace add tigerless-labs/autoharness y /plugin install autoharness@autoharness"))
+        except (subprocess.TimeoutExpired, OSError) as e:
+            results.append((False, "Claude Code: plugin AutoHarness", f"no se pudo consultar ({e})", "claude plugin list"))
+    else:
+        results.append((None, "Claude Code: plugin AutoHarness", "claude no está en el PATH", ""))
+
+    print(f"\n{PURPLE}{BOLD}⚡ god-mode doctor{NC}\n")
+    failed = 0
+    for ok, name, detail, fix in results:
+        mark = f"{GREEN}✓{NC}" if ok else (f"{BLUE}–{NC}" if ok is None else f"{RED}✗{NC}")
+        print(f"  {mark} {name}: {detail}")
+        if ok is False:
+            failed += 1
+            print(f"      → {fix}")
+    total = sum(1 for r in results if r[0] is not None)
+    print(f"\n{total - failed}/{total} verificaciones en verde.\n")
+    sys.exit(1 if failed else 0)
+
+
 USAGE = f"""
 {PURPLE}{BOLD}⚡ god-mode CLI — Gestor de la suite DEV GOD-MODE{NC}
 
@@ -486,6 +615,7 @@ USAGE = f"""
   {CYAN}update{NC}                 Actualiza desde GitHub y reaplica protocolo, agentes y pack.
   {CYAN}cursor [ruta]{NC}          Copia .cursorrules y AGENTS.md a un proyecto (con copia de respaldo).
   {CYAN}add <github-url>{NC}       Instala una skill desde GitHub (pide confirmación).
+  {CYAN}doctor{NC}                 Verifica la instalación y la configuración recomendada (no cambia nada).
   {CYAN}setup [--targets=claude,gemini] [--source=<repo>]{NC}
                          Instala protocolo, agentes e instalador (lo usa install.sh).
 """
@@ -527,6 +657,8 @@ def main():
         if not installer.exists():
             fail(f"No existe {installer}. Corré `god-mode setup` primero.")
         sys.exit(subprocess.run([sys.executable, str(installer), *args[1:]], check=False).returncode)
+    elif cmd == "doctor":
+        cmd_doctor()
     elif cmd == "packs":
         repo = ensure_source_dir()
         print(" ".join(load_packs(repo)))

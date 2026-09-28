@@ -2,6 +2,18 @@
 
 All notable changes to god-mode are documented here. Versions follow [Semantic Versioning](https://semver.org/).
 
+## [1.1.0] - 2026-09-27
+
+### Added
+- `config/rules/token-optimization.md`: global rule for brevity, context hygiene, tool-call discipline, output frugality, compaction triggers and skill loading. `install.sh` adds it to the managed block in `~/.claude/CLAUDE.md` and to Antigravity's rules.
+- `auto-compact` skill in god-mode-core: rates session health 🟢🟡🔴 and compacts with a structured summary after the user agrees.
+- CONTEXT-HEALTH route in `/god` (`auto-compact` + `context-engineering`).
+- `god-mode doctor`: read-only check of the installation and the recommended settings, with the exact fix for each failure.
+- README section on token optimization and the recommended `CLAUDE_CODE_SUBAGENT_MODEL`, output style and optional AutoHarness settings.
+
+### Changed
+- `context-engineering` moved from god-mode-dev to god-mode-core. The suite now has 107 skills.
+
 ## [1.0.1] - 2026-09-26
 
 Upgrading from a version before 1.0.0 now works: run the installer once more.

@@ -6,7 +6,7 @@ This package bundles skills and agents written by other authors. Each one keeps 
 
 | Source | License | Upstream commit | Skills / agents |
 | --- | --- | --- | --- |
-| [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) | MIT ([text](licenses/agent-skills-MIT.txt)) | `bcab6a1` | 17 skills: `api-and-interface-design`, `browser-testing-with-devtools`, `ci-cd-and-automation`, `code-review-and-quality`, `context-engineering`, `deprecation-and-migration`, `documentation-and-adrs`, `frontend-ui-engineering`, `git-workflow-and-versioning`, `idea-refine`, `incremental-implementation`, `interview-me`, `observability-and-instrumentation`, `planning-and-task-breakdown`, `shipping-and-launch`, `source-driven-development`, `using-agent-skills` |
+| [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) | MIT ([text](licenses/agent-skills-MIT.txt)) | `bcab6a1` | 16 skills: `api-and-interface-design`, `browser-testing-with-devtools`, `ci-cd-and-automation`, `code-review-and-quality`, `deprecation-and-migration`, `documentation-and-adrs`, `frontend-ui-engineering`, `git-workflow-and-versioning`, `idea-refine`, `incremental-implementation`, `interview-me`, `observability-and-instrumentation`, `planning-and-task-breakdown`, `shipping-and-launch`, `source-driven-development`, `using-agent-skills` |
 
 ## Original to god-mode
 

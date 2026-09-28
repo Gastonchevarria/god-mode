@@ -162,6 +162,16 @@
       "plugin": "god-mode-growth",
       "query": "Configurá el tracking de eventos de GA4 para nuestro funnel de registro.",
       "expected": "analytics"
+    },
+    {
+      "plugin": "god-mode-core",
+      "query": "La sesión ya está re pesada y siento que se me acaban los tokens, compactá.",
+      "expected": "auto-compact"
+    },
+    {
+      "plugin": "god-mode-core",
+      "query": "This conversation has gotten really long and slow. Can you compact it before we continue?",
+      "expected": "auto-compact"
     }
   ]
 }

@@ -79,8 +79,11 @@ Antes de ejecutar cualquier ruta, leé [`references/protocol.md`](references/pro
  ├── 🧐 "¿Estoy seguro de esta decisión técnica difícil?"
  │    └── Ruta: ADVERSARIAL ➔ Activa `doubt-driven-development` + `founder-technical-decision`
  │
- └── 🎓 "¿Qué aprendimos / guarda este patrón para siempre?"
-      └── Ruta: PERSISTENCE ➔ Activa `retro` + `self-learning-skills`
+ ├── 🎓 "¿Qué aprendimos / guarda este patrón para siempre?"
+ │    └── Ruta: PERSISTENCE ➔ Activa `retro` + `self-learning-skills`
+ │
+ └── 🧠💾 "¿La sesión está pesada / se me acaban los tokens / compactá?"
+      └── Ruta: CONTEXT-HEALTH ➔ Activa `auto-compact` + `context-engineering`
 ```
 
 ## Dónde vive cada skill
@@ -89,6 +92,6 @@ god-mode se instala en plugins separados. Si la skill de una ruta no está dispo
 
 | Plugin | Contenido | Skills que usa este router |
 | --- | --- | --- |
-| `god-mode-core` | incluido siempre | `ai-product-architect`, `anti-slop`, `archify`, `debugging-and-error-recovery`, `doubt-driven-development`, `launch-growth-loop`, `mvp-scope-killer`, `saas-business-model`, `security`, `security-and-hardening`, `test-driven-development`, `thermo-nuclear-code-quality-review`, `thermo-nuclear-review`, `thermos` |
+| `god-mode-core` | incluido siempre | `ai-product-architect`, `anti-slop`, `archify`, `auto-compact`, `context-engineering`, `debugging-and-error-recovery`, `doubt-driven-development`, `launch-growth-loop`, `mvp-scope-killer`, `saas-business-model`, `security`, `security-and-hardening`, `test-driven-development`, `thermo-nuclear-code-quality-review`, `thermo-nuclear-review`, `thermos` |
 | `god-mode-dev` | arquitectura, backend, IA y planificación | `autoplan`, `backend-architect`, `fastapi-pro`, `founder-technical-decision`, `interview-me`, `nextjs-app-router`, `office-hours`, `plan-ceo-review`, `plan-eng-review`, `rag-implementation`, `ralph-loop`, `retro`, `self-learning-skills` |
 | `god-mode-growth` | pricing, validación y crecimiento | `pricing`, `saas-launch-revenue`, `startup-idea-validation` |
