@@ -488,7 +488,7 @@ def cmd_cursor(target_dir="."):
 
 
 RECOMMENDED_ENV = {
-    "CLAUDE_CODE_SUBAGENT_MODEL": "claude-sonnet-5",
+    "CLAUDE_CODE_SUBAGENT_MODEL": "claude-sonnet-5-5",
     "AUTOHARNESS_REFLECT_EVERY_N": "75",
     "AUTOHARNESS_CONSOLIDATE_EVERY_N": "300",
 }
@@ -634,9 +634,11 @@ def cmd_doctor(fix=False):
     settings_env = (settings or {}).get("env")
     settings_env = settings_env if isinstance(settings_env, dict) else {}
     for name, value in RECOMMENDED_ENV.items():
-        current, where = os.environ.get(name), "entorno actual"
-        if current is None and name in settings_env:
+        # Claude Code applies settings.json "env" over the shell's environment, so it is checked first.
+        if name in settings_env:
             current, where = str(settings_env[name]), str(settings_path)
+        else:
+            current, where = os.environ.get(name), "entorno actual"
         if current is None:
             current, rc = _shell_rc_value(name)
             where = str(rc) if rc else "no definida"

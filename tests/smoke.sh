@@ -225,7 +225,7 @@ doctor_run
 check "doctor falla mientras falte la configuración recomendada" test $? -ne 0
 check "pero marca en verde todo lo que instala god-mode" bash -c "! grep -E '✗.*(Claude Code|Antigravity): (protocolo|límites|regla|skills|skill|ruta|subagentes|dev_god_mode|token-optimization)' '$WORK/doctor.log'"
 check "e indica cómo arreglarlo" grep -q "god-mode doctor --fix" "$WORK/doctor.log"
-printf 'export CLAUDE_CODE_SUBAGENT_MODEL="claude-sonnet-5"\nexport AUTOHARNESS_REFLECT_EVERY_N=75\nexport AUTOHARNESS_CONSOLIDATE_EVERY_N=300\n' >"$HOME/.zshrc"
+printf 'export CLAUDE_CODE_SUBAGENT_MODEL="claude-sonnet-5-5"\nexport AUTOHARNESS_REFLECT_EVERY_N=75\nexport AUTOHARNESS_CONSOLIDATE_EVERY_N=300\n' >"$HOME/.zshrc"
 echo '{"outputStyle": "Concise"}' >"$HOME/.claude/settings.json"
 doctor_run
 check "con la configuración recomendada doctor queda todo en verde" test $? -eq 0
@@ -249,13 +249,16 @@ env -u CLAUDE_CODE_SUBAGENT_MODEL -u AUTOHARNESS_REFLECT_EVERY_N -u AUTOHARNESS_
 check "doctor --fix deja todo en verde" test $? -eq 0
 check "escribe outputStyle y las tres variables en settings.json" python3 -c "
 import json; d = json.load(open('$HOME/.claude/settings.json'))
-assert d['outputStyle'] == 'Concise' and d['env']['CLAUDE_CODE_SUBAGENT_MODEL'] == 'claude-sonnet-5'
+assert d['outputStyle'] == 'Concise' and d['env']['CLAUDE_CODE_SUBAGENT_MODEL'] == 'claude-sonnet-5-5'
 assert d['env']['AUTOHARNESS_REFLECT_EVERY_N'] == '75' and d['env']['AUTOHARNESS_CONSOLIDATE_EVERY_N'] == '300'"
 check "conserva el resto de la configuración" python3 -c "
 import json; d = json.load(open('$HOME/.claude/settings.json'))
 assert d['permissions'] == {'deny': ['Bash(rm -rf:*)']} and d['env']['MI_VAR'] == '1'"
 check "guarda una copia de la versión anterior" bash -c "grep -q Explanatory '$HOME'/.claude/settings.json.bak-*"
 check "no toca el shell" test ! -e "$HOME/.zshrc"
+printf 'export CLAUDE_CODE_SUBAGENT_MODEL="claude-sonnet-5"\nexport AUTOHARNESS_REFLECT_EVERY_N=75\nexport AUTOHARNESS_CONSOLIDATE_EVERY_N=300\n' >"$HOME/.zshrc"
+check "doctor toma el valor de settings.json, que es el que usa Claude Code, aunque el shell tenga otro" env CLAUDE_CODE_SUBAGENT_MODEL=claude-sonnet-5 PATH="$WORK/fakebin:$PATH" python3 "$HOME/.local/bin/god-mode" doctor
+rm -f "$HOME/.zshrc"
 mkdir -p "$WORK/dotfiles" && echo '{"outputStyle": "Concise"}' >"$WORK/dotfiles/settings.json"
 ln -sf "$WORK/dotfiles/settings.json" "$HOME/.claude/settings.json"
 PATH="$WORK/fakebin:$PATH" python3 "$HOME/.local/bin/god-mode" doctor --fix >/dev/null 2>&1

@@ -178,7 +178,7 @@ god-mode keeps sessions lean:
 {
   "outputStyle": "Concise",                          // built-in style: results first, no narration
   "env": {
-    "CLAUDE_CODE_SUBAGENT_MODEL": "claude-sonnet-5", // subagents run on Sonnet instead of the main model
+    "CLAUDE_CODE_SUBAGENT_MODEL": "claude-sonnet-5-5", // subagents run on Sonnet 5.5 instead of the main model
     "AUTOHARNESS_REFLECT_EVERY_N": "75",             // only if you use AutoHarness (default 50)
     "AUTOHARNESS_CONSOLIDATE_EVERY_N": "300"         // only if you use AutoHarness (default 250)
   }
@@ -245,9 +245,9 @@ Installed in `~/.claude/agents/` and dispatched by the skills when a job needs a
 <br/>
 
 ```bash
-curl -fsSLO https://github.com/Gastonchevarria/god-mode/releases/download/v1.1.0/install.sh
-curl -fsSLO https://github.com/Gastonchevarria/god-mode/releases/download/v1.1.0/install.sh.sha256
-shasum -a 256 -c install.sh.sha256 && bash install.sh --version=v1.1.0 --pack=core
+curl -fsSLO https://github.com/Gastonchevarria/god-mode/releases/download/v1.1.1/install.sh
+curl -fsSLO https://github.com/Gastonchevarria/god-mode/releases/download/v1.1.1/install.sh.sha256
+shasum -a 256 -c install.sh.sha256 && bash install.sh --version=v1.1.1 --pack=core
 ```
 
 A pinned install doesn't update itself. To move to another version, run the installer again with `--version=vX.Y.Z`.

@@ -2,6 +2,14 @@
 
 All notable changes to god-mode are documented here. Versions follow [Semantic Versioning](https://semver.org/).
 
+## [1.1.1] - 2026-09-30
+
+### Changed
+- The recommended subagent model is now `claude-sonnet-5-5`. Run `god-mode doctor --fix` to update `~/.claude/settings.json`.
+
+### Fixed
+- `god-mode doctor` reads `CLAUDE_CODE_SUBAGENT_MODEL` and the other variables from `~/.claude/settings.json` before the shell's environment, the same order Claude Code applies them.
+
 ## [1.1.0] - 2026-09-27
 
 ### Added
