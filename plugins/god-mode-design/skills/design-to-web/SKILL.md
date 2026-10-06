@@ -13,10 +13,12 @@ Run the four steps in order. Each one has its own skill with the details; this s
 
 | Step | Skill | Done when |
 | --- | --- | --- |
-| 1. Extract | `figma-to-code` | A token table (colors, spacing, type, radii, shadows) read from Figma, not guessed, and the layer tree of the component |
+| 1. Extract | `figma-to-code` | A token table (colors, spacing, type, radii, shadows) read from Figma, not guessed, in one Figma read (two at most), cached for later |
 | 2. Build | this skill, section below | Semantic, accessible markup with every state implemented |
 | 3. Motion | `motion-design` | Springs on interactive elements, staggered entrances, `prefers-reduced-motion` fallback |
-| 4. Verify | `ui-states-verification` | Playwright has driven every state and compared it against the Figma screenshot |
+| 4. Verify | `ui-states-verification` | Playwright has driven every state and compared it against the cached Figma screenshot |
+
+Figma reads are scarce (20 per month on the Starter plan): only `figma-to-code` reads from Figma, and every later step works from its cache. Steps 2 to 4 never call a Figma tool.
 
 Before step 1, confirm the Figma MCP server is connected. If it is not, do not estimate values from a screenshot: stop and show the user how to connect it (see `figma-to-code`). Connecting an MCP server is an external install under the protocol's autonomy limits, so wait for their "yes".
 
@@ -33,7 +35,7 @@ Start the reply with the usual `⚡ GOD` line when invoked through `/god`; other
 
 ## Deliverable
 
-1. The token table from Figma, with the Figma variable name next to each value.
+1. The token table from Figma, with the Figma variable name next to each value, and the Figma reads used (`Figma: 1 lectura`).
 2. The component, with its states, in the project's framework and styling convention.
 3. The motion spec: which elements move, with which spring parameters, and what happens under reduced motion.
 4. The Playwright verification: a per-state screenshot set and the checks that passed, with any mismatch against Figma listed on the first line of the reply.

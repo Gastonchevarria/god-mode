@@ -2,6 +2,12 @@
 
 All notable changes to god-mode are documented here. Versions follow [Semantic Versioning](https://semver.org/).
 
+## [1.2.1] - 2026-10-06
+
+### Changed
+- `figma-to-code` spends one Figma MCP read per component, two at most, instead of four. `get_design_context` already returns the reference code, the screenshot and the asset URLs; `get_variable_defs` runs only when that code uses raw values. A link without `node-id` is answered with a question instead of a `get_metadata` read. On Figma's Starter plan (20 reads per month) that is about 10 to 20 components per month instead of 5.
+- Responses are cached in `.figma-cache/` (kept out of git through `.git/info/exclude`) and reused until the design changes; `ui-states-verification` compares against the cached screenshot. Every run reports the reads it used, and a rate-limit error stops the run instead of retrying.
+
 ## [1.2.0] - 2026-10-05
 
 ### Added

@@ -36,7 +36,7 @@ Drive every state and capture it. Skip a row only if the component has no such s
 
 ## Checks beyond screenshots
 
-- **Fidelity.** Compare each screenshot against the Figma reference from `figma-to-code` with `expect(page).toHaveScreenshot()` or a pixel diff; tolerate anti-aliasing (threshold around 0.2 per pixel), nothing else. List every diff region in the reply.
+- **Fidelity.** Compare each screenshot against the Figma reference that `figma-to-code` saved in `.figma-cache/` (never request a new one from Figma: reads are scarce) with `expect(page).toHaveScreenshot()` or a pixel diff; tolerate anti-aliasing (threshold around 0.2 per pixel), nothing else. List every diff region in the reply.
 - **Touch targets.** For each interactive element, `boundingBox()` is at least 44×44 px; when the visual is smaller, the hit area (padding or pseudo-element) still reaches 44.
 - **Keyboard.** Tab order follows the visual order; `Enter` and `Space` activate buttons; `Escape` closes overlays.
 - **Accessibility.** Run an axe scan (`@axe-core/playwright`) and treat serious or critical issues as failures. Check the accessible name of each control.
