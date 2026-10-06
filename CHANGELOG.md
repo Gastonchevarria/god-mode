@@ -2,6 +2,13 @@
 
 All notable changes to god-mode are documented here. Versions follow [Semantic Versioning](https://semver.org/).
 
+## [1.2.0] - 2026-10-05
+
+### Added
+- `god-mode-design` plugin (pack `design`) with four skills: `design-to-web` (the conductor, `/design`), `figma-to-code` (exact tokens, variables, layers and a reference screenshot through the Figma MCP server; never guessed from a screenshot), `motion-design` (spring transitions, press feedback, staggered entrances, smooth skeletons, `prefers-reduced-motion` fallback, `transform` and `opacity` only) and `ui-states-verification` (Playwright drives hover, focus-visible, active, disabled, loading and error, compares each state against Figma, checks 44 px touch targets, reduced motion and a11y).
+- DESIGN route in `/god` and a `/design` row in the global protocol table. The suite now has 111 skills.
+- Four design cases in the routing eval.
+
 ## [1.1.1] - 2026-09-30
 
 ### Changed

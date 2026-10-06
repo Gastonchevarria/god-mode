@@ -28,7 +28,7 @@ for arg in "$@"; do
         --cursor) WITH_CURSOR=true ;;
         --version=*) VERSION="${arg#*=}" ;;
         --help|-h)
-            echo "Uso: ./install.sh [--pack=core|dev|growth|all] [--cursor] [--version=vX.Y.Z]"
+            echo "Uso: ./install.sh [--pack=core|dev|growth|design|all] [--cursor] [--version=vX.Y.Z]"
             echo "  --pack=<nombre>  Pack de skills a activar (por defecto: core). 'god-mode status' muestra cuántas trae cada uno."
             echo "  --cursor         Además copia .cursorrules y AGENTS.md a la carpeta actual (guarda copia de los existentes)."
             echo "  --version=vX.Y.Z Instala una versión publicada en lugar de la rama main."

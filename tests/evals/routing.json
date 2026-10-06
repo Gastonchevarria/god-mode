@@ -172,6 +172,26 @@
       "plugin": "god-mode-core",
       "query": "This conversation has gotten really long and slow. Can you compact it before we continue?",
       "expected": "auto-compact"
+    },
+    {
+      "plugin": "god-mode-design",
+      "query": "Tengo este botón en Figma: https://www.figma.com/design/k2Xq9LmN0pQ/Checkout?node-id=12-345. Implementalo en React tal cual el diseño, con hover, focus y loading, y que se sienta nativo.",
+      "expected": "design-to-web"
+    },
+    {
+      "plugin": "god-mode-design",
+      "query": "Here's the Figma link for the pricing card: https://www.figma.com/design/k2Xq9LmN0pQ/Pricing?node-id=40-18. Build it pixel-perfect with all the states and verify it in the browser.",
+      "expected": "design-to-web"
+    },
+    {
+      "plugin": "god-mode-design",
+      "query": "Sacame los tokens de color, espaciado y tipografía de este frame de Figma antes de escribir CSS.",
+      "expected": "figma-to-code"
+    },
+    {
+      "plugin": "god-mode-design",
+      "query": "The modal feels stiff. Add spring-based animations and make sure it respects prefers-reduced-motion.",
+      "expected": "motion-design"
     }
   ]
 }

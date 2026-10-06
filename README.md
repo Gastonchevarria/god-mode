@@ -6,12 +6,12 @@
 
 ### Describe the problem. `/god` picks the right skills and sees the job through.
 
-107 expert skills, 6 review subagents and one execution protocol for **Claude Code, Antigravity, Cursor and Windsurf**.<br/>
+111 expert skills, 6 review subagents and one execution protocol for **Claude Code, Antigravity, Cursor and Windsurf**.<br/>
 It finishes reversible work end to end, and asks you before anything it can't undo.
 
 [![Release](https://img.shields.io/github/v/release/Gastonchevarria/god-mode?style=for-the-badge&color=00b4d8)](https://github.com/Gastonchevarria/god-mode/releases)
 [![CI](https://img.shields.io/github/actions/workflow/status/Gastonchevarria/god-mode/ci.yml?branch=main&style=for-the-badge&label=CI)](https://github.com/Gastonchevarria/god-mode/actions/workflows/ci.yml)
-[![Skills](https://img.shields.io/badge/skills-107-7b2cbf?style=for-the-badge)](#-pick-a-pack)
+[![Skills](https://img.shields.io/badge/skills-111-7b2cbf?style=for-the-badge)](#-pick-a-pack)
 [![License: MIT](https://img.shields.io/badge/license-MIT-f4d35e?style=for-the-badge)](LICENSE)
 
 **[Install in 30 seconds](#-install-in-30-seconds)** · [See it work](#-see-it-work) · [The 5 commands](#-the-5-commands-worth-memorizing) · [How it works](#-how-it-works) · [FAQ](#-faq)
@@ -30,7 +30,7 @@ AI coding agents are powerful, but you have probably hit these walls:
 | The agent stops halfway: *"now you implement steps 4 and 5"* | It finishes every reversible step, then checks its own last paragraph for loose ends |
 | It says "done" while a test quietly failed | Failures go on the **first line** of the reply, never buried in a summary |
 | An eager agent pushes, deploys or deletes on its own | It **stops and asks** before push, deploy, delete, migrations, money, credentials, messages or installs |
-| Every skill you add eats context | Pick a pack. All 107 descriptions fit in about 7,300 tokens |
+| Every skill you add eats context | Pick a pack. All 111 descriptions fit in about 7,600 tokens |
 | Your rules only work in one editor | One protocol for Claude Code, Antigravity, Cursor and Windsurf |
 
 ---
@@ -60,6 +60,7 @@ curl -fsSL https://raw.githubusercontent.com/Gastonchevarria/god-mode/main/insta
 /plugin install god-mode-core@god-mode      # /god, /thermos, /anti-slop, /security, /archify
 /plugin install god-mode-dev@god-mode       # optional: backend, frontend, AI, CI/CD, planning
 /plugin install god-mode-growth@god-mode    # optional: pricing, SEO, CRO, ads, email, launch
+/plugin install god-mode-design@god-mode    # optional: Figma to code, motion, Playwright verification
 ```
 
 > [!WARNING]
@@ -98,6 +99,7 @@ Then it does the work. If a step fails, that failure opens the reply.
 | "How much should we charge?" | Monetization | `saas-business-model` + `plan-ceo-review` + `pricing` |
 | "Build this feature end to end" | Full build | `autoplan` + `ralph-loop` + `test-driven-development` |
 | "Our MVP scope is too big" | Scope killer | `mvp-scope-killer` |
+| "Implement this Figma, pixel-perfect" | Design | `design-to-web` → `figma-to-code` + `motion-design` + `ui-states-verification` |
 | "Design the RAG pipeline" | AI architecture | `ai-product-architect` + `rag-implementation` |
 
 ---
@@ -124,7 +126,7 @@ flowchart TD
     R -->|pre-merge| T["/thermos<br/>2 review subagents"]
     R -->|bug| D["debugging + TDD"]
     R -->|idea| V["discovery skills"]
-    R -->|anything else| S["107 skills"]
+    R -->|anything else| S["111 skills"]
     T --> P["Fable 5.1 protocol"]
     D --> P
     V --> P
@@ -154,7 +156,8 @@ Each installed skill adds its description to the agent's context, so only instal
 | **`core`** *(default)* | `god-mode-core` | **21** | Router, reviews, security, anti-slop, TDD, debugging, architecture diagrams |
 | **`dev`** | core + `god-mode-dev` | **56** | Backend and API design, Next.js, FastAPI, RAG and evals, MCP servers, CI/CD, planning |
 | **`growth`** | core + `god-mode-growth` | **72** | Pricing, CRO, SEO and AI SEO, ads, email, onboarding, launch, sales |
-| **`all`** | all three | **107** | Everything |
+| **`design`** | core + `god-mode-design` | **25** | Figma to code with exact tokens, every UI state, spring motion, Playwright verification |
+| **`all`** | all four | **111** | Everything |
 
 Switch packs anytime with `god-mode pack dev`.
 
@@ -245,9 +248,9 @@ Installed in `~/.claude/agents/` and dispatched by the skills when a job needs a
 <br/>
 
 ```bash
-curl -fsSLO https://github.com/Gastonchevarria/god-mode/releases/download/v1.1.1/install.sh
-curl -fsSLO https://github.com/Gastonchevarria/god-mode/releases/download/v1.1.1/install.sh.sha256
-shasum -a 256 -c install.sh.sha256 && bash install.sh --version=v1.1.1 --pack=core
+curl -fsSLO https://github.com/Gastonchevarria/god-mode/releases/download/v1.2.0/install.sh
+curl -fsSLO https://github.com/Gastonchevarria/god-mode/releases/download/v1.2.0/install.sh.sha256
+shasum -a 256 -c install.sh.sha256 && bash install.sh --version=v1.2.0 --pack=core
 ```
 
 A pinned install doesn't update itself. To move to another version, run the installer again with `--version=vX.Y.Z`.

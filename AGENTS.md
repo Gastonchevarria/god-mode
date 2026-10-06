@@ -30,7 +30,7 @@ If the user asks you to install god-mode, "copy the god-mode configuration", or 
    ```bash
    curl -fsSL https://raw.githubusercontent.com/Gastonchevarria/god-mode/main/install.sh | bash -s -- --pack=core
    ```
-   From a clone of this repository, `bash install.sh --pack=core` does the same. Packs: `core`, `dev`, `growth`, `all`.
+   From a clone of this repository, `bash install.sh --pack=core` does the same. Packs: `core`, `dev`, `growth`, `design`, `all`.
 3. **Antigravity is covered by the same installer** when `~/.gemini` exists. Antigravity reads its global configuration from `~/.gemini/config/`: the installer links skills into `~/.gemini/config/skills/` and writes the protocol to `~/.gemini/config/rules/dev_god_mode.md`.
 4. **Never copy** `plugins/*` into `~/.gemini/config/plugins/`, `~/.gemini/config/skills/` or `~/.claude/skills/`. Antigravity loads every folder in `~/.gemini/config/plugins/` as a plugin, so a manual copy loads every skill a second time next to the installer's links.
 5. **Verify.** Run `god-mode status` and read the installer's warnings. If it reports skills "with the same name" or old plugin folders, list them for the user and ask before moving anything.

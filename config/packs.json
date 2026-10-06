@@ -155,6 +155,33 @@
       "thermo-nuclear-review",
       "thermos"
     ],
+    "design": [
+      "ai-product-architect",
+      "anti-slop",
+      "archify",
+      "auto-compact",
+      "code-simplification",
+      "context-engineering",
+      "debugging-and-error-recovery",
+      "design-to-web",
+      "doubt-driven-development",
+      "figma-to-code",
+      "god",
+      "launch-growth-loop",
+      "motion-design",
+      "mvp-scope-killer",
+      "performance-optimization",
+      "saas-business-model",
+      "security",
+      "security-and-hardening",
+      "skill-installer",
+      "spec-driven-development",
+      "test-driven-development",
+      "thermo-nuclear-code-quality-review",
+      "thermo-nuclear-review",
+      "thermos",
+      "ui-states-verification"
+    ],
     "all": "ALL"
   }
 }
