@@ -6,7 +6,12 @@ This package bundles skills and agents written by other authors. Each one keeps 
 
 | Source | License | Upstream commit | Skills / agents |
 | --- | --- | --- | --- |
+| [LottieFiles/motion-design-skill](https://github.com/LottieFiles/motion-design-skill) | MIT ([text](licenses/motion-design-skill-MIT.txt)) | `f9a8a04` | 1 skill: `motion-direction` |
 
 ## Original to god-mode
 
 4 skills: `design-to-web`, `figma-to-code`, `motion-design`, `ui-states-verification`. Licensed under the god-mode MIT license ([text](licenses/god-mode-MIT.txt)).
+
+## Notes
+
+- motion-direction is LottieFiles' motion-design skill, renamed from motion-design, with a new description and a god-mode note on precedence added below its title. The rest of its text is unchanged.

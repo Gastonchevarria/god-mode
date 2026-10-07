@@ -2,6 +2,17 @@
 
 All notable changes to god-mode are documented here. Versions follow [Semantic Versioning](https://semver.org/).
 
+## [1.3.0] - 2026-10-06
+
+### Added
+- `motion-direction` in god-mode-design: LottieFiles' motion-design skill (MIT, [LottieFiles/motion-design-skill](https://github.com/LottieFiles/motion-design-skill) at `f9a8a04`), renamed so it does not clash with god-mode's `motion-design`. It decides what motion should feel like: four personalities with their durations and easing, duration tables per element, stagger budgets, emotion-to-motion mapping and Disney's 12 principles for UI, with 16 reference files. A note under its title sets precedence: on UI controls the ambient layer is optional, loops over 5 seconds need a pause control, and `motion-design` wins on animated properties and reduced motion.
+- `motion-design` starts from `motion-direction`'s personality and maps it to springs. The DESIGN route and `design-to-web` include it. The suite now has 112 skills.
+- Two `motion-direction` cases in the routing eval.
+- The `motion-design` and `motion-direction` descriptions split the work: one writes animation code, the other decides how motion should feel. Without the split, adding `motion-direction` made Claude skip `motion-design` more often (`docs/evals/routing-design-2026-10-05.md`).
+
+### Fixed
+- Generated credits say "1 skill" instead of "1 skills".
+
 ## [1.2.1] - 2026-10-06
 
 ### Changed

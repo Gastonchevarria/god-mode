@@ -1,11 +1,23 @@
 ---
 name: motion-design
-description: "Adds motion that feels physical: spring transitions on interactive elements, press feedback, staggered entrances, smooth skeletons and a prefers-reduced-motion fallback, on transform and opacity only. Use when the user says 'add animations', 'microinteractions' or 'it feels stiff'."
+description: "Implements UI motion in code: spring transitions, press feedback, staggered entrances, skeletons and a prefers-reduced-motion fallback, on transform and opacity only. Use when the user says 'add animations', 'it feels stiff', 'spring animation' or 'microinteractions'."
 ---
 
 # Motion Design
 
 Motion is feedback, not decoration. Every animation answers one of three questions for the user: what did I just do, where did this come from, or what is happening now. If it answers none, leave it out.
+
+## Start from the direction
+
+Before choosing springs, settle what the motion should feel like with `motion-direction` (LottieFiles' motion principles): one personality for the whole product (Playful, Premium, Corporate or Energetic), its duration palette and signature easing, the stagger budget, and which element leads. This skill then builds that direction with the rules below.
+
+When the two disagree, this skill wins on three points:
+
+- **Properties.** Only `transform` and `opacity` animate on interaction. A shadow that "arrives 50 ms after the card" is a pseudo-element whose `opacity` animates, not an animated `box-shadow`.
+- **Reduced motion.** Under `prefers-reduced-motion: reduce`, motion becomes opacity-only, even where `motion-direction` says state changes need position or scale.
+- **Ambient layer.** Controls (buttons, inputs, menus, forms) get no looping background motion. Ambient motion belongs to heroes and illustrations, and anything that loops over 5 seconds needs a pause control.
+
+Map the personality to springs with the table in "Spring reference": Premium and Corporate use the no-overshoot rows, Playful and Energetic the ones with a bounce.
 
 ## Rules
 

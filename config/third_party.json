@@ -105,6 +105,16 @@
         "archify"
       ],
       "agents": []
+    },
+    {
+      "repo": "LottieFiles/motion-design-skill",
+      "license": "MIT",
+      "license_file": "licenses/motion-design-skill-MIT.txt",
+      "commit": "f9a8a04",
+      "skills": [
+        "motion-direction"
+      ],
+      "agents": []
     }
   ],
   "removed": [
@@ -142,5 +152,7 @@
       ]
     }
   ],
-  "notes": []
+  "notes": [
+    "motion-direction is LottieFiles' motion-design skill, renamed from motion-design, with a new description and a god-mode note on precedence added below its title. The rest of its text is unchanged."
+  ]
 }

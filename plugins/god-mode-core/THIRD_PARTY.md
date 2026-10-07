@@ -7,8 +7,12 @@ This package bundles skills and agents written by other authors. Each one keeps 
 | Source | License | Upstream commit | Skills / agents |
 | --- | --- | --- | --- |
 | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) | MIT ([text](licenses/agent-skills-MIT.txt)) | `bcab6a1` | 8 skills: `code-simplification`, `context-engineering`, `debugging-and-error-recovery`, `doubt-driven-development`, `performance-optimization`, `security-and-hardening`, `spec-driven-development`, `test-driven-development`. agents: `code-reviewer`, `security-auditor`, `test-engineer`, `web-performance-auditor` |
-| [tt-a1i/archify](https://github.com/tt-a1i/archify) | MIT ([text](skills/archify/LICENSE)) | `9e35d2b` | 1 skills: `archify` |
+| [tt-a1i/archify](https://github.com/tt-a1i/archify) | MIT ([text](skills/archify/LICENSE)) | `9e35d2b` | 1 skill: `archify` |
 
 ## Original to god-mode
 
 12 skills: `ai-product-architect`, `anti-slop`, `auto-compact`, `god`, `launch-growth-loop`, `mvp-scope-killer`, `saas-business-model`, `security`, `skill-installer`, `thermo-nuclear-code-quality-review`, `thermo-nuclear-review`, `thermos`. agents: `thermo-nuclear-code-quality-review-subagent`, `thermo-nuclear-review-subagent`. Licensed under the god-mode MIT license ([text](licenses/god-mode-MIT.txt)).
+
+## Notes
+
+- motion-direction is LottieFiles' motion-design skill, renamed from motion-design, with a new description and a god-mode note on precedence added below its title. The rest of its text is unchanged.

@@ -67,7 +67,7 @@ def credits_markdown(meta, skills, agents, license_prefix, archify_license):
         lic_path = archify_license if src["repo"] == "tt-a1i/archify" else license_prefix + Path(src["license_file"]).name
         parts = []
         if own_skills:
-            parts.append(f"{len(own_skills)} skills: {code_list(own_skills)}")
+            parts.append(f"{len(own_skills)} skill{'s' if len(own_skills) != 1 else ''}: {code_list(own_skills)}")
         if own_agents:
             parts.append(f"agents: {code_list(own_agents)}")
         lines.append(f"| [{src['repo']}](https://github.com/{src['repo']}) | {src['license']} ([text]({lic_path})) "
@@ -80,7 +80,7 @@ def credits_markdown(meta, skills, agents, license_prefix, archify_license):
         lines.append("## Original to god-mode\n")
         parts = []
         if original_skills:
-            parts.append(f"{len(original_skills)} skills: {code_list(original_skills)}")
+            parts.append(f"{len(original_skills)} skill{'s' if len(original_skills) != 1 else ''}: {code_list(original_skills)}")
         if original_agents:
             parts.append(f"agents: {code_list(original_agents)}")
         lines.append(". ".join(parts) + f". Licensed under the god-mode MIT license ([text]({license_prefix}god-mode-MIT.txt)).\n")

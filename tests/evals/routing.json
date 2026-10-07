@@ -192,6 +192,16 @@
       "plugin": "god-mode-design",
       "query": "The modal feels stiff. Add spring-based animations and make sure it respects prefers-reduced-motion.",
       "expected": "motion-design"
+    },
+    {
+      "plugin": "god-mode-design",
+      "query": "Estoy armando una app de turnos para una clínica dental premium. ¿Qué personalidad de animación le doy, con qué duraciones y curvas, antes de programar nada?",
+      "expected": "motion-direction"
+    },
+    {
+      "plugin": "god-mode-design",
+      "query": "Our dashboard has a header, six KPI cards and a chart that all appear at once. Choreograph the entrance: what leads, the stagger and the timing.",
+      "expected": "motion-direction"
     }
   ]
 }
