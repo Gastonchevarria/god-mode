@@ -1,6 +1,8 @@
 ---
 name: ui-states-verification
 description: "Verifies a rendered component with Playwright: drives hover, focus-visible, active, disabled, loading and error, screenshots each state against the Figma reference, checks touch targets, reduced motion and a11y. Use when the user says 'verify the states' or 'does it match the design'."
+model: claude-opus-5-5
+context: fork
 ---
 
 # UI States Verification

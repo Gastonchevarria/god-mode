@@ -1,6 +1,8 @@
 ---
 name: design-to-web
 description: "Turns a Figma design into a polished, accessible web component: exact tokens via the Figma MCP server, pixel-faithful build with every state, spring motion, Playwright verification. Use when the user says /design-to-web, 'implement this Figma', 'make it feel native' or 'pixel-perfect'."
+model: claude-opus-5-5
+context: fork
 ---
 
 # Design to Web
@@ -17,6 +19,8 @@ Run the four steps in order. Each one has its own skill with the details; this s
 | 2. Build | this skill, section below | Semantic, accessible markup with every state implemented |
 | 3. Motion | `motion-direction`, then `motion-design` | One motion personality with its timing and choreography, built with springs on `transform` and `opacity`, with a `prefers-reduced-motion` fallback |
 | 4. Verify | `ui-states-verification` | Playwright has driven every state and compared it against the cached Figma screenshot |
+
+This skill and the other design skills run in a forked context on Claude Opus 5.5 (`model` and `context: fork` in the frontmatter), whatever model the main session uses; subagents they launch use the default subagent model. A forked skill does not see the conversation: everything it needs comes in its arguments. If something essential is missing, such as a Figma link with `node-id`, stop and return the question for the user instead of guessing.
 
 Figma reads are scarce (20 per month on the Starter plan): only `figma-to-code` reads from Figma, and every later step works from its cache. Steps 2 to 4 never call a Figma tool.
 

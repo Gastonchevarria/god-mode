@@ -161,6 +161,8 @@ Each installed skill adds its description to the agent's context, so only instal
 
 Switch packs anytime with `god-mode pack dev`.
 
+The design skills run on **Claude Opus 5.5** in a forked context, whichever model your session uses: `/god` and every other skill keep the model you pick in the interface, and design work switches to Opus 5.5 only while it runs. Subagents keep `CLAUDE_CODE_SUBAGENT_MODEL` (Sonnet 5.5 with `god-mode doctor --fix`). A forked skill does not see the conversation, so put the Figma link and what you want in the same message.
+
 ---
 
 ## 🪶 Token Optimization
@@ -248,9 +250,9 @@ Installed in `~/.claude/agents/` and dispatched by the skills when a job needs a
 <br/>
 
 ```bash
-curl -fsSLO https://github.com/Gastonchevarria/god-mode/releases/download/v1.3.1/install.sh
-curl -fsSLO https://github.com/Gastonchevarria/god-mode/releases/download/v1.3.1/install.sh.sha256
-shasum -a 256 -c install.sh.sha256 && bash install.sh --version=v1.3.1 --pack=core
+curl -fsSLO https://github.com/Gastonchevarria/god-mode/releases/download/v1.4.0/install.sh
+curl -fsSLO https://github.com/Gastonchevarria/god-mode/releases/download/v1.4.0/install.sh.sha256
+shasum -a 256 -c install.sh.sha256 && bash install.sh --version=v1.4.0 --pack=core
 ```
 
 A pinned install doesn't update itself. To move to another version, run the installer again with `--version=vX.Y.Z`.

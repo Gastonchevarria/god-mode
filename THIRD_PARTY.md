@@ -19,7 +19,7 @@ Some of these reuse only the name of a skill from another project (`autoplan`, `
 
 ## Notes
 
-- motion-direction is LottieFiles' motion-design skill, renamed from motion-design, with a new description and a god-mode note on precedence added below its title. The rest of its text is unchanged.
+- motion-direction is LottieFiles' motion-design skill, renamed from motion-design, with a new description, `model` and `context: fork` in its frontmatter, and a god-mode note on precedence added below its title. The rest of its text is unchanged.
 
 ## Removed for licensing reasons
 

@@ -14,4 +14,4 @@ This package bundles skills and agents written by other authors. Each one keeps 
 
 ## Notes
 
-- motion-direction is LottieFiles' motion-design skill, renamed from motion-design, with a new description and a god-mode note on precedence added below its title. The rest of its text is unchanged.
+- motion-direction is LottieFiles' motion-design skill, renamed from motion-design, with a new description, `model` and `context: fork` in its frontmatter, and a god-mode note on precedence added below its title. The rest of its text is unchanged.

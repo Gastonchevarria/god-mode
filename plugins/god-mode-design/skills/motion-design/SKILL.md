@@ -1,6 +1,8 @@
 ---
 name: motion-design
 description: "Implements UI motion in code: spring transitions, press feedback, staggered entrances, skeletons and a prefers-reduced-motion fallback, on transform and opacity only. Use when the user says 'add animations', 'it feels stiff', 'spring animation' or 'microinteractions'."
+model: claude-opus-5-5
+context: fork
 ---
 
 # Motion Design

@@ -19,3 +19,15 @@ Adding LottieFiles' skill as `motion-direction` lowered `motion-design` on "The 
 | --- | --- | --- |
 | `motion-design` (6 runs) | 3 / 6 | 5 / 6 |
 | All 6 design cases (3 runs each) | — | 18 / 18 |
+
+## 2026-10-06 — design skills on Opus 5.5 in a forked context (v1.4.0)
+
+With `model: claude-opus-5-5` and `context: fork` in the five design skills, routing still picks the same skills: the frontmatter changes where a skill runs, not how Claude chooses it.
+
+| Run | Result | Misses |
+| --- | --- | --- |
+| 6 design cases, 2 runs each (first) | 9 / 12 | not inspected |
+| Same cases, 2 runs each (second) | 11 / 12 | 1 run of `motion-design` loaded no skill |
+
+The `motion-design` case is the noisy one already noted above: its misses load no skill rather than a wrong one.
+

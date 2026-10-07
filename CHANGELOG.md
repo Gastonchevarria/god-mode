@@ -2,6 +2,15 @@
 
 All notable changes to god-mode are documented here. Versions follow [Semantic Versioning](https://semver.org/).
 
+## [1.4.0] - 2026-10-06
+
+### Changed
+- The five god-mode-design skills run on `claude-opus-5-5` in a forked context (`model` and `context: fork` in their frontmatter). The main session keeps the model chosen in the interface: with Fable 5.1 as the default, `/god` routes on Fable 5.1, the design work runs on Opus 5.5 and its subagents on Sonnet 5.5. Checked with `claude -p`: a `/god` design request used Fable 5.1 for routing and Opus 5.5 for the build; the next turn went back to Fable 5.1. Without `context: fork`, `model` applies only when the user types the skill's command, not when Claude or `/god` picks the skill.
+- `design-to-web` states that a forked skill does not see the conversation, so it returns a question when its arguments lack something essential.
+
+### Fixed
+- `figma-to-code` saves `.figma-cache/` even when it cannot write `.git/info/exclude`, and asks the user to add the folder to `.gitignore`. Before, a denied write skipped the cache, and the next run spent another Figma read.
+
 ## [1.3.1] - 2026-10-06
 
 ### Fixed

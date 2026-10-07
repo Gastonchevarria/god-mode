@@ -1,6 +1,8 @@
 ---
 name: motion-direction
 description: "Decides how motion should feel before code: one personality (Playful, Premium, Corporate, Energetic), durations, easing, choreography and stagger budgets, from Disney's 12 principles. Use for 'what should this animation feel like' or 'choreograph these elements'. For code, use motion-design."
+model: claude-opus-5-5
+context: fork
 license: MIT
 metadata:
   author: LottieFiles

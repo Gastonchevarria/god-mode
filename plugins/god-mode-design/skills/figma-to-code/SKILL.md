@@ -1,6 +1,8 @@
 ---
 name: figma-to-code
 description: "Reads a Figma design through the Figma MCP server and extracts exact tokens (colors, spacing, type, radii, shadows), variables, layers and a reference screenshot before any code. Use when the user shares a Figma link or says 'get the tokens from Figma' or 'match the mockup'."
+model: claude-opus-5-5
+context: fork
 ---
 
 # Figma to Code
@@ -57,7 +59,7 @@ Every response is saved in the project under `.figma-cache/` and reused until th
   tokens.md                         # the token table of section 5, one per project
 ```
 
-Before the first save, add `.figma-cache/` to `.git/info/exclude` so it never reaches the repository; that file is local and changes nothing in the repo. If the cache already has the node, read nothing from Figma and say so: `Figma: 0 lecturas (caché)`.
+Before the first save, add `.figma-cache/` to `.git/info/exclude` so it never reaches the repository; that file is local and changes nothing in the repo. If that write is not allowed, save the cache anyway and tell the user to add `.figma-cache/` to `.gitignore`: never skip the cache, because a missing cache costs a Figma read next time. If the cache already has the node, read nothing from Figma and say so: `Figma: 0 lecturas (caché)`.
 
 ## 4. Read: one call, two at most
 
