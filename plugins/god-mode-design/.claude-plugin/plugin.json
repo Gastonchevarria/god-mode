@@ -1,7 +1,7 @@
 {
   "name": "god-mode-design",
-  "version": "1.4.0",
-  "description": "Design-to-web skills: Figma tokens via the Figma MCP server, pixel-faithful accessible components, spring-based motion with reduced-motion fallbacks, and Playwright verification of every interactive state.",
+  "version": "1.5.0",
+  "description": "Design-to-web skills: accessible components built from a mockup, a description or the project's design system, spring-based motion with reduced-motion fallbacks, and Playwright verification of every interactive state.",
   "author": {
     "name": "Gaston Chevarria"
   },
@@ -10,7 +10,7 @@
   "license": "MIT",
   "keywords": [
     "design",
-    "figma",
+    "ui",
     "motion",
     "frontend",
     "playwright"

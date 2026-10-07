@@ -85,8 +85,13 @@ Antes de ejecutar cualquier ruta, leé [`references/protocol.md`](references/pro
  ├── 🧠💾 "¿La sesión está pesada / se me acaban los tokens / compactá?"
  │    └── Ruta: CONTEXT-HEALTH ➔ Activa `auto-compact` + `context-engineering`
  │
- └── 🎨 "¿Quiero implementar este diseño de Figma / que se sienta nativo / pixel-perfect / animaciones?"
-      └── Ruta: DESIGN ➔ Activa `design-to-web` (`figma-to-code` + `motion-direction` + `motion-design` + `ui-states-verification`)
+ └── 🎨 "¿Quiero UI que se sienta nativa / pixel-perfect / animaciones / verificar estados?"
+      └── Ruta: DESIGN ➔ Activa solo la skill que sirve para el pedido:
+           · construir un componente o pantalla desde un mockup, una captura o una descripción ➔ `design-to-web`
+           · decidir cómo se tiene que sentir el movimiento, timing o coreografía ➔ `motion-direction`
+           · agregar o arreglar animaciones en el código ➔ `motion-design`
+           · verificar estados, accesibilidad o fidelidad en el navegador ➔ `ui-states-verification`
+           Pasale a la skill el pedido completo y la ruta de cualquier imagen: corre en un contexto aparte y no ve la conversación.
 ```
 
 ## Dónde vive cada skill
@@ -98,4 +103,4 @@ god-mode se instala en plugins separados. Si la skill de una ruta no está dispo
 | `god-mode-core` | incluido siempre | `ai-product-architect`, `anti-slop`, `archify`, `auto-compact`, `context-engineering`, `debugging-and-error-recovery`, `doubt-driven-development`, `launch-growth-loop`, `mvp-scope-killer`, `saas-business-model`, `security`, `security-and-hardening`, `test-driven-development`, `thermo-nuclear-code-quality-review`, `thermo-nuclear-review`, `thermos` |
 | `god-mode-dev` | arquitectura, backend, IA y planificación | `autoplan`, `backend-architect`, `fastapi-pro`, `founder-technical-decision`, `interview-me`, `nextjs-app-router`, `office-hours`, `plan-ceo-review`, `plan-eng-review`, `rag-implementation`, `ralph-loop`, `retro`, `self-learning-skills` |
 | `god-mode-growth` | pricing, validación y crecimiento | `pricing`, `saas-launch-revenue`, `startup-idea-validation` |
-| `god-mode-design` | de Figma a web: tokens, estados, motion y verificación | `design-to-web`, `figma-to-code`, `motion-design`, `motion-direction`, `ui-states-verification` |
+| `god-mode-design` | UI pulida: tokens, estados, motion y verificación | `design-to-web`, `motion-design`, `motion-direction`, `ui-states-verification` |

@@ -31,3 +31,16 @@ With `model: claude-opus-5-5` and `context: fork` in the five design skills, rou
 
 The `motion-design` case is the noisy one already noted above: its misses load no skill rather than a wrong one.
 
+## 2026-10-06 — design pack without Figma (v1.5.0)
+
+`figma-to-code` was removed. The two `design-to-web` cases now point to a mockup saved in the project instead of a Figma link, and the `figma-to-code` case became a `ui-states-verification` case.
+
+| Case | Runs | Result |
+| --- | --- | --- |
+| `design-to-web` (ES and EN, mockup path) | 4 | 4 / 4 |
+| `ui-states-verification` | 2 | 2 / 2 |
+| `motion-design` | 2 | 2 / 2 |
+| `motion-direction` (2 cases) | 4 | 4 / 4 |
+
+End to end with `claude -p --model claude-fable-5-1`: `/god` routed a "build the button from design/pay-button.png" request to `design-to-web` with the image path in its arguments; Fable 5.1 routed, Opus 5.5 built, and no Figma tool was called.
+

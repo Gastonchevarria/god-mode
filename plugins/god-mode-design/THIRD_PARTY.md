@@ -10,7 +10,7 @@ This package bundles skills and agents written by other authors. Each one keeps 
 
 ## Original to god-mode
 
-4 skills: `design-to-web`, `figma-to-code`, `motion-design`, `ui-states-verification`. Licensed under the god-mode MIT license ([text](licenses/god-mode-MIT.txt)).
+3 skills: `design-to-web`, `motion-design`, `ui-states-verification`. Licensed under the god-mode MIT license ([text](licenses/god-mode-MIT.txt)).
 
 ## Notes
 

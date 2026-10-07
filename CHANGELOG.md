@@ -2,6 +2,16 @@
 
 All notable changes to god-mode are documented here. Versions follow [Semantic Versioning](https://semver.org/).
 
+## [1.5.0] - 2026-10-06
+
+### Removed
+- `figma-to-code` and every use of the Figma MCP server in the design pack. Design work no longer depends on Figma reads or on a `.figma-cache/` folder; projects that have one can delete it.
+
+### Changed
+- `design-to-web` builds from a reference image saved in the project (passed by its path), the project's design system or a description. Values read off an image are marked `≈` and mapped to the closest existing token.
+- The `/god` DESIGN route activates only the skill the request needs: `design-to-web` to build, `motion-direction` to decide how motion feels, `motion-design` for animation code, `ui-states-verification` to check states in the browser.
+- `ui-states-verification` compares against the reference image when there is one, and skips the fidelity check otherwise.
+
 ## [1.4.0] - 2026-10-06
 
 ### Changed

@@ -1,6 +1,6 @@
 ---
 name: ui-states-verification
-description: "Verifies a rendered component with Playwright: drives hover, focus-visible, active, disabled, loading and error, screenshots each state against the Figma reference, checks touch targets, reduced motion and a11y. Use when the user says 'verify the states' or 'does it match the design'."
+description: "Verifies a rendered component with Playwright: drives hover, focus-visible, active, disabled, loading and error, screenshots each state against the reference image, checks touch targets, reduced motion and a11y. Use when the user says 'verify the states' or 'does it match the design'."
 model: claude-opus-5-5
 context: fork
 ---
@@ -38,7 +38,7 @@ Drive every state and capture it. Skip a row only if the component has no such s
 
 ## Checks beyond screenshots
 
-- **Fidelity.** Compare each screenshot against the Figma reference that `figma-to-code` saved in `.figma-cache/` (never request a new one from Figma: reads are scarce) with `expect(page).toHaveScreenshot()` or a pixel diff; tolerate anti-aliasing (threshold around 0.2 per pixel), nothing else. List every diff region in the reply.
+- **Fidelity.** When the request includes a reference image (a mockup or screenshot saved in the project), compare each screenshot against it with a pixel diff at the same viewport; tolerate anti-aliasing (threshold around 0.2 per pixel), nothing else, and list every diff region in the reply. A mockup is not a render of the same code, so report the diff regions instead of failing on them. Without a reference image, skip this check and say so.
 - **Touch targets.** For each interactive element, `boundingBox()` is at least 44×44 px; when the visual is smaller, the hit area (padding or pseudo-element) still reaches 44.
 - **Keyboard.** Tab order follows the visual order; `Enter` and `Space` activate buttons; `Escape` closes overlays.
 - **Accessibility.** Run an axe scan (`@axe-core/playwright`) and treat serious or critical issues as failures. Check the accessible name of each control.
@@ -47,4 +47,4 @@ Drive every state and capture it. Skip a row only if the component has no such s
 
 ## Report
 
-First line: pass or the first failure. Then the matrix with one row per state and its result, the diff regions against Figma, and the screenshot paths. A failed state is not "minor": either fix it and re-run, or hand it back to the build step with the screenshot that shows it.
+First line: pass or the first failure. Then the matrix with one row per state and its result, the diff regions against the reference image, and the screenshot paths. A failed state is not "minor": either fix it and re-run, or hand it back to the build step with the screenshot that shows it.
