@@ -84,6 +84,16 @@ class ValidateTest(unittest.TestCase):
         self.repo.credit("god")
         self.assertTrue(any("routes to unknown skill or agent 'missing-skill'" in e for e in self.repo.errors()))
 
+    def test_router_matrix_line_to_unknown_skill(self):
+        self.repo.skill("god", "name: god\ndescription: router")
+        (self.repo.root / "skills" / "god" / "SKILL.md").write_text(
+            "---\nname: god\ndescription: router\n---\n## Matriz de rutas\n"
+            "Después del fix, un test con `ghost-skill`.\n## Otra sección\n`not-checked`\n", encoding="utf-8")
+        self.repo.credit("god")
+        errors = self.repo.errors()
+        self.assertTrue(any("'ghost-skill'" in e for e in errors))
+        self.assertFalse(any("'not-checked'" in e for e in errors))
+
     def test_skill_missing_from_third_party(self):
         self.repo.skill("demo", "name: demo\ndescription: x")
         self.assertTrue(any("not listed" in e for e in self.repo.errors()))

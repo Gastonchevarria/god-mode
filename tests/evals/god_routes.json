@@ -1,0 +1,92 @@
+{
+  "cases": [
+    {
+      "route": "DIRECT",
+      "query": "Renombrá la función calcTotal a calculateTotal en src/cart.ts y actualizá todos sus usos."
+    },
+    {
+      "route": "DIRECT",
+      "query": "What's the difference between useMemo and useCallback in React?"
+    },
+    {
+      "route": "DIRECT",
+      "query": "Cambiá el color del botón primario a #1D4ED8 en styles/theme.css."
+    },
+    {
+      "route": "DIRECT",
+      "query": "Explain what this regex matches: ^(?=.*\\d)(?=.*[a-z]).{8,}$"
+    },
+    {
+      "route": "DIRECT",
+      "query": "Escribime el mensaje de commit para estos cambios: agregué export a CSV y arreglé el filtro por fecha."
+    },
+    {
+      "route": "DIRECT",
+      "query": "Add a .env.example with the variables DATABASE_URL and REDIS_URL, empty values."
+    },
+    {
+      "route": "DEBUG",
+      "query": "npm run build falla con \"TypeError: Cannot read properties of undefined (reading 'map')\" en ProductList.tsx. Arreglalo."
+    },
+    {
+      "route": "THERMO",
+      "query": "Revisá a fondo este branch antes de mergear a main: bugs, breaking changes y calidad del código."
+    },
+    {
+      "route": "SECURITY",
+      "query": "We launch next week. Audit the whole app for leaked keys, injection and insecure headers."
+    },
+    {
+      "route": "ARCHIFY",
+      "query": "Dibujame un diagrama de la arquitectura: front en Next.js, API en FastAPI, Postgres y una cola en Redis."
+    },
+    {
+      "route": "DISCOVERY",
+      "query": "I have an idea for an app that lets dentists manage appointments over WhatsApp. Is it worth building?"
+    },
+    {
+      "route": "MONETIZATION",
+      "query": "¿Cuánto cobro por mi SaaS de conciliación bancaria? ¿Por usuario o por volumen de movimientos?"
+    },
+    {
+      "route": "SCOPE",
+      "query": "Mi MVP tiene microservicios, RBAC propio y un dashboard de analytics hecho a mano. ¿Qué saco para lanzar en 3 semanas?"
+    },
+    {
+      "route": "AI-ARCH",
+      "query": "Design the RAG pipeline to answer questions over our 2,000 PDF contracts."
+    },
+    {
+      "route": "TECH-ARCH",
+      "query": "How should I structure the backend and database for a multi-tenant invoicing app?"
+    },
+    {
+      "route": "FULL-BUILD",
+      "query": "Construí de punta a punta la feature de exportar movimientos a CSV con filtros por fecha, con tests."
+    },
+    {
+      "route": "GROWTH",
+      "query": "How do I get my first 100 users? I need a landing page and an onboarding that activates them."
+    },
+    {
+      "route": "ADVERSARIAL",
+      "query": "Vamos a migrar de Postgres a MongoDB para ir más rápido. ¿Estamos seguros? Cuestioná la decisión."
+    },
+    {
+      "route": "PERSISTENCE",
+      "query": "Terminamos el sprint. ¿Qué aprendimos? Guardá para siempre el patrón de reintentos que armamos."
+    },
+    {
+      "route": "CONTEXT",
+      "query": "La sesión está pesadísima y se me acaban los tokens, compactá."
+    },
+    {
+      "route": "DESIGN",
+      "query": "The modal feels stiff. Add spring animations with a reduced-motion fallback."
+    },
+    {
+      "route": "ANTI-SLOP",
+      "query": "Limpiá este código TypeScript lleno de 'as any' y catch vacíos que generó la IA."
+    }
+  ]
+}

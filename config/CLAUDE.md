@@ -54,7 +54,7 @@ Cualquiera de los siguientes comandos o intenciones activa la skill correspondie
 
 | Comando / Intención | Skill Activada | Objetivo / Alcance |
 | :--- | :--- | :--- |
-| `/god` | `god` | Orquestador maestro que clasifica el requerimiento y activa la mejor combinación de skills. |
+| `/god` | `god` | Orquestador maestro: hace directo los pedidos chicos y para el resto activa la skill que sirve. |
 | `/install-skill` | `skill-installer` | Instalación y sincronización autónoma de Agent Skills desde GitHub o VoltAgent/awesome-agent-skills. |
 | `/thermos` | `thermos` | Auditoría implacable pre-merge (Bugs + Code Quality) usando subagentes termo-nucleares. |
 | `/anti-slop` | `anti-slop` | Auditoría y eliminación de código vago, 'as any' y anti-patrones de IA en TypeScript/JS. |

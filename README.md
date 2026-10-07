@@ -81,27 +81,28 @@ You describe the problem in plain English or Spanish:
 The first line tells you which route it took and which skills it loaded, before it touches anything:
 
 ```text
-⚡ GOD · Ruta: DEBUGGING & ERROR RECOVERY · Skills: debugging-and-error-recovery + test-driven-development · Reproduce the 500, find the root cause and fix it with a regression test.
+⚡ GOD · Ruta: DEBUGGING · Skills: debugging-and-error-recovery · Reproduce the 500, find the root cause and fix it with a regression test.
 ```
 
 Then it does the work. If a step fails, that failure opens the reply.
 
-**What `/god` routes to:**
+**What `/god` routes to:** one skill per request, the one that fits. Everyday requests load none.
 
-| When you say something like… | Route | Skills it loads |
+| When you say something like… | Route | Skill it loads |
 | :--- | :--- | :--- |
+| "Rename this function" / "what does this regex do?" / "write the commit message" | Direct | none: it just does it |
 | "Review this branch before I merge" | Thermo-nuclear review | `thermos` → two review subagents in parallel |
-| "The build is broken" / "this test fails" | Debugging | `debugging-and-error-recovery` + `test-driven-development` |
-| "Audit security before launch" | Pre-launch security | `security` + `security-and-hardening` |
+| "The build is broken" / "this test fails" | Debugging | `debugging-and-error-recovery` |
+| "Audit security before launch" | Security | `security` |
 | "Clean up the lazy AI code" | Anti-slop | `anti-slop` |
-| "Draw our architecture" | System mapping | `archify` |
-| "Is this idea worth building?" | Discovery | `interview-me` + `office-hours` + `startup-idea-validation` |
-| "How much should we charge?" | Monetization | `saas-business-model` + `plan-ceo-review` + `pricing` |
-| "Build this feature end to end" | Full build | `autoplan` + `ralph-loop` + `test-driven-development` |
+| "Draw our architecture" | Archify | `archify` |
+| "Is this idea worth building?" | Discovery | `office-hours` |
+| "Per seat or usage-based?" / "How much should we charge?" | Monetization | `saas-business-model` / `pricing` |
+| "Build this feature end to end" | Full build | `incremental-implementation`, or `autoplan` when the feature is big or unclear |
 | "Our MVP scope is too big" | Scope killer | `mvp-scope-killer` |
-| "Build this screen from the mockup, pixel-perfect" | Design | `design-to-web` → `motion-direction` + `motion-design` + `ui-states-verification` |
+| "Build this screen from the mockup, pixel-perfect" | Design | `design-to-web` |
 | "The modal feels stiff, add spring animations" | Design | `motion-design` |
-| "Design the RAG pipeline" | AI architecture | `ai-product-architect` + `rag-implementation` |
+| "Design the RAG pipeline" | AI architecture | `rag-implementation` |
 
 ---
 
@@ -109,7 +110,7 @@ Then it does the work. If a step fails, that failure opens the reply.
 
 | Command | What you get |
 | :--- | :--- |
-| **`/god`** | The router. Describe any problem and it picks the skills and subagents for you. |
+| **`/god`** | The router. Describe any problem: small requests get done directly, bigger ones get the one skill or subagent that fits. |
 | **`/thermos`** | A double pre-merge review: one subagent hunts bugs, breaking changes and security issues, another checks maintainability. They run in parallel. |
 | **`/anti-slop`** | Finds and fixes AI slop in TypeScript and JavaScript: `as any`, hallucinated imports, useless wrappers. |
 | **`/security`** | A pre-launch audit of the whole app (secrets, injection, dependencies, headers), written up in `SECURITY_AUDIT.md`. |
@@ -125,10 +126,12 @@ The other 101 skills load on their own when your request matches them.
 flowchart TD
     U["You: /god + the problem"] --> R{"/god router"}
     R -->|pre-merge| T["/thermos<br/>2 review subagents"]
-    R -->|bug| D["debugging + TDD"]
-    R -->|idea| V["discovery skills"]
-    R -->|anything else| S["111 skills"]
+    R -->|small change or question| X["direct, no skill"]
+    R -->|bug| D["debugging"]
+    R -->|idea| V["one discovery skill"]
+    R -->|anything else| S["the one skill that fits"]
     T --> P["Fable 5.1 protocol"]
+    X --> P
     D --> P
     V --> P
     S --> P
@@ -251,9 +254,9 @@ Installed in `~/.claude/agents/` and dispatched by the skills when a job needs a
 <br/>
 
 ```bash
-curl -fsSLO https://github.com/Gastonchevarria/god-mode/releases/download/v1.5.0/install.sh
-curl -fsSLO https://github.com/Gastonchevarria/god-mode/releases/download/v1.5.0/install.sh.sha256
-shasum -a 256 -c install.sh.sha256 && bash install.sh --version=v1.5.0 --pack=core
+curl -fsSLO https://github.com/Gastonchevarria/god-mode/releases/download/v1.6.0/install.sh
+curl -fsSLO https://github.com/Gastonchevarria/god-mode/releases/download/v1.6.0/install.sh.sha256
+shasum -a 256 -c install.sh.sha256 && bash install.sh --version=v1.6.0 --pack=core
 ```
 
 A pinned install doesn't update itself. To move to another version, run the installer again with `--version=vX.Y.Z`.
@@ -315,6 +318,8 @@ Yes. [`AGENTS.md`](AGENTS.md) tells any agent that reads the repo to check `god-
 <br/>
 
 We measure it. In the latest [routing eval](docs/evals/routing-2026-09-26.md) (30 requests in English and Spanish, 2 runs each), every time Claude loaded a skill it was the right one: 21 out of 21. In the other runs it answered directly, usually to ask for context the request didn't include.
+
+`/god` has its own [route eval](docs/evals/god-routes-2026-10-06.md): 22 requests, from "rename this function" to "audit security before launch", 2 runs each. The current router picks the right route in 44 of 44 runs, loads one skill at most, and never re-reads the protocol the session already carries. Run it with `python3 scripts/eval_god.py`.
 
 </details>
 

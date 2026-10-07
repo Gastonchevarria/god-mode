@@ -1,6 +1,6 @@
 {
   "name": "god-mode-design",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "Design-to-web skills: accessible components built from a mockup, a description or the project's design system, spring-based motion with reduced-motion fallbacks, and Playwright verification of every interactive state.",
   "author": {
     "name": "Gaston Chevarria"

@@ -114,9 +114,13 @@ def check_packs(skills, errors):
 
 
 def check_router(skills, agents, errors):
+    """Every skill the router names in a route line, or anywhere in its route matrix, must exist."""
     for router in [d / "SKILL.md" for d in skill_dirs() if d.name == "god"]:
+        in_matrix = False
         for lineno, line in enumerate(router.read_text(encoding="utf-8").splitlines(), 1):
-            if "Activa" not in line:
+            if line.startswith("## "):
+                in_matrix = line.startswith("## Matriz")
+            if not (in_matrix or "Activa" in line or "➔" in line):
                 continue
             for name in re.findall(r"`/?([a-z][a-z0-9-]*)`", line):
                 if name not in skills and name not in agents:

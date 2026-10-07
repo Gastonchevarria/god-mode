@@ -2,6 +2,21 @@
 
 All notable changes to god-mode are documented here. Versions follow [Semantic Versioning](https://semver.org/).
 
+## [1.6.0] - 2026-10-06
+
+### Added
+- A DIRECTA route in `/god`: small changes, questions, explaining code, commands and commit messages are done directly, without loading a skill.
+- `scripts/eval_god.py` and `tests/evals/god_routes.json`: 22 requests that check which route `/god` picks, which skills it loads, whether it re-reads the protocol and what the first turns cost. Results in `docs/evals/god-routes-2026-10-06.md`.
+
+### Changed
+- Every `/god` route loads one skill, the one that fits the request; another skill joins only when a later step needs it. Billing code (`saas-launch-revenue`) moved from GROWTH to MONETIZATION, and FULL-BUILD starts with `incremental-implementation`, or `autoplan` for a big or unclear feature.
+- `/god` no longer re-reads `references/protocol.md`: the session already carries the protocol through `CLAUDE.md`, the Antigravity rules or the plugin hook. It reads the file only when the protocol is missing.
+- The `⚡ GOD` line comes before any tool call, including loading a skill.
+- `/god` with no request lists what it can do and asks what you need.
+- `scripts/validate.py` checks every skill named in the route matrix, not only lines that say "Activa".
+
+On the route eval (Opus 5.5, 44 runs): right route 43 → 44, runs that loaded two skills 5 → 0, protocol re-reads 26 → 0.
+
 ## [1.5.0] - 2026-10-06
 
 ### Removed
