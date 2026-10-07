@@ -2,6 +2,11 @@
 
 All notable changes to god-mode are documented here. Versions follow [Semantic Versioning](https://semver.org/).
 
+## [1.3.1] - 2026-10-06
+
+### Fixed
+- The design module's command is `/design-to-web`. `/design` is a built-in Claude Code command (access to Claude Design projects), so typing it never reached the skill. The global protocol table and the `design-to-web` description now say `/design-to-web`.
+
 ## [1.3.0] - 2026-10-06
 
 ### Added

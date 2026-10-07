@@ -248,9 +248,9 @@ Installed in `~/.claude/agents/` and dispatched by the skills when a job needs a
 <br/>
 
 ```bash
-curl -fsSLO https://github.com/Gastonchevarria/god-mode/releases/download/v1.3.0/install.sh
-curl -fsSLO https://github.com/Gastonchevarria/god-mode/releases/download/v1.3.0/install.sh.sha256
-shasum -a 256 -c install.sh.sha256 && bash install.sh --version=v1.3.0 --pack=core
+curl -fsSLO https://github.com/Gastonchevarria/god-mode/releases/download/v1.3.1/install.sh
+curl -fsSLO https://github.com/Gastonchevarria/god-mode/releases/download/v1.3.1/install.sh.sha256
+shasum -a 256 -c install.sh.sha256 && bash install.sh --version=v1.3.1 --pack=core
 ```
 
 A pinned install doesn't update itself. To move to another version, run the installer again with `--version=vX.Y.Z`.

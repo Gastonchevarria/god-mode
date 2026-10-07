@@ -1,6 +1,6 @@
 ---
 name: design-to-web
-description: "Turns a Figma design into a polished, accessible web component: exact tokens via the Figma MCP server, pixel-faithful build with every state, spring motion, Playwright verification. Use when the user says /design, 'implement this Figma', 'make it feel native' or 'pixel-perfect'."
+description: "Turns a Figma design into a polished, accessible web component: exact tokens via the Figma MCP server, pixel-faithful build with every state, spring motion, Playwright verification. Use when the user says /design-to-web, 'implement this Figma', 'make it feel native' or 'pixel-perfect'."
 ---
 
 # Design to Web

@@ -65,7 +65,7 @@ Cualquiera de los siguientes comandos o intenciones activa la skill correspondie
 | `/scope-kill` | `mvp-scope-killer` | Poda radical de sobre-ingeniería para lanzar el MVP más veloz y limpio posible. |
 | `/ai-arch` | `ai-product-architect` | Arquitectura de sistemas IA, RAG pipelines, prompts, eval harnesses y caché semántico. |
 | `/growth` | `launch-growth-loop` | Mecánicas de product-led growth, landing pages de alta conversión y activación. |
-| `/design` | `design-to-web` | De Figma a web: tokens exactos vía Figma MCP, todos los estados, motion con springs y verificación con Playwright. |
+| `/design-to-web` | `design-to-web` | De Figma a web: tokens exactos vía Figma MCP, todos los estados, motion con springs y verificación con Playwright. |
 | `/autoplan` | `autoplan` | Pipeline de planificación integral (CEO + Design + Eng + Devex Review). |
 | `/retro` | `retro` | Análisis post-mortem y extracción de patrones de aprendizaje persistente. |
 
