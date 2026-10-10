@@ -2,6 +2,16 @@
 
 All notable changes to god-mode are documented here. Versions follow [Semantic Versioning](https://semver.org/).
 
+## [1.7.0] - 2026-10-10
+
+### Added
+- Prompt audit after compacting. A SessionStart hook (matcher `compact`) checks whether the instructions that load in the project changed since the last audit: CLAUDE.md, CLAUDE.local.md and AGENTS.md in the project, its parents and subfolders, and the rules, skills, commands, subagents and output styles under `.claude/` and `~/.claude/`. It compares sizes and modification times, not contents. When they changed, Claude runs Claude Code's `/claude-api prompt-audit` in a subagent on the session's model, shows the findings and edits nothing without the user's "yes". `GOD_MODE_PROMPT_AUDIT` takes `changed` (default), `always` or `off`.
+- The hook ships in the god-mode-core plugin, and `god-mode doctor --fix` writes it into `~/.claude/settings.json`; `god-mode doctor` checks it.
+- `/god` CONTEXT-HEALTH route: "audit my CLAUDE.md and skills" runs prompt-audit in a subagent. `scripts/validate.py` accepts skills that ship with Claude Code (`claude-api`) in the route matrix.
+
+### Fixed
+- Issues the first audit found in the global protocol (`config/CLAUDE.md`): it told Claude to "always leverage" five skills, against `/god`'s one-skill rule; `/security` pointed to a `claude-security` skill that does not exist instead of `security`; and the skill installer was described as "autonomous", although it asks for confirmation.
+
 ## [1.6.0] - 2026-10-06
 
 ### Added

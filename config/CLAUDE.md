@@ -10,10 +10,10 @@
 
 ---
 
-## Always-Active Skills & Integraciones
+## Skills & Integraciones
 
-- Always leverage the native **DEV GOD-MODE** skills (`god`, `anti-slop`, `thermos`, `security-and-hardening`, `code-review-and-quality`) when designing, building, reviewing, securing, deploying, debugging, or documenting code.
-- Use `/god` for autonomous intent classification and multi-role squad execution.
+- Use a DEV GOD-MODE skill when the request matches its description; small requests need none.
+- Use `/god` to route a request: it does small requests directly and loads the one skill that fits the rest.
 - Use `/thermos` for double thermo-nuclear pre-merge audits and `/security` for pre-launch defensive audits.
 
 ---
@@ -55,10 +55,10 @@ Cualquiera de los siguientes comandos o intenciones activa la skill correspondie
 | Comando / Intención | Skill Activada | Objetivo / Alcance |
 | :--- | :--- | :--- |
 | `/god` | `god` | Orquestador maestro: hace directo los pedidos chicos y para el resto activa la skill que sirve. |
-| `/install-skill` | `skill-installer` | Instalación y sincronización autónoma de Agent Skills desde GitHub o VoltAgent/awesome-agent-skills. |
+| `/install-skill` | `skill-installer` | Instalación de Agent Skills desde GitHub o VoltAgent/awesome-agent-skills, con confirmación explícita. |
 | `/thermos` | `thermos` | Auditoría implacable pre-merge (Bugs + Code Quality) usando subagentes termo-nucleares. |
 | `/anti-slop` | `anti-slop` | Auditoría y eliminación de código vago, 'as any' y anti-patrones de IA en TypeScript/JS. |
-| `/security` | `security-and-hardening` / `claude-security` | Auditoría defensiva de seguridad pre-launch (OWASP, secretos, auth, sanitización). |
+| `/security` | `security` | Auditoría de seguridad pre-launch de toda la app (secretos, inyección, dependencias, headers) con reporte en `SECURITY_AUDIT.md`. |
 | `/archify` | `archify` | Diagramación interactiva de arquitecturas de software, flujos y secuencias en HTML/SVG. |
 | `/validate` | `startup-idea-validation` | Validación de producto/SaaS, mapa ICP, Jobs-to-be-Done y smoke-test experiments. |
 | `/monetize` | `saas-business-model` | Diseño de modelos de cobro, pricing tiers, unit economics y pasarelas de pago. |
@@ -71,7 +71,7 @@ Cualquiera de los siguientes comandos o intenciones activa la skill correspondie
 
 ---
 
-## Instalación Autónoma de Skills desde GitHub (ej. VoltAgent/awesome-agent-skills)
+## Instalación de Skills desde GitHub (ej. VoltAgent/awesome-agent-skills)
 
 Cuando el usuario pida instalar, actualizar o buscar skills desde GitHub o catálogos externos:
 

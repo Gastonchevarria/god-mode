@@ -105,10 +105,13 @@ Una sola línea: el diagnóstico largo va solo si el usuario lo pide.
  │         · retrospectiva de un sprint, una feature o un incidente ➔ `retro`
  │         · guardar un procedimiento o un patrón para reusarlo ➔ `self-learning-skills`
  │
- ├── 💾 La sesión está pesada o se acaban los tokens
+ ├── 💾 La sesión está pesada, se acaban los tokens, o revisar las instrucciones que se cargan
  │    └── Ruta: CONTEXT-HEALTH ➔ Activa una:
  │         · compactar la sesión ➔ `auto-compact`
  │         · configurar reglas y contexto del proyecto ➔ `context-engineering`
+ │         · auditar CLAUDE.md, reglas, skills o subagentes: instrucciones viejas, contradictorias o de más ➔ `claude-api` con el argumento prompt-audit, en un subagente
+ │           Viene con Claude Code. No edita nada: mostrá los hallazgos y aplicá el diff solo con el "sí" del usuario.
+ │           Después de cada compactación, el hook de god-mode lo pide solo si las instrucciones cambiaron.
  │
  └── 🎨 UI que se sienta nativa, pixel-perfect, animaciones o verificar estados
       └── Ruta: DESIGN ➔ Activa una:

@@ -8,6 +8,15 @@
             "command": "grep -qs 'god-mode:start' \"$HOME/.claude/CLAUDE.md\" || cat \"${CLAUDE_PLUGIN_ROOT}/hooks/session-context.md\""
           }
         ]
+      },
+      {
+        "matcher": "compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/prompt_audit_check.py\""
+          }
+        ]
       }
     ]
   }

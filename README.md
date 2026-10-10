@@ -175,8 +175,9 @@ god-mode keeps sessions lean:
 
 - **`config/rules/token-optimization.md`**: global rule for brevity, context hygiene, tool-call discipline, output frugality, compaction triggers and skill loading. `install.sh` adds it to the managed block in `~/.claude/CLAUDE.md` and to Antigravity's rules; the god-mode-core plugin loads it when the session starts.
 - **`auto-compact` skill** (god-mode-core): rates the session 🟢🟡🔴 from observable signals (tool calls, back-and-forth, re-read files, topic changes) and, with your OK, compacts it with a structured summary that keeps decisions and dead ends.
-- **CONTEXT-HEALTH route in `/god`**: triggered by "the session feels heavy", "I'm running out of tokens" or "compact"; it runs `auto-compact` together with `context-engineering`.
-- **`god-mode doctor`**: checks the installation and the recommended settings below, and prints the exact fix for anything missing. It changes nothing unless you add `--fix`, which writes the settings below into `~/.claude/settings.json` (backup first, every other key kept).
+- **CONTEXT-HEALTH route in `/god`**: "the session feels heavy" or "compact" loads `auto-compact`; "audit my CLAUDE.md and skills" runs Claude Code's own prompt audit (`/claude-api prompt-audit`) in a subagent.
+- **Prompt audit after compacting**: after each compaction, a hook checks whether the instructions that load in the project changed since the last audit (CLAUDE.md, AGENTS.md, rules, skills, commands, subagents, output styles; it compares sizes and dates, not contents). If they did, Claude runs the audit in a subagent on the session's model and shows you the findings. It edits nothing without your "yes". In a test with 119 instruction files and Opus 5.5, an audit cost about US$ 2.40, and the main conversation stayed under 47,000 tokens. Set `GOD_MODE_PROMPT_AUDIT` to `always` to audit after every compaction, or to `off` to turn it off. The hook is installed by `god-mode doctor --fix` and loaded by the god-mode-core plugin. In Cowork, `claude-api` is turned off, so Claude says so in one line and carries on.
+- **`god-mode doctor`**: checks the installation and the recommended settings below, and prints the exact fix for anything missing. It changes nothing unless you add `--fix`, which writes the settings below and the audit hook into `~/.claude/settings.json` (backup first, every other key kept).
 
 ### Recommended settings
 
@@ -190,6 +191,10 @@ god-mode keeps sessions lean:
     "CLAUDE_CODE_SUBAGENT_MODEL": "claude-sonnet-5-5", // subagents run on Sonnet 5.5 instead of the main model
     "AUTOHARNESS_REFLECT_EVERY_N": "75",             // only if you use AutoHarness (default 50)
     "AUTOHARNESS_CONSOLIDATE_EVERY_N": "300"         // only if you use AutoHarness (default 250)
+  },
+  "hooks": {
+    "SessionStart": [{ "matcher": "compact",          // after each compaction: prompt audit if instructions changed
+      "hooks": [{ "type": "command", "command": "python3 \"/path/to/god-mode/plugins/god-mode-core/hooks/prompt_audit_check.py\"" }] }]
   }
 }
 ```
@@ -254,9 +259,9 @@ Installed in `~/.claude/agents/` and dispatched by the skills when a job needs a
 <br/>
 
 ```bash
-curl -fsSLO https://github.com/Gastonchevarria/god-mode/releases/download/v1.6.0/install.sh
-curl -fsSLO https://github.com/Gastonchevarria/god-mode/releases/download/v1.6.0/install.sh.sha256
-shasum -a 256 -c install.sh.sha256 && bash install.sh --version=v1.6.0 --pack=core
+curl -fsSLO https://github.com/Gastonchevarria/god-mode/releases/download/v1.7.0/install.sh
+curl -fsSLO https://github.com/Gastonchevarria/god-mode/releases/download/v1.7.0/install.sh.sha256
+shasum -a 256 -c install.sh.sha256 && bash install.sh --version=v1.7.0 --pack=core
 ```
 
 A pinned install doesn't update itself. To move to another version, run the installer again with `--version=vX.Y.Z`.

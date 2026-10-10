@@ -527,13 +527,55 @@ def _read_settings(path):
     return data if isinstance(data, dict) else None
 
 
+AUDIT_HOOK_SCRIPT = "prompt_audit_check.py"
+
+
+def audit_hook_command(repo):
+    script = repo / "plugins" / "god-mode-core" / "hooks" / AUDIT_HOOK_SCRIPT
+    return f'python3 "{script}"'
+
+
+def _audit_hook_entries(data):
+    """(SessionStart groups, the group index and hook index of god-mode's audit hook, or None)."""
+    groups = ((data.get("hooks") or {}).get("SessionStart")) or []
+    for gi, group in enumerate(groups):
+        for hi, hook in enumerate((group or {}).get("hooks") or []):
+            if AUDIT_HOOK_SCRIPT in str((hook or {}).get("command", "")):
+                return groups, (gi, hi)
+    return groups, None
+
+
+def _ensure_audit_hook(data, repo):
+    """Adds or repoints the SessionStart hook (matcher "compact") that asks for prompt-audit. Returns a change line."""
+    hooks = data.get("hooks")
+    if hooks is not None and not isinstance(hooks, dict):
+        fail("No toco settings.json: \"hooks\" no es un objeto. Corregilo a mano y volvé a correr.")
+    command = audit_hook_command(repo)
+    groups, found = _audit_hook_entries(data)
+    if found:
+        gi, hi = found
+        hook = groups[gi]["hooks"][hi]
+        if hook.get("command") == command and groups[gi].get("matcher") == "compact":
+            return None
+        hook["command"] = command
+        groups[gi]["matcher"] = "compact"
+        return "hooks.SessionStart: audit post-compact apuntado al repo actual"
+    data.setdefault("hooks", {}).setdefault("SessionStart", []).append(
+        {"matcher": "compact", "hooks": [{"type": "command", "command": command}]})
+    return "hooks.SessionStart: audit de instrucciones después de cada compactación (si cambiaron)"
+
+
 def fix_claude_settings(path):
-    """Writes the recommended outputStyle and env into Claude Code's settings, keeping every other key."""
+    """Writes the recommended outputStyle, env and audit hook into Claude Code's settings, keeping every other key."""
     data = _read_settings(path)
     if data is None or not isinstance(data.get("env", {}), dict):
         fail(f"No toco {path}: no es un JSON válido con \"env\" como objeto. Corregilo a mano y volvé a correr.")
     env = dict(data.get("env", {}))
     changes = []
+    repo = source_dir()
+    hook_change = _ensure_audit_hook(data, repo) if repo else None
+    if hook_change:
+        changes.append(hook_change)
     if data.get("outputStyle") != "Concise":
         changes.append(f"outputStyle: {data.get('outputStyle') or '—'} → Concise")
         data["outputStyle"] = "Concise"
@@ -648,6 +690,16 @@ def cmd_doctor(fix=False):
     results.append(((style or "").lower() == "concise", "Claude Code: output style Concise",
                     style or ("settings.json inválido" if settings is None else "sin definir"), "god-mode doctor --fix"))
 
+    if settings is not None:
+        groups, found = _audit_hook_entries(settings)
+        hook = groups[found[0]]["hooks"][found[1]] if found else None
+        ok = bool(hook) and hook.get("command") == audit_hook_command(repo)
+        detail = ("activo después de cada compactación" if ok else
+                  "apunta a otra copia del repo" if hook else "no configurado")
+        if ok and os.environ.get("GOD_MODE_PROMPT_AUDIT", "").lower() == "off":
+            detail += " (desactivado con GOD_MODE_PROMPT_AUDIT=off)"
+        results.append((ok, "Claude Code: audit de instrucciones post-compact", detail, "god-mode doctor --fix"))
+
     plugins = _claude_plugins()
     if plugins is None:
         results.append((None, "Claude Code: plugins", "claude no está en el PATH o no respondió", ""))
@@ -688,8 +740,8 @@ USAGE = f"""
   {CYAN}update{NC}                 Actualiza desde GitHub y reaplica protocolo, agentes y pack.
   {CYAN}cursor [ruta]{NC}          Copia .cursorrules y AGENTS.md a un proyecto (con copia de respaldo).
   {CYAN}add <github-url>{NC}       Instala una skill desde GitHub (pide confirmación).
-  {CYAN}doctor [--fix]{NC}         Verifica la instalación; con --fix escribe outputStyle y env recomendados
-                         en ~/.claude/settings.json (con copia de respaldo).
+  {CYAN}doctor [--fix]{NC}         Verifica la instalación; con --fix escribe outputStyle, env recomendados y el
+                         hook de audit post-compact en ~/.claude/settings.json (con copia de respaldo).
   {CYAN}setup [--targets=claude,gemini] [--source=<repo>]{NC}
                          Instala protocolo, agentes e instalador (lo usa install.sh).
 """

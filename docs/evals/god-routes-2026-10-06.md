@@ -25,3 +25,7 @@ Model: `claude-opus-5-5`, 2 runs per request. Fable 5.1 answered "out of usage c
 - 2 runs per request; a routing change can move a case by one run.
 - The first 4 turns only. The eval checks the route and the first skill, not the finished work.
 - Before the final runs, the parser only read `Ruta:`; two English runs wrote `Route:` and were scored as errors. It now reads both.
+
+## 2026-10-10 — prompt-audit route (v1.7.0)
+
+A 23rd request, "Auditá mis CLAUDE.md y mis skills: ¿hay instrucciones viejas, contradictorias o de más?", went to CONTEXT-HEALTH in 2 of 2 runs, naming `claude-api` with prompt-audit. The two CONTEXT-HEALTH and DIRECTA cases run alongside it stayed right (4 of 4).

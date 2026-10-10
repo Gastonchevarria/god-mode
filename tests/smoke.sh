@@ -226,9 +226,18 @@ check "doctor falla mientras falte la configuración recomendada" test $? -ne 0
 check "pero marca en verde todo lo que instala god-mode" bash -c "! grep -E '✗.*(Claude Code|Antigravity): (protocolo|límites|regla|skills|skill|ruta|subagentes|dev_god_mode|token-optimization)' '$WORK/doctor.log'"
 check "e indica cómo arreglarlo" grep -q "god-mode doctor --fix" "$WORK/doctor.log"
 printf 'export CLAUDE_CODE_SUBAGENT_MODEL="claude-sonnet-5-5"\nexport AUTOHARNESS_REFLECT_EVERY_N=75\nexport AUTOHARNESS_CONSOLIDATE_EVERY_N=300\n' >"$HOME/.zshrc"
-echo '{"outputStyle": "Concise"}' >"$HOME/.claude/settings.json"
+python3 - "$HOME" <<'PY'
+import json, pathlib, sys
+claude = pathlib.Path(sys.argv[1]) / ".claude"
+repo = json.loads((claude / ".god-mode-state.json").read_text())["source_dir"]
+command = f'python3 "{repo}/plugins/god-mode-core/hooks/prompt_audit_check.py"'
+settings = {"outputStyle": "Concise",
+            "hooks": {"SessionStart": [{"matcher": "compact", "hooks": [{"type": "command", "command": command}]}]}}
+(claude / "settings.json").write_text(json.dumps(settings))
+PY
 doctor_run
 check "con la configuración recomendada doctor queda todo en verde" test $? -eq 0
+check "y el audit post-compact figura activo" grep -q "audit de instrucciones post-compact: activo" "$WORK/doctor.log"
 dup_detected() {
     ! FAKE_PLUGINS="autoharness@autoharness god-mode-core@god-mode" doctor_run && grep -q 'god-mode cargado una sola vez: plugins god-mode-core@god-mode y además' "$WORK/doctor.log"
 }
@@ -254,6 +263,14 @@ assert d['env']['AUTOHARNESS_REFLECT_EVERY_N'] == '75' and d['env']['AUTOHARNESS
 check "conserva el resto de la configuración" python3 -c "
 import json; d = json.load(open('$HOME/.claude/settings.json'))
 assert d['permissions'] == {'deny': ['Bash(rm -rf:*)']} and d['env']['MI_VAR'] == '1'"
+check "agrega el hook de audit post-compact una sola vez" python3 -c "
+import json; d = json.load(open('$HOME/.claude/settings.json'))
+hooks = [h for g in d['hooks']['SessionStart'] if g.get('matcher') == 'compact' for h in g['hooks'] if 'prompt_audit_check.py' in h['command']]
+assert len(hooks) == 1"
+PATH="$WORK/fakebin:$PATH" python3 "$HOME/.local/bin/god-mode" doctor --fix >/dev/null 2>&1
+check "y correrlo de nuevo no lo duplica" python3 -c "
+import json; d = json.load(open('$HOME/.claude/settings.json'))
+assert sum('prompt_audit_check.py' in h['command'] for g in d['hooks']['SessionStart'] for h in g['hooks']) == 1"
 check "guarda una copia de la versión anterior" bash -c "grep -q Explanatory '$HOME'/.claude/settings.json.bak-*"
 check "no toca el shell" test ! -e "$HOME/.zshrc"
 printf 'export CLAUDE_CODE_SUBAGENT_MODEL="claude-sonnet-5"\nexport AUTOHARNESS_REFLECT_EVERY_N=75\nexport AUTOHARNESS_CONSOLIDATE_EVERY_N=300\n' >"$HOME/.zshrc"

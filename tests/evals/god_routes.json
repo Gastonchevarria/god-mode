@@ -87,6 +87,10 @@
     {
       "route": "ANTI-SLOP",
       "query": "Limpiá este código TypeScript lleno de 'as any' y catch vacíos que generó la IA."
+    },
+    {
+      "route": "CONTEXT",
+      "query": "Auditá mis CLAUDE.md y mis skills: ¿hay instrucciones viejas, contradictorias o de más?"
     }
   ]
 }
