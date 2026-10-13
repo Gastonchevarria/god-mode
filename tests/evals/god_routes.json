@@ -91,6 +91,14 @@
     {
       "route": "CONTEXT",
       "query": "Auditá mis CLAUDE.md y mis skills: ¿hay instrucciones viejas, contradictorias o de más?"
+    },
+    {
+      "route": "CODE-MAP",
+      "query": "¿Qué módulos dependen de conciliacion.py y qué se rompe si cambio la firma de conciliar()?"
+    },
+    {
+      "route": "CODE-MAP",
+      "query": "Trace the call path from the /webhooks endpoint to the database write. Which modules does it cross?"
     }
   ]
 }

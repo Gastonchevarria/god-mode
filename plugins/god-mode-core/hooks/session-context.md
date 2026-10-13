@@ -48,6 +48,7 @@ Reducir el consumo de tokens sin sacrificar calidad. Esta regla aplica a todas l
 - No releas archivos que ya leíste en la sesión salvo que hayan cambiado.
 - Si solo necesitás una sección, leé ese rango de líneas y no el archivo entero.
 - Para encontrar algo concreto, usá la herramienta de búsqueda antes de abrir archivos.
+- Si el proyecto tiene `graphify-out/graph.json`, preguntá primero al grafo (`graphify query`, `path`, `explain`) antes de un grep amplio o de leer muchos archivos.
 - No abras más de 3 archivos por turno salvo que la tarea lo requiera.
 
 ## 3. Tool Call Discipline

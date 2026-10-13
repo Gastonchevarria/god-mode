@@ -2,6 +2,15 @@
 
 All notable changes to god-mode are documented here. Versions follow [Semantic Versioning](https://semver.org/).
 
+## [1.8.0] - 2026-10-13
+
+### Added
+- CODE-MAP route in `/god` for questions about how the code connects: what depends on a module, what breaks if a signature changes, the call path between two points. When the project has a [Graphify](https://github.com/Graphify-Labs/graphify) graph (`graphify-out/graph.json`), Claude asks it first with `graphify query`, `path`, `explain` or `affected`, and reads files only for what the graph does not answer. Without a graph it builds one with `graphify extract . --code-only` (local AST, no API); without the CLI it searches as before and says how to install it.
+- Token rule: with `graphify-out/graph.json` in the project, query the graph before a broad grep.
+- `god-mode doctor` reports whether the Graphify CLI is installed. It is optional, so a missing CLI does not fail the check.
+- `scripts/validate.py` accepts `graphify` as a skill installed by its own CLI.
+- Two CODE-MAP requests in `tests/evals/god_routes.json`.
+
 ## [1.7.0] - 2026-10-10
 
 ### Added

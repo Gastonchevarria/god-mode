@@ -113,8 +113,9 @@ def check_packs(skills, errors):
             errors.append(f"config/packs.json: pack {pack!r} repeats {sorted(dupes)}")
 
 
-# Skills that ship with Claude Code itself, so the router may name them without a folder in this repo.
-BUILTIN_SKILLS = {"claude-api"}
+# Skills the router may name without a folder in this repo: claude-api ships with Claude Code,
+# graphify is installed by its own CLI (`graphify install --project`).
+EXTERNAL_SKILLS = {"claude-api", "graphify"}
 
 
 def check_router(skills, agents, errors):
@@ -127,7 +128,7 @@ def check_router(skills, agents, errors):
             if not (in_matrix or "Activa" in line or "➔" in line):
                 continue
             for name in re.findall(r"`/?([a-z][a-z0-9-]*)`", line):
-                if name not in skills and name not in agents and name not in BUILTIN_SKILLS:
+                if name not in skills and name not in agents and name not in EXTERNAL_SKILLS:
                     errors.append(f"{router.relative_to(ROOT)}:{lineno}: routes to unknown skill or agent {name!r}")
 
 

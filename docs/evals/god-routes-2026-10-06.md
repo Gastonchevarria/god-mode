@@ -29,3 +29,8 @@ Model: `claude-opus-5-5`, 2 runs per request. Fable 5.1 answered "out of usage c
 ## 2026-10-10 — prompt-audit route (v1.7.0)
 
 A 23rd request, "Auditá mis CLAUDE.md y mis skills: ¿hay instrucciones viejas, contradictorias o de más?", went to CONTEXT-HEALTH in 2 of 2 runs, naming `claude-api` with prompt-audit. The two CONTEXT-HEALTH and DIRECTA cases run alongside it stayed right (4 of 4).
+
+## 2026-10-13 — CODE-MAP route (v1.8.0)
+
+Two new requests ("¿Qué módulos dependen de conciliacion.py y qué se rompe si cambio la firma de conciliar()?" and "Trace the call path from the /webhooks endpoint to the database write") went to CODE-MAP in 4 of 4 runs. Graphify was not installed in the test environment, so every run fell back to search, as the route says. The ARCHIFY, TECH-ARCH and two DIRECTA requests run alongside them stayed right (8 of 8).
+

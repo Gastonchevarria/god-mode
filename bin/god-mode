@@ -700,6 +700,10 @@ def cmd_doctor(fix=False):
             detail += " (desactivado con GOD_MODE_PROMPT_AUDIT=off)"
         results.append((ok, "Claude Code: audit de instrucciones post-compact", detail, "god-mode doctor --fix"))
 
+    graphify = shutil.which("graphify")
+    results.append((True if graphify else None, "Graphify CLI (opcional, para la ruta CODE-MAP)",
+                    graphify or "no instalada; para sumarla: uv tool install graphifyy", ""))
+
     plugins = _claude_plugins()
     if plugins is None:
         results.append((None, "Claude Code: plugins", "claude no está en el PATH o no respondió", ""))
