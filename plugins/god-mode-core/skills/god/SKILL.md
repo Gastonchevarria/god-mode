@@ -59,7 +59,7 @@ Una sola línea: el diagnóstico largo va solo si el usuario lo pide.
  ├── 🕸️ Entender el código: cómo se conectan los módulos, quién llama a qué, qué se rompe si cambio algo
  │    └── Ruta: CODE-MAP ➔ Activa `graphify` si está instalada en el proyecto; si no, ninguna
  │         · con `graphify-out/graph.json`: primero `graphify query "<pregunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"` o `graphify affected "<X>"`; leé archivos solo para lo que el grafo no responde
- │         · con la CLI y sin grafo: generalo con `graphify extract . --code-only` (solo AST, local, sin API) y excluí `graphify-out/` de git
+ │         · con la CLI y sin grafo: generalo con `graphify extract . --code-only` (solo AST, local, sin API) y excluí `graphify-out/` de git; `graphify cluster-only . --no-label` suma el reporte y `graph.html` sin API
  │         · sin la CLI: respondé con búsqueda y lectura, y decí en una línea cómo instalarla (es una instalación externa: pedí el "sí")
  │         Para dibujar el resultado como diagrama, ARCHIFY.
  │

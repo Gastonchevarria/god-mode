@@ -2,6 +2,11 @@
 
 All notable changes to god-mode are documented here. Versions follow [Semantic Versioning](https://semver.org/).
 
+## [1.8.1] - 2026-10-13
+
+### Fixed
+- CODE-MAP and the README now add `graphify cluster-only . --no-label` after `graphify extract . --code-only`. `extract` writes only `graph.json`; the report and `graph.html` come from `cluster-only`, and `--no-label` keeps community naming off any LLM API.
+
 ## [1.8.0] - 2026-10-13
 
 ### Added
