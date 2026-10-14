@@ -1,6 +1,6 @@
 ---
 name: seo-audit
-description: "Audits and diagnoses technical, on-page, content and international SEO issues. Use when the user says 'SEO audit,' 'why am I not ranking,' 'my traffic dropped,' 'core web vitals,' 'indexing issues,' or just 'help with SEO.' Not for visibility in AI answers (use ai-seo)."
+description: "Audits technical, on-page, content and international SEO issues. Use for 'SEO audit', 'why am I not ranking' or 'my traffic dropped'. Not for visibility in AI answers (use ai-seo)."
 metadata:
   version: 2.0.0
 ---

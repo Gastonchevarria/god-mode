@@ -1,6 +1,6 @@
 ---
 name: marketing-council
-description: "Convenes a simulated board of legendary marketers (Godin, Ogilvy, Dunford, Sutherland, Hormozi and more) who debate a question and get a synthesized verdict. Use when the user says 'marketing council,' 'what would Seth Godin say,' 'debate this,' or 'get multiple perspectives.'"
+description: "Convenes a simulated board of famous marketers (Godin, Ogilvy, Dunford, Hormozi and more) who debate a question and reach a verdict. Use for 'marketing council' or 'what would Seth Godin say'."
 metadata:
   version: 1.0.0
 ---

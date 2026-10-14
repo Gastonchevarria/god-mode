@@ -1,6 +1,6 @@
 ---
 name: influencer-marketing
-description: "Runs influencer, creator and ambassador partnerships: vetting, outreach, deal terms, briefs, FTC disclosure, ROI. Use when the user says 'influencer marketing', 'YouTube sponsorship', 'UGC creators' or 'how much to pay an influencer'. Not for affiliate payouts (use referrals)."
+description: "Runs influencer and creator partnerships: vetting, outreach, deal terms, briefs, disclosure, ROI. Use for 'influencer marketing' or 'YouTube sponsorship'. Not for affiliates (use referrals)."
 metadata:
   version: 1.0.0
 ---

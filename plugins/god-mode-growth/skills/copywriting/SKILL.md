@@ -1,6 +1,6 @@
 ---
 name: copywriting
-description: "Writes persuasive copy for homepage, landing, pricing, feature and about pages: headlines, value props, CTAs, structure. Use when the user says 'write copy for', 'headline help', 'hero section copy' or 'this copy is weak'. Not for line-editing existing copy (use copy-editing)."
+description: "Writes persuasive copy for homepage, landing, pricing and feature pages: headlines, value props, CTAs. Use for 'write copy for' or 'hero section copy'. Not for editing copy (use copy-editing)."
 metadata:
   version: 2.0.1
 ---

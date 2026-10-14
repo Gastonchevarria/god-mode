@@ -1,6 +1,6 @@
 ---
 name: security
-description: "Pre-launch security audit of the whole app (secrets, injection, dependencies, headers) with a SECURITY_AUDIT.md report. Use when the user says /security, 'audit before launch' or 'check for leaked keys'. For secure coding while building use security-and-hardening."
+description: "Audits the whole app before launch: secrets, injection, dependencies, headers, into SECURITY_AUDIT.md. Use for /security or 'audit before launch'. While building: security-and-hardening."
 ---
 
 # Pre-Launch Security Audit (/security)

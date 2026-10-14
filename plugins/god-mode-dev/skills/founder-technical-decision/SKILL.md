@@ -1,6 +1,6 @@
 ---
 name: founder-technical-decision
-description: Documents high-impact architecture decision records (ADRs) with explicit categorization of reversibility (Type 1 one-way doors vs. Type 2 two-way doors), trade-offs, opportunity costs, and validation criteria. Triggered by /adr, /decision, or when evaluating critical technical choices.
+description: "Writes ADRs for high-impact choices, classed as one-way or two-way doors, with trade-offs, opportunity cost and validation criteria. Use for /adr, /decision or a critical technical choice."
 ---
 
 # Founder Technical Decision (ADR Framework)

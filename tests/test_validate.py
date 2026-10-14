@@ -31,7 +31,7 @@ class FakeRepo:
     def credit(self, *names):
         (self.root / "THIRD_PARTY.md").write_text(" ".join(f"`{n}`" for n in names), encoding="utf-8")
 
-    def errors(self, max_description=300):
+    def errors(self, max_description=200):
         errors = []
         with mock.patch.object(validate, "ROOT", self.root):
             skills = validate.check_skills(max_description, errors)
@@ -64,7 +64,7 @@ class ValidateTest(unittest.TestCase):
         self.repo.credit("demo")
         errors = self.repo.errors()
         self.assertTrue(any("'<' or '>'" in e for e in errors))
-        self.assertTrue(any("characters (limit 300)" in e for e in errors))
+        self.assertTrue(any("characters (limit 200)" in e for e in errors))
 
     def test_manual_only_skill_is_flagged(self):
         self.repo.skill("demo", "name: demo\ndescription: x\ndisable-model-invocation: true")

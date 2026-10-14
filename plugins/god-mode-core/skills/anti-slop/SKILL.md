@@ -1,6 +1,6 @@
 ---
 name: anti-slop
-description: Rejects and cleans AI-generated slop, low-evidence patterns, lazy type assertions, and performance-degrading anti-patterns in TypeScript and JavaScript. Triggered by /anti-slop, clean code audits, or when refactoring lazy AI code.
+description: "Cleans AI slop in TypeScript and JavaScript: lazy type assertions, 'as any', empty catches, low-evidence and slow patterns. Use for /anti-slop or 'clean up this AI code'."
 ---
 
 # Anti-Slop (High-Evidence Clean TypeScript/JavaScript Standard)

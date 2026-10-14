@@ -1,6 +1,6 @@
 ---
 name: ai-product-architect
-description: "Designs production LLM system architecture: model routing, streaming and latency, semantic caching, RAG, schema-checked output, guardrails and evals. Use when the user says /ai-arch, 'architect my LLM app', 'design a RAG pipeline', 'cut token costs' or 'which model should I use'."
+description: "Designs production LLM systems: model routing, latency, caching, RAG, schema-checked output, guardrails, evals. Use for /ai-arch, 'architect my LLM app' or 'which model should I use'."
 ---
 
 # AI Product Architect

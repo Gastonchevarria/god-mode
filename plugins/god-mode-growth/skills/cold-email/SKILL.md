@@ -1,6 +1,6 @@
 ---
 name: cold-email
-description: "Writes B2B cold emails and follow-up sequences that get replies: subject lines, openers, personalization, one clear ask. Use when the user says 'write a cold email', 'prospecting email', 'outbound sequence' or 'nobody's replying'. Not for lifecycle emails (use emails)."
+description: "Writes B2B cold emails and follow-up sequences that get replies. Use for 'write a cold email', 'outbound sequence' or 'nobody's replying'. Not for lifecycle emails (use emails)."
 metadata:
   version: 2.0.0
 ---

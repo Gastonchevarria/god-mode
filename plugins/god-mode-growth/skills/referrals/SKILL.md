@@ -1,6 +1,6 @@
 ---
 name: referrals
-description: "Designs, launches and optimizes referral, affiliate and ambassador programs: incentives, payouts, program mechanics and success metrics. Use when the user says 'referral program,' 'refer a friend,' 'affiliate payout,' 'word of mouth,' or 'customers referring customers.'"
+description: "Designs referral, affiliate and ambassador programs: incentives, payouts, mechanics, metrics. Use for 'referral program', 'refer a friend' or 'affiliate payout'."
 metadata:
   version: 2.0.0
 ---

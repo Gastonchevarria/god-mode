@@ -1,6 +1,6 @@
 ---
 name: thermo-nuclear-review
-description: "Strict audit of a branch diff for bugs, breaking changes, security, devex regressions and feature-gate leaks; usually launched by thermos. Use when the user says 'thermonuclear review' or 'will this PR break anything'. For maintainability use thermo-nuclear-code-quality-review."
+description: "Strict audit of a branch diff for bugs, breaking changes, security and feature-gate leaks; usually run by thermos. Use for 'will this PR break anything'. Style: thermo-nuclear-code-quality-review."
 ---
 
 # Thermo Nuclear Review

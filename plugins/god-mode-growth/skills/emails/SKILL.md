@@ -1,6 +1,6 @@
 ---
 name: emails
-description: "Designs automated email sequences and lifecycle flows: welcome, nurture, onboarding, re-engagement, billing, win-back. Use when the user says 'email sequence', 'drip campaign', 'welcome series' or 'what emails should I send'. Not for cold outreach (use cold-email)."
+description: "Designs automated email sequences: welcome, nurture, onboarding, re-engagement, billing, win-back. Use for 'email sequence' or 'drip campaign'. Not for cold outreach (use cold-email)."
 metadata:
   version: 2.0.0
 ---

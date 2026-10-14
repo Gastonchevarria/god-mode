@@ -1,6 +1,6 @@
 ---
 name: ab-testing
-description: "Designs A/B tests and experiment programs: hypotheses, sample size, metrics and result analysis. Use when the user says 'A/B test this', 'how long should I run this test', 'is this significant' or 'ICE score our backlog'. Not for page conversion audits (use cro)."
+description: "Designs A/B tests: hypotheses, sample size, metrics and result analysis. Use for 'A/B test this', 'is this significant' or 'how long should I run this test'. Not for page CRO audits (use cro)."
 metadata:
   version: 2.0.0
 ---

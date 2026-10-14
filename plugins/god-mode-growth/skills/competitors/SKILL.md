@@ -1,6 +1,6 @@
 ---
 name: competitors
-description: "Creates competitor comparison and alternative pages for SEO and sales: X alternative(s), you vs X, and X vs Y. Use when the user says 'vs page', 'alternative page', 'comparison page' or 'how do we compare to X'. Not for competitor research profiles (use competitor-profiling)."
+description: "Creates competitor comparison and alternative pages: X alternatives, you vs X, X vs Y. Use for 'vs page' or 'alternative page'. Not for research profiles (use competitor-profiling)."
 metadata:
   version: 2.0.1
 ---

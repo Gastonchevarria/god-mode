@@ -1,6 +1,6 @@
 ---
 name: design-to-web
-description: "Builds a polished, accessible web component or screen from a mockup image, a description or the project's design system: exact tokens, every state, spring motion, Playwright verification. Use when the user says /design-to-web, 'make it feel native', 'pixel-perfect' or 'build this from the mockup'."
+description: "Builds a polished, accessible web component or screen from a mockup, description or design system: every state, spring motion, Playwright checks. Use for /design-to-web or 'pixel-perfect'."
 model: claude-opus-5-5
 context: fork
 ---

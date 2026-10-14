@@ -1,6 +1,6 @@
 ---
 name: co-marketing
-description: "Finds and scores co-marketing partners and plans joint campaigns, outreach and agreements. Use when the user says 'co-marketing', 'who should we partner with', 'joint campaign', 'cross-promotion' or 'co-brand'. Not for customer referral programs (use referrals)."
+description: "Finds and scores co-marketing partners and plans joint campaigns and outreach. Use for 'co-marketing', 'who should we partner with' or 'joint campaign'. Not for referral programs (use referrals)."
 metadata:
   version: 2.0.0
 ---

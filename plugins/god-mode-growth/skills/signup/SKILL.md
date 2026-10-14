@@ -1,6 +1,6 @@
 ---
 name: signup
-description: "Optimizes signup, registration and account-creation flows: form fields, single vs multi-step, trust, mobile. Use when the user says 'signup conversions,' 'reduce signup dropoff,' 'too many steps to sign up,' or 'simplify our signup.' Not for post-signup activation (use onboarding)."
+description: "Optimizes signup and account-creation flows: fields, single vs multi-step, trust, mobile. Use for 'signup conversions' or 'reduce signup dropoff'. Not for activation (use onboarding)."
 metadata:
   version: 2.0.0
 ---

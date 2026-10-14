@@ -30,7 +30,7 @@ AI coding agents are powerful, but you have probably hit these walls:
 | The agent stops halfway: *"now you implement steps 4 and 5"* | It finishes every reversible step, then checks its own last paragraph for loose ends |
 | It says "done" while a test quietly failed | Failures go on the **first line** of the reply, never buried in a summary |
 | An eager agent pushes, deploys or deletes on its own | It **stops and asks** before push, deploy, delete, migrations, money, credentials, messages or installs |
-| Every skill you add eats context | Pick a pack. All 111 descriptions fit in about 7,700 tokens |
+| Every skill you add eats context | Pick a pack. All 111 descriptions take about 24,000 characters (6,000 tokens), well inside Claude Code's skill list on 1M-context models |
 | Your rules only work in one editor | One protocol for Claude Code, Antigravity, Cursor and Windsurf |
 
 ---
@@ -178,6 +178,7 @@ god-mode keeps sessions lean:
 - **CONTEXT-HEALTH route in `/god`**: "the session feels heavy" or "compact" loads `auto-compact`; "audit my CLAUDE.md and skills" runs Claude Code's own prompt audit (`/claude-api prompt-audit`) in a subagent.
 - **Prompt audit after compacting**: after each compaction, a hook checks whether the instructions that load in the project changed since the last audit (CLAUDE.md, AGENTS.md, rules, skills, commands, subagents, output styles; it compares sizes and dates, not contents). If they did, Claude runs the audit in a subagent on the session's model and shows you the findings. It edits nothing without your "yes". In a test with 119 instruction files and Opus 5.5, an audit cost about US$ 2.40, and the main conversation stayed under 47,000 tokens. Set `GOD_MODE_PROMPT_AUDIT` to `always` to audit after every compaction, or to `off` to turn it off. The hook is installed by `god-mode doctor --fix` and loaded by the god-mode-core plugin. In Cowork, `claude-api` is turned off, so Claude says so in one line and carries on.
 - **[Graphify](https://github.com/Graphify-Labs/graphify)** (optional, third-party, Apache-2.0): turns a repo into a local knowledge graph with tree-sitter, so Claude asks the graph instead of grepping dozens of files. `/god` sends "what depends on X", "what breaks if I change Y" or "trace the path from A to B" to the CODE-MAP route, which runs `graphify query`, `path`, `explain` or `affected` when the project has `graphify-out/graph.json`. god-mode does not install it: `uv tool install graphifyy` (the PyPI name has two y's for now), then, in each project, `graphify install --project`, `graphify extract . --code-only` (writes `graph.json`) and `graphify cluster-only . --no-label` (adds `GRAPH_REPORT.md` and `graph.html`). With those two flags everything stays on your machine: only code is parsed, and communities keep numbered names instead of LLM-written ones. A full `graphify extract .` also sends docs and images to whichever LLM API key is set in your environment. `graphify install --project` adds a section to the project's `CLAUDE.md` and a PreToolUse hook in `.claude/settings.json` that nudges Claude toward the graph before raw reads and searches.
+- **Short skill descriptions**: every description is 200 characters or fewer. Claude Code gives the list of skills 1% of the context window (about 40,000 characters on a 1M-context model, 8,000 on a 200k one) and lists the skills that do not fit by name only, which Claude cannot pick on its own. With all four packs plus Cowork's own skills, the old 300-character descriptions overflowed and 31 of the 35 `god-mode-dev` skills lost theirs. On a 200k-context model, install only the packs you use.
 - **`god-mode doctor`**: checks the installation and the recommended settings below, and prints the exact fix for anything missing. It changes nothing unless you add `--fix`, which writes the settings below and the audit hook into `~/.claude/settings.json` (backup first, every other key kept).
 
 ### Recommended settings
@@ -260,9 +261,9 @@ Installed in `~/.claude/agents/` and dispatched by the skills when a job needs a
 <br/>
 
 ```bash
-curl -fsSLO https://github.com/Gastonchevarria/god-mode/releases/download/v1.8.1/install.sh
-curl -fsSLO https://github.com/Gastonchevarria/god-mode/releases/download/v1.8.1/install.sh.sha256
-shasum -a 256 -c install.sh.sha256 && bash install.sh --version=v1.8.1 --pack=core
+curl -fsSLO https://github.com/Gastonchevarria/god-mode/releases/download/v1.9.0/install.sh
+curl -fsSLO https://github.com/Gastonchevarria/god-mode/releases/download/v1.9.0/install.sh.sha256
+shasum -a 256 -c install.sh.sha256 && bash install.sh --version=v1.9.0 --pack=core
 ```
 
 A pinned install doesn't update itself. To move to another version, run the installer again with `--version=vX.Y.Z`.
@@ -334,7 +335,7 @@ We measure it. In the latest [routing eval](docs/evals/routing-2026-09-26.md) (3
 ## 🤝 Contributing
 
 1. Fork the repo.
-2. Add your skill under the plugin it belongs to: `plugins/<plugin>/skills/<your-skill>/SKILL.md`, with a `name` equal to the folder and a `description` of 300 characters or fewer.
+2. Add your skill under the plugin it belongs to: `plugins/<plugin>/skills/<your-skill>/SKILL.md`, with a `name` equal to the folder and a `description` of 200 characters or fewer.
 3. If it comes from another project, add it to `config/third_party.json`.
 4. Run the same checks as CI:
    ```bash

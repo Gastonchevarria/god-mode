@@ -1,6 +1,6 @@
 ---
 name: analytics
-description: "Sets up and audits marketing tracking: tracking plans, event naming, GA4, GTM, UTMs and debugging. Use when the user says 'set up tracking', 'track conversions', 'UTM parameters' or 'are my events firing'. Not for attribution models or conflicting numbers (use attribution)."
+description: "Sets up and audits marketing tracking: tracking plans, event naming, GA4, GTM, UTMs. Use for 'set up tracking', 'UTM parameters' or 'are my events firing'. Not for attribution (use attribution)."
 metadata:
   version: 2.0.1
 ---

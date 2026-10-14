@@ -1,6 +1,6 @@
 ---
 name: idea-refine
-description: "Turns a raw idea into a sharp concept: 5-8 variations, 2-3 stress-tested directions and a one-pager with MVP scope and a Not Doing list. Use when asked to \"help me refine this idea\", \"ideate on\", \"give me variations\" or \"explore other angles\". To validate demand use office-hours."
+description: "Turns a raw idea into a sharp concept: variations, stress-tested directions, a one-pager with MVP scope. Use for 'refine this idea' or 'give me variations'. To validate demand: office-hours."
 ---
 
 # Idea Refine

@@ -1,6 +1,6 @@
 ---
 name: shipping-and-launch
-description: Prepares production launches. Use when preparing to deploy to production. Use when you need a pre-launch checklist, when setting up monitoring, when planning a staged rollout, or when you need a rollback strategy.
+description: "Prepares a production deploy: pre-launch checklist, monitoring, staged rollout, rollback plan. Use for 'ready for prod?', 'deploy checklist' or 'rollback plan'. Marketing launch: launch."
 ---
 
 # Shipping and Launch

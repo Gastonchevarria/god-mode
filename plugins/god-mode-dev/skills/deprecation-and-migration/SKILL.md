@@ -1,6 +1,6 @@
 ---
 name: deprecation-and-migration
-description: Manages deprecation and migration. Use when removing old systems, APIs, or features. Use when migrating users from one implementation to another. Use when deciding whether to maintain or sunset existing code.
+description: "Plans deprecations and migrations: removing old systems or APIs, moving users to a new implementation, maintaining vs sunsetting code. Use for 'deprecate this' or 'migrate off X'."
 ---
 
 # Deprecation and Migration

@@ -1,6 +1,6 @@
 ---
 name: social
-description: "Creates, repurposes and schedules social posts for LinkedIn, X, Instagram and TikTok, plus short-form video scripts and listening. Use when the user says 'LinkedIn post,' 'Twitter thread,' 'what should I post,' or 'repurpose this.' Not for content strategy (use content-strategy)."
+description: "Creates and repurposes social posts for LinkedIn, X, Instagram and TikTok, plus short video scripts. Use for 'LinkedIn post' or 'repurpose this'. Not for strategy (use content-strategy)."
 metadata:
   version: 2.2.0
 ---

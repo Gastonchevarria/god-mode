@@ -1,6 +1,6 @@
 ---
 name: schema
-description: "Adds, fixes and validates schema.org structured data (JSON-LD) for Google rich results such as FAQ, product, review and breadcrumbs. Use when the user says 'schema markup,' 'JSON-LD,' 'rich snippets,' or 'star ratings in search.' Not for broader SEO issues (use seo-audit)."
+description: "Adds and validates schema.org JSON-LD for Google rich results: FAQ, product, review, breadcrumbs. Use for 'schema markup', 'JSON-LD' or 'rich snippets'. Not for broader SEO (use seo-audit)."
 metadata:
   version: 2.0.0
 ---

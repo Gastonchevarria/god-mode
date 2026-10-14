@@ -1,6 +1,6 @@
 ---
 name: programmatic-seo
-description: "Builds SEO pages at scale from templates and data using 12 playbooks, such as location, comparison and integration pages. Use when the user says 'programmatic SEO,' 'pSEO,' '[keyword] + [city] pages,' or 'generate 100 pages.' Not for auditing an existing site (use seo-audit)."
+description: "Builds SEO pages at scale from templates and data: location, comparison, integration pages. Use for 'programmatic SEO' or 'generate 100 pages'. Not for site audits (use seo-audit)."
 metadata:
   version: 2.0.0
 ---

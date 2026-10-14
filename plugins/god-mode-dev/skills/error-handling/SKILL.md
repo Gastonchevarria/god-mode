@@ -1,6 +1,6 @@
 ---
 name: error-handling
-description: Guides the agent to write robust Python and TypeScript code by applying error handling best practices, timeouts, and graceful shutdown patterns. Trigger this implicitly whenever writing code that interacts with external services, files, or network requests.
+description: "Writes robust Python and TypeScript error handling: timeouts, retries, graceful shutdown. Use when writing code that calls external services, files or the network."
 ---
 
 # Robust Error Handling (Python / TypeScript)

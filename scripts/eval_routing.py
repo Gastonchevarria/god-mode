@@ -4,7 +4,9 @@ Routing evaluation: does Claude pick the right god-mode skill for a request?
 
 Loads the plugins with `claude -p --plugin-dir ...` in an isolated HOME (so no other
 installed plugins interfere), sends each request, and records the first Skill tool
-call. A case passes when that skill is one of the expected ones.
+call within the first turns (--max-turns, default 4). A case passes when that skill is one of the
+expected ones. Models that explore before loading a skill get those turns; a run that ends without a
+skill call counts as "no skill".
 
 Usage:
     python3 scripts/eval_routing.py [--plugins-root plugins] [--cases tests/evals/routing.json]
@@ -38,18 +40,18 @@ def isolated_env(home):
     return env
 
 
-def first_skill_call(query, plugin_dirs, home, model, timeout, retries=1):
+def first_skill_call(query, plugin_dirs, home, model, timeout, max_turns=4, retries=1):
     """First skill invoked (without plugin prefix), None if no skill was used, ERROR if the run failed."""
     for _ in range(retries + 1):
-        picked = _run_once(query, plugin_dirs, home, model, timeout)
+        picked = _run_once(query, plugin_dirs, home, model, timeout, max_turns)
         if picked != ERROR:
             return picked
     return ERROR
 
 
-def _run_once(query, plugin_dirs, home, model, timeout):
+def _run_once(query, plugin_dirs, home, model, timeout, max_turns):
     cmd = ["claude", "-p", query, "--output-format", "stream-json", "--verbose",
-           "--include-partial-messages", "--max-turns", "2"]
+           "--include-partial-messages", "--max-turns", str(max_turns)]
     for d in plugin_dirs:
         cmd += ["--plugin-dir", str(d)]
     if model:
@@ -67,23 +69,25 @@ def _run_once(query, plugin_dirs, home, model, timeout):
                 event = json.loads(line)
             except json.JSONDecodeError:
                 continue
+            if _is_api_error(event):
+                return ERROR
             found = _skill_from_event(event, partial)
             if found is not None:
                 return found
             if event.get("type") == "result":
-                return ERROR if event.get("is_error") else None
-            if event.get("type") == "assistant" and _answered_in_text(event):
-                return None
+                # Running out of turns before loading a skill is a "no skill" answer, not a failed run.
+                return ERROR if event.get("is_error") and event.get("subtype") != "error_max_turns" else None
     finally:
         proc.kill()
         proc.wait()
     return ERROR
 
 
-def _answered_in_text(event):
-    blocks = event.get("message", {}).get("content", [])
-    return any(b.get("type") == "text" and b.get("text", "").strip() for b in blocks) and \
-        not any(b.get("type") == "tool_use" for b in blocks)
+def _is_api_error(event):
+    """Claude Code reports API failures (rate or spend limits, auth) as a synthetic assistant message."""
+    if event.get("type") != "assistant":
+        return False
+    return bool(event.get("error")) or event.get("message", {}).get("model") == "<synthetic>"
 
 
 def _skill_from_event(event, partial):
@@ -116,7 +120,9 @@ def main():
     parser.add_argument("--cases", default=str(ROOT / "tests" / "evals" / "routing.json"))
     parser.add_argument("--workers", type=int, default=6)
     parser.add_argument("--runs", type=int, default=1)
-    parser.add_argument("--timeout", type=int, default=90)
+    parser.add_argument("--timeout", type=int, default=150)
+    parser.add_argument("--max-turns", type=int, default=4,
+                        help="turns allowed before the first skill call (some models look around first)")
     parser.add_argument("--model", default=None)
     parser.add_argument("--out", default=None, help="write the full report as JSON")
     args = parser.parse_args()
@@ -132,7 +138,7 @@ def main():
     with tempfile.TemporaryDirectory(prefix="god-mode-eval-") as home, \
             ThreadPoolExecutor(max_workers=args.workers) as pool:
         futures = {pool.submit(first_skill_call, cases[i]["query"], plugin_dirs, Path(home), args.model,
-                               args.timeout): i for i, _ in jobs}
+                               args.timeout, args.max_turns): i for i, _ in jobs}
         for fut in as_completed(futures):
             results[futures[fut]].append(fut.result())
 

@@ -1,6 +1,6 @@
 ---
 name: public-relations
-description: "Earns press coverage (PR as in press, not pull requests): journalist pitches, media lists, press kits, newsjacking and reporter requests like HARO or Qwoted. Use when the user says 'get press coverage,' 'pitch a journalist,' 'press release,' 'media list,' or 'how do I get press.'"
+description: "Earns press coverage: journalist pitches, media lists, press kits, newsjacking, reporter requests. Use for 'get press coverage', 'pitch a journalist' or 'press release'. PR here means press."
 metadata:
   version: 1.0.0
 ---

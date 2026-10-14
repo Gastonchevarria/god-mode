@@ -1,6 +1,6 @@
 ---
 name: offers
-description: "Designs the offer itself (value stack, bonuses, guarantees, scarcity, naming, payment plans) for services, courses, coaching and high-ticket B2B. Use when the user says 'grand slam offer,' 'money-back guarantee,' or 'productize a service.' Not for SaaS tiers (use pricing)."
+description: "Designs the offer itself: value stack, bonuses, guarantees, scarcity, payment plans, for services and high-ticket B2B. Use for 'grand slam offer'. Not for SaaS tiers (use pricing)."
 metadata:
   version: 1.0.0
 ---

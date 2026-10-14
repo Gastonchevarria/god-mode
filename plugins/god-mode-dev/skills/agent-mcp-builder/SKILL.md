@@ -1,6 +1,6 @@
 ---
 name: agent-mcp-builder
-description: Builds Model Context Protocol (MCP) servers, tools, resources, and prompts with strict JSON schema validation, stdio/SSE transports, error boundaries, and seamless integration with AI coding agents.
+description: "Builds MCP servers, tools, resources and prompts with strict JSON schemas, stdio or SSE transports and error boundaries. Use for 'build an MCP server' or 'expose this API as MCP tools'."
 ---
 
 # Agent & MCP Builder

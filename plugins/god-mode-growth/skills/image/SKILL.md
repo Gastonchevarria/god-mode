@@ -1,6 +1,6 @@
 ---
 name: image
-description: "Creates and optimizes marketing images with AI models and design tools: blog heroes, social graphics, mockups, OG images, WebP compression. Use when the user says 'generate an image', 'hero image', 'product mockup' or 'compress images'. Not for paid ad creative (use ad-creative)."
+description: "Creates and optimizes marketing images with AI models: blog heroes, social graphics, mockups, OG images, WebP. Use for 'generate an image' or 'hero image'. Not for ad creative (use ad-creative)."
 metadata:
   version: 2.0.1
 ---

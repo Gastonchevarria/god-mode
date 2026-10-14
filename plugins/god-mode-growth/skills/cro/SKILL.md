@@ -1,6 +1,6 @@
 ---
 name: cro
-description: "Audits marketing pages and forms for conversion: value prop, headlines, CTAs, trust, objections, friction, plus quick wins and test ideas. Use when the user shares a URL or says 'this page isn't converting' or 'form abandonment'. Not for signup flows (use signup)."
+description: "Audits marketing pages and forms for conversion: value prop, CTAs, trust, friction, test ideas. Use for a page URL or 'this page isn't converting'. Not for signup flows (use signup)."
 metadata:
   version: 2.0.0
 ---

@@ -1,6 +1,6 @@
 ---
 name: churn-prevention
-description: "Reduces voluntary and involuntary churn: cancel flows, exit surveys, save offers, health scores, dunning. Use when the user says 'people keep canceling', 'build a cancel flow', 'failed payment recovery' or 'churn is too high'. Not for win-back email sequences (use emails)."
+description: "Reduces churn: cancel flows, exit surveys, save offers, health scores, dunning. Use for 'people keep canceling' or 'build a cancel flow'. Not for win-back emails (use emails)."
 metadata:
   version: 2.0.0
 ---

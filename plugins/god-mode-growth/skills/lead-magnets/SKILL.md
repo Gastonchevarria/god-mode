@@ -1,6 +1,6 @@
 ---
 name: lead-magnets
-description: "Plans lead magnets for email capture: type by buyer stage, gating, landing page and delivery, promotion and metrics. Use when the user says 'lead magnet', 'gated content', 'content upgrade' or 'what should I give away for emails'. Not for interactive calculators (use free-tools)."
+description: "Plans lead magnets for email capture: type by buyer stage, gating, landing page, delivery, metrics. Use for 'lead magnet' or 'gated content'. Not for calculators (use free-tools)."
 metadata:
   version: 2.0.0
 ---

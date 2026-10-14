@@ -1,6 +1,6 @@
 ---
 name: auto-compact
-description: "Detects context bloat in a long session and proposes compacting it with a structured summary before quality drops. Use when the user says 'the session feels heavy', 'compact', 'I'm running out of tokens' or 'start fresh', or after 30+ tool calls or a major topic change."
+description: "Detects context bloat and, with your OK, compacts the session with a structured summary. Use for 'the session feels heavy', 'compact' or 'running out of tokens', or after 30+ tool calls."
 ---
 
 # Auto-Compact

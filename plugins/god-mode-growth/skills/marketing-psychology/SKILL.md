@@ -1,6 +1,6 @@
 ---
 name: marketing-psychology
-description: "Applies mental models, cognitive biases and behavioral science to marketing decisions, persuasion and pricing perception. Use when the user says 'why people buy,' 'cognitive bias,' 'anchoring,' 'loss aversion,' 'social proof,' or 'nudge.'"
+description: "Applies cognitive biases and behavioral science to marketing decisions and pricing perception. Use for 'why people buy', 'anchoring', 'loss aversion' or 'social proof'."
 metadata:
   version: 2.0.0
 ---

@@ -1,6 +1,6 @@
 ---
 name: sms
-description: "Plans and optimizes SMS and MMS marketing: welcome, abandoned cart, post-purchase and win-back flows, plus TCPA and A2P 10DLC compliance. Use when the user says 'SMS marketing,' 'abandoned cart text,' 'Klaviyo SMS,' or 'SMS compliance.' Not for email sequences (use emails)."
+description: "Plans SMS and MMS marketing: welcome, abandoned cart, post-purchase, win-back, TCPA and 10DLC compliance. Use for 'SMS marketing' or 'abandoned cart text'. Not for email (use emails)."
 metadata:
   version: 1.0.0
 ---

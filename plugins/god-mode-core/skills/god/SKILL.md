@@ -1,6 +1,6 @@
 ---
 name: god
-description: "Routes a request to the right god-mode skills and subagents and runs it end to end under the Fable 5.1 Protocol. Use when the user types /god or asks for 'full autonomous mode' or 'handle this end to end'. Not for ordinary single-skill requests; use that skill directly."
+description: "Routes a request to the right god-mode route and skill and runs it end to end under the Fable 5.1 Protocol. Use when the user types /god. Not for ordinary single-skill requests; use that skill."
 ---
 
 # DEV GOD-MODE Router

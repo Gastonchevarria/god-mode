@@ -1,6 +1,6 @@
 ---
 name: skill-installer
-description: "Installs Agent Skills from a GitHub repo, subfolder or SKILL.md URL, or from a VoltAgent/awesome-agent-skills search, after explicit confirmation. Use when the user says /install-skill, 'install this skill', 'add the skill from this repo' or 'find a Stripe skill'."
+description: "Installs Agent Skills from a GitHub repo, folder or SKILL.md URL, or a VoltAgent/awesome-agent-skills search, after explicit confirmation. Use for /install-skill or 'install this skill'."
 ---
 
 # Skill Installer (DEV GOD-MODE)

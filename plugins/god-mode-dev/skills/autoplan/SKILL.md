@@ -1,6 +1,6 @@
 ---
 name: autoplan
-description: "Runs the full planning chain in one pass: CEO, design and eng reviews, then spec and task breakdown, merged into one implementation_plan.md. Use when asked to \"plan this end to end\", \"full plan for this feature\", /autoplan or /goal. For one lens, use that plan-*-review."
+description: "Runs the full planning chain in one pass (CEO, design and eng reviews, spec, tasks) into implementation_plan.md. Use for /autoplan, /goal or 'plan this end to end'. One lens: that plan-*-review."
 ---
 
 # Autoplan (Unified Product Planning Pipeline)

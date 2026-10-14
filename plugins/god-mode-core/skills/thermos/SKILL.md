@@ -1,6 +1,6 @@
 ---
 name: thermos
-description: "Double pre-merge review of a branch or PR diff: bugs and security plus code quality, via two parallel thermo-nuclear subagents. Use when the user says /thermos, 'double thermo review' or 'audit this branch before merge'. Not for a whole repo (use deep-code-audit)."
+description: "Double pre-merge review of a branch or PR: bugs and security plus code quality, via two parallel subagents. Use for /thermos or 'audit this branch before merge'. Whole repo: deep-code-audit."
 ---
 
 # Thermos

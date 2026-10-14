@@ -1,6 +1,6 @@
 ---
 name: plan-devex-review
-description: "Reviews an API, SDK, CLI or library from the consuming developer's side: time to first success, typing, actionable errors, copy-paste quickstart. Use when asked for a \"DevEx review\", \"is this API easy to use?\", \"improve these error messages\" or \"review the SDK ergonomics\"."
+description: "Reviews an API, SDK or CLI from the consuming developer's side: time to first success, types, errors, quickstart. Use for 'DevEx review' or 'is this API easy to use?'."
 ---
 
 # Plan DevEx Review (Developer Experience & Ergonomics)

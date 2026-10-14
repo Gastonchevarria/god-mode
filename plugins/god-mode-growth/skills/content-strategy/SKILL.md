@@ -1,6 +1,6 @@
 ---
 name: content-strategy
-description: "Plans what content to create: searchable vs shareable, pillars and topic clusters, keywords by buyer stage, prioritized topics. Use when the user says 'what should I write about', 'content strategy', 'topic clusters' or 'blog topics'. Not for writing the pieces (use copywriting)."
+description: "Plans what content to create: pillars, topic clusters, keywords by buyer stage, prioritized topics. Use for 'what should I write about' or 'content strategy'. Not for writing it (use copywriting)."
 metadata:
   version: 2.0.0
 ---

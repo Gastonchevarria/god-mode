@@ -1,6 +1,6 @@
 ---
 name: popups
-description: "Creates and optimizes popups, modals, slide-ins, sticky bars and banners for lead capture, with triggers, frequency and compliance. Use when the user says 'exit intent,' 'email popup,' 'announcement banner,' 'scroll trigger,' or 'sticky bar.' Not for inline page forms (use cro)."
+description: "Creates popups, modals, slide-ins and banners for lead capture: triggers, frequency, compliance. Use for 'exit intent', 'email popup' or 'sticky bar'. Not for inline page forms (use cro)."
 metadata:
   version: 2.0.0
 ---

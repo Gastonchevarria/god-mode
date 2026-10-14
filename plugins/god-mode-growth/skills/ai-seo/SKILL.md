@@ -1,6 +1,6 @@
 ---
 name: ai-seo
-description: "Gets content cited in AI answers (ChatGPT, Perplexity, Gemini, AI Overviews): audits, extractable structure, authority, llms.txt, bot access. Use when the user says 'AEO', 'GEO', 'show up in AI answers' or 'optimize for ChatGPT'. Not for technical SEO audits (use seo-audit)."
+description: "Gets content cited in AI answers (ChatGPT, Perplexity, AI Overviews): structure, authority, llms.txt. Use for 'AEO', 'GEO' or 'show up in AI answers'. Not for technical SEO (use seo-audit)."
 metadata:
   version: 2.2.0
 ---

@@ -1,6 +1,6 @@
 ---
 name: free-tools
-description: "Plans and scopes free marketing tools like calculators, generators and graders that earn leads and links. Use when the user says 'free tool', 'ROI calculator', 'engineering as marketing' or 'should I build a free tool'. Not for ebooks or checklists (use lead-magnets)."
+description: "Plans free marketing tools (calculators, generators, graders) that earn leads and links. Use for 'free tool', 'ROI calculator' or 'engineering as marketing'. Not for ebooks (use lead-magnets)."
 metadata:
   version: 2.0.0
 ---

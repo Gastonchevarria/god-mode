@@ -1,6 +1,6 @@
 ---
 name: launch-growth-loop
-description: "Builds product-led growth into the product: landing pages, activation events, referral loops and lifecycle triggers. Use when the user says /growth, 'add a referral loop', 'define our activation event' or 'PLG funnel'. Not for recurring marketing workflows (use marketing-loops)."
+description: "Builds product-led growth into the product: landing pages, activation events, referral loops, lifecycle triggers. Use for /growth or 'add a referral loop'. Not for marketing-loops."
 ---
 
 # Launch & Growth Loop Architecture

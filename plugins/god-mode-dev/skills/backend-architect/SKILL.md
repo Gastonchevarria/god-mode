@@ -1,6 +1,6 @@
 ---
 name: backend-architect
-description: Guides scalable backend architecture, database schema design, caching topologies (Redis), message queues (Celery/BullMQ/Kafka), webhook delivery systems, and rate limiting strategies.
+description: "Designs scalable backends: database schema, Redis caching, queues (Celery, BullMQ, Kafka), webhook delivery, rate limits. Use for 'design the backend' or 'how should I structure the database'."
 ---
 
 # Backend Architect (Scalable Backend Systems)

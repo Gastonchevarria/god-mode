@@ -1,6 +1,6 @@
 ---
 name: ralph-loop
-description: Executes autonomous task loops using disk state, backpressure, and isolated contexts based on the Ralph Loop methodology. Use when the user asks to run a Ralph loop, autonomous task loop, or implement features from specs autonomously.
+description: "Runs autonomous task loops with disk state, backpressure and isolated contexts (Ralph Loop). Use only when asked to 'run a Ralph loop' or for an autonomous loop that builds features from specs."
 ---
 
 # Ralph Loop: Autonomous AI Task Loops

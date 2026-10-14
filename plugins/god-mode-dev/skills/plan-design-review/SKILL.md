@@ -1,6 +1,6 @@
 ---
 name: plan-design-review
-description: "Reviews planned screens and flows before frontend code: tokens, typography, spacing, micro-interactions, empty states, WCAG contrast, no generic AI look. Use when asked for a \"design review\", \"review this UX\" or \"plan the onboarding screens\". Building the UI: frontend-ui-engineering."
+description: "Reviews planned screens and flows before code: tokens, typography, spacing, empty states, contrast. Use for 'design review' or 'review this UX'. Building the UI: frontend-ui-engineering."
 ---
 
 # Plan Design Review (UX/UI & Anti-AI Aesthetics)

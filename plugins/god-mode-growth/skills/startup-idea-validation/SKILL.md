@@ -1,6 +1,6 @@
 ---
 name: startup-idea-validation
-description: Validates startup and SaaS concepts by mapping the ICP, Jobs-to-be-Done (JTBD), current workarounds, direct competitors, differentiation advantage, acquisition channels, and smoke-test validation experiments. Triggered by /validate, /startup, /idea, or when asking to validate a business idea.
+description: "Validates a startup idea: ICP, jobs to be done, workarounds, competitors, channels, smoke tests. Use for /validate, /idea or 'validate this business idea'. Quick go or kill verdict: office-hours."
 ---
 
 # Startup Idea Validation

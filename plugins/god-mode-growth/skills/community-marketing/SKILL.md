@@ -1,6 +1,6 @@
 ---
 name: community-marketing
-description: "Builds and grows online communities: platform choice, engagement playbooks, advocate programs, health metrics. Use when the user says 'build a community', 'grow our Discord', 'community-led growth' or 'community flywheel'. Not for paid creator deals (use influencer-marketing)."
+description: "Builds and grows online communities: platform, engagement playbooks, advocates, health metrics. Use for 'build a community' or 'grow our Discord'. Not for paid creators (use influencer-marketing)."
 metadata:
   version: 2.0.0
 ---

@@ -1,6 +1,6 @@
 ---
 name: office-hours
-description: "YC-style test of whether a raw idea is worth building: narrow ICP, hair-on-fire problem, why now, value metric, 48-hour smoke test; verdict proceed, pivot or kill. Use when asked \"is this worth building?\", \"validate this idea\", \"who is the customer?\" or \"office hours\"."
+description: "YC-style test of a raw idea: narrow ICP, urgent problem, why now, smoke test; verdict proceed, pivot or kill. Use for 'is this worth building?', 'validate this idea' or 'office hours'."
 ---
 
 # Office Hours (YC / Founder Discovery)

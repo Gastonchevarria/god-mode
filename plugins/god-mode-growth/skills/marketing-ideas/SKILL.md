@@ -1,6 +1,6 @@
 ---
 name: marketing-ideas
-description: "Brainstorms a list of marketing tactics for SaaS and software products from a library of 139 proven ideas. Use when the user says 'marketing ideas,' 'growth ideas,' 'what else can I try,' or 'I don't know how to market this.' Not for a full written plan (use marketing-plan)."
+description: "Brainstorms marketing tactics for SaaS from a library of 139 proven ideas. Use for 'marketing ideas', 'growth ideas' or 'what else can I try'. Not for a written plan (use marketing-plan)."
 metadata:
   version: 2.0.0
 ---

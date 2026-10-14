@@ -1,6 +1,6 @@
 ---
 name: observability-and-instrumentation
-description: "Adds structured logs, metrics, traces and alerts so production behavior can be diagnosed, starting from the questions on-call will ask. Use when asked to \"add logging\", \"instrument this endpoint\", \"set up alerts\", \"add tracing\" or \"we could not tell what happened in prod\"."
+description: "Adds structured logs, metrics, traces and alerts, starting from what on-call will ask. Use for 'add logging', 'instrument this endpoint', 'set up alerts' or 'add tracing'."
 ---
 
 # Observability and Instrumentation

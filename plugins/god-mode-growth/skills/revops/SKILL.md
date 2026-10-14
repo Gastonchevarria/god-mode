@@ -1,6 +1,6 @@
 ---
 name: revops
-description: "Designs revenue operations: lead lifecycle, MQL and SQL stages, lead scoring and routing, pipeline stages, CRM automation, deal desk and data hygiene. Use when the user says 'lead scoring,' 'lead routing,' 'leads aren't getting to sales,' or 'marketing-to-sales handoff.'"
+description: "Designs revenue operations: lifecycle stages, MQL and SQL, lead scoring and routing, pipeline, CRM automation. Use for 'lead scoring', 'lead routing' or 'marketing-to-sales handoff'."
 metadata:
   version: 2.0.0
 ---

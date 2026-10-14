@@ -1,6 +1,6 @@
 ---
 name: rag-implementation
-description: Designs and implements advanced Retrieval-Augmented Generation (RAG) pipelines, semantic/hybrid search (vector + BM25), dense reranking, contextual chunking, metadata filtering, and hallucination reduction.
+description: "Implements RAG pipelines: chunking, hybrid search (vector and BM25), reranking, metadata filters, fewer hallucinations. Use for 'build the RAG pipeline' or 'improve retrieval'."
 ---
 
 # Advanced RAG Implementation

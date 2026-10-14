@@ -1,6 +1,6 @@
 ---
 name: interview-me
-description: "Interviews the user one question at a time, each with a guessed answer, until it can predict their replies, then confirms a restated intent. Use for vague asks (\"build me X\", no who or why) or when told \"interview me\", \"grill me\" or \"are we sure?\". Runs before idea-refine."
+description: "Interviews the user one question at a time, with a guessed answer each, until the intent is clear. Use for vague asks ('build me X'), 'interview me' or 'grill me'. Runs before idea-refine."
 ---
 
 # Interview Me

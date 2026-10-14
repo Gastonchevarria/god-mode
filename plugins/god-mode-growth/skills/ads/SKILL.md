@@ -1,6 +1,6 @@
 ---
 name: ads
-description: "Plans and optimizes paid campaigns on Google, Meta, LinkedIn and X: structure, targeting, bidding, budgets, retargeting. Use when the user says 'should I run ads', 'my ROAS dropped', 'negative keywords' or 'when should I kill an ad'. Not for bulk ad copy (use ad-creative)."
+description: "Plans and optimizes paid campaigns on Google, Meta, LinkedIn and X: structure, targeting, bidding, budgets. Use for 'should I run ads' or 'my ROAS dropped'. Not for ad copy (use ad-creative)."
 metadata:
   version: 2.2.0
 ---

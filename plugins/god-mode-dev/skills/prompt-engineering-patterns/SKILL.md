@@ -1,6 +1,6 @@
 ---
 name: prompt-engineering-patterns
-description: Master prompt engineering strategies including chain-of-thought, few-shot demonstration calibration, strict JSON schema output constraints, system prompt modularity, and context window optimization.
+description: "Applies prompt engineering patterns: few-shot examples, chain of thought, JSON schema output, modular system prompts, context budgeting. Use for 'improve this prompt' or 'get valid JSON out'."
 ---
 
 # Prompt Engineering Patterns

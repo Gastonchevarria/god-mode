@@ -1,6 +1,6 @@
 ---
 name: product-marketing
-description: "Creates or updates .agents/product-marketing.md, the shared product, audience, ICP and positioning context other marketing skills read first. Use when the user says 'set up context,' 'positioning,' 'ideal customer profile,' 'describe my product,' or starts a new marketing project."
+description: "Creates .agents/product-marketing.md, the product, ICP and positioning context other marketing skills read first. Use for 'positioning', 'ideal customer profile' or a new marketing project."
 metadata:
   version: 2.1.0
 ---

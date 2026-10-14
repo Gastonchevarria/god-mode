@@ -1,6 +1,6 @@
 ---
 name: mvp-scope-killer
-description: "Cuts premature over-engineering from an MVP plan (microservices, custom RBAC, in-house dashboards, hand-rolled auth, speculative abstractions) into a lean core. Use when the user says /scope-kill, 'cut scope', 'is this overkill for an MVP' or 'what can we drop'."
+description: "Cuts premature over-engineering from an MVP plan: microservices, custom RBAC, hand-rolled auth. Use for /scope-kill, 'cut scope', 'is this overkill for an MVP' or 'what can we drop'."
 ---
 
 # MVP Scope Killer

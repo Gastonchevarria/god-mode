@@ -1,6 +1,6 @@
 ---
 name: nextjs-app-router
-description: Implements modern Next.js App Router patterns, React Server Components (RSC), Server Actions, Suspense streaming, parallel/intercepting routes, caching strategies, and optimistic client UI updates.
+description: "Implements Next.js App Router patterns: Server Components, Server Actions, Suspense streaming, parallel routes, caching, optimistic UI. Use for 'structure this Next.js app' or App Router work."
 ---
 
 # Next.js App Router Patterns

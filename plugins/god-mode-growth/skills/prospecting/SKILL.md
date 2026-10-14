@@ -1,6 +1,6 @@
 ---
 name: prospecting
-description: "Builds and qualifies prospect lists for B2B SaaS, general B2B or local businesses, with ICP fit and compliance checks. Use when the user says 'build a prospect list,' 'find leads,' 'target account list,' or 'find my first customers.' Not for writing the outreach (use cold-email)."
+description: "Builds and qualifies prospect lists for B2B or local businesses, with ICP fit and compliance checks. Use for 'build a prospect list' or 'find leads'. Not for the outreach (use cold-email)."
 metadata:
   version: 1.1.0
 ---

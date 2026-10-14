@@ -1,6 +1,6 @@
 ---
 name: ad-creative
-description: "Generates and iterates ad creative at scale: headlines, primary text, static and video ad concepts within platform specs. Use when the user says 'write me some ads', 'RSA headlines', 'I need more ad variations' or 'iterate on our winners'. Not for targeting or budgets (use ads)."
+description: "Writes ad creative at scale: headlines, primary text, static and video concepts within platform specs. Use for 'write me some ads' or 'more ad variations'. Not for targeting or budgets (use ads)."
 metadata:
   version: 2.8.0
 ---

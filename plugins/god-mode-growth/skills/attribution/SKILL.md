@@ -1,6 +1,6 @@
 ---
 name: attribution
-description: "Measures which marketing drives revenue: attribution models, MMM, incrementality, self-reported data, reconciling dashboards, first-party stitching. Use when the user says 'my dashboards disagree', 'first-touch vs last-touch' or 'holdout test'. Not for UTM setup (use analytics)."
+description: "Measures which marketing drives revenue: attribution models, MMM, incrementality, holdouts. Use for 'my dashboards disagree' or 'first-touch vs last-touch'. Not for UTM setup (use analytics)."
 metadata:
   version: 1.1.0
 ---

@@ -1,6 +1,6 @@
 ---
 name: marketing-loops
-description: "Picks, adapts and schedules recurring marketing workflows an AI agent runs on a cadence or trigger. Use when the user says 'marketing loop,' 'run this every week,' 'marketing on autopilot,' or 'ad fatigue check.' Not for in-product growth mechanics (use launch-growth-loop)."
+description: "Picks and schedules recurring marketing workflows an agent runs on a cadence or trigger. Use for 'marketing loop' or 'run this every week'. Not for in-product growth (use launch-growth-loop)."
 metadata:
   version: 1.2.0
 ---

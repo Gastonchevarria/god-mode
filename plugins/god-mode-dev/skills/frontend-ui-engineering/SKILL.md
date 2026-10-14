@@ -1,6 +1,6 @@
 ---
 name: frontend-ui-engineering
-description: "Builds production-quality, accessible, responsive UI components and pages that follow the design system instead of a generic AI look. Use when asked to \"build this page\", \"create a component\", \"make it responsive\", \"fix keyboard navigation\" or \"add loading and empty states\"."
+description: "Builds accessible, responsive UI components and pages that follow the design system, not a generic AI look. Use for 'build this page', 'create a component' or 'add loading and empty states'."
 ---
 
 # Frontend UI Engineering

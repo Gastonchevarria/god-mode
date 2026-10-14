@@ -1,6 +1,6 @@
 ---
 name: copy-editing
-description: "Edits and refreshes existing marketing copy with seven focused sweeps (clarity, voice, proof, specificity and more) and expert scoring. Use when the user says 'edit this copy', 'tighten this up', 'too wordy' or 'this content is outdated'. Not for new copy (use copywriting)."
+description: "Edits and refreshes existing marketing copy in focused sweeps: clarity, voice, proof, specificity. Use for 'edit this copy', 'tighten this up' or 'too wordy'. Not for new copy (use copywriting)."
 metadata:
   version: 2.0.0
 ---

@@ -1,6 +1,6 @@
 ---
 name: launch
-description: "Plans product and feature launches: ORB channels, five launch phases, Product Hunt strategy, checklists. Use when the user says 'how do I launch this', 'Product Hunt', 'launch checklist' or 'we're about to ship'. Not for a full go-to-market plan (use marketing-plan)."
+description: "Plans product and feature launches: channels, five launch phases, Product Hunt, checklists. Use for 'how do I launch this' or 'Product Hunt'. Not for a full GTM plan (use marketing-plan)."
 metadata:
   version: 2.0.1
 ---

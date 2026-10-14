@@ -1,6 +1,6 @@
 ---
 name: deep-code-audit
-description: "Audits an entire repository, not a diff: bugs, dead code, TODOs, dummy returns, unfinished endpoints, swallowed errors, missing tests, security, performance. Use when asked to \"audit the whole repo\", \"find incomplete features\" or \"deep code audit\". One diff: code-review-and-quality."
+description: "Audits a whole repo: bugs, dead code, TODOs, dummy returns, unfinished endpoints, swallowed errors, missing tests. Use for 'audit the whole repo'. One diff: code-review-and-quality."
 ---
 
 # Deep Code Audit Skill

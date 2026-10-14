@@ -1,6 +1,6 @@
 ---
 name: retro
-description: Conducts post-mortem analysis and retrospective evaluations after shipping a feature, sprint, or resolving an incident. Identifies bottlenecks, extracts reusable patterns, and feeds learnings into persistent agent memory.
+description: "Runs a retrospective or post-mortem after a feature, sprint or incident: bottlenecks, reusable patterns, lessons saved to agent memory. Use for 'retro', 'post-mortem' or 'what did we learn?'."
 ---
 
 # Retro (Retrospective & Continuous Self-Learning)

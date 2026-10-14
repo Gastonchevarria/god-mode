@@ -1,6 +1,6 @@
 ---
 name: ai-product-eval-ops
-description: Establishes continuous evaluation pipelines, ground-truth benchmark datasets, hallucination detection metrics, latency/cost profiling, and regression testing for LLM-powered applications.
+description: "Sets up continuous LLM evals: ground-truth datasets, hallucination metrics, latency and cost profiling, regression tests. Use for 'set up evals' or 'did this prompt change make it worse'."
 ---
 
 # AI Product & Evaluation Ops

@@ -1,6 +1,6 @@
 ---
 name: doubt-driven-development
-description: "Sends each non-trivial decision to a fresh-context adversarial reviewer before it stands. Use when the user says 'doubt this', 'challenge this decision' or 'verify before we commit', or when stakes are high (production, security, irreversible changes) or the code is unfamiliar."
+description: "Sends each non-trivial decision to a fresh-context adversarial reviewer before it stands. Use for 'doubt this' or 'challenge this decision', or for high-stakes or irreversible changes."
 ---
 
 # Doubt-Driven Development

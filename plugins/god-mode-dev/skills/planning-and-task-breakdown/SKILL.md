@@ -1,6 +1,6 @@
 ---
 name: planning-and-task-breakdown
-description: "Breaks an agreed spec into small, ordered vertical-slice tasks with acceptance criteria and checkpoints, saved under tasks/. Use when asked to \"break this down\", \"make a task list\", \"what order do we build this?\" or \"split for parallel agents\". Runs no reviews (see autoplan)."
+description: "Breaks an agreed spec into small ordered tasks with acceptance criteria, saved under tasks/. Use for 'break this down' or 'make a task list'. With reviews: autoplan."
 ---
 
 # Planning and Task Breakdown

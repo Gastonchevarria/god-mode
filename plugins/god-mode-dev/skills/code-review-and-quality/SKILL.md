@@ -1,6 +1,6 @@
 ---
 name: code-review-and-quality
-description: "Reviews one change, file or small PR for correctness, readability, architecture, security and performance, with severity labels. Use when asked to \"review this code\", \"look over my diff\" or \"review this dependency bump\". Pre-merge branch audit: thermos; whole repo: deep-code-audit."
+description: "Reviews one change, file or small PR for correctness, readability, architecture, security and performance. Use for 'review this code' or 'look over my diff'. Branch: thermos; repo: deep-code-audit."
 ---
 
 # Code Review and Quality

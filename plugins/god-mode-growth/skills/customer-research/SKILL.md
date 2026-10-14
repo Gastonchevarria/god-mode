@@ -1,6 +1,6 @@
 ---
 name: customer-research
-description: "Gathers and synthesizes customer research: interviews, surveys and support tickets, Reddit, G2 and forum mining, personas and JTBD. Use when the user says 'analyze these transcripts', 'voice of customer', 'build personas', 'review mining' or 'what do customers say'."
+description: "Synthesizes customer research: interviews, surveys, tickets, review and forum mining, personas, JTBD. Use for 'analyze these transcripts', 'voice of customer' or 'build personas'."
 metadata:
   version: 2.0.1
 ---

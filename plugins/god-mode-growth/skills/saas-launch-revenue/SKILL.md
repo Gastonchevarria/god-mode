@@ -1,6 +1,6 @@
 ---
 name: saas-launch-revenue
-description: "Implements SaaS billing: Stripe or Mercado Pago checkout, customer portal, idempotent webhooks, usage quotas, dunning and trial-to-paid. Use when the user says 'set up Stripe billing,' 'handle payment webhooks,' or 'retry failed payments.' Not for choosing price points (use pricing)."
+description: "Implements SaaS billing: Stripe or Mercado Pago checkout, portal, idempotent webhooks, quotas, dunning. Use for 'set up Stripe billing' or 'payment webhooks'. Not for price points (use pricing)."
 ---
 
 # SaaS Launch & Revenue Engine

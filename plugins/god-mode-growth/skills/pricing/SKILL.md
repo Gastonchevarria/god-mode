@@ -1,6 +1,6 @@
 ---
 name: pricing
-description: "Decides pricing tiers, packaging and price points, and audits pricing pages, including for AI agents. Use when the user says 'how much should I charge,' 'pricing tiers,' 'should I offer a free plan,' or 'price increase.' Not for the business model (use saas-business-model)."
+description: "Decides pricing tiers, packaging and price points, and audits pricing pages. Use for 'how much should I charge' or 'pricing tiers'. Not for the business model (use saas-business-model)."
 metadata:
   version: 2.1.0
 ---

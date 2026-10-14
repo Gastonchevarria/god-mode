@@ -1,6 +1,6 @@
 ---
 name: marketing-plan
-description: "Writes a complete 12-month marketing or go-to-market plan, structured by AARRR and fitted to the client's budget, team and stage. Use when the user says 'marketing plan,' 'GTM plan,' '90-day marketing plan,' or 'fCMO plan.' Not for a quick list of tactics (use marketing-ideas)."
+description: "Writes a 12-month marketing or go-to-market plan by AARRR, fitted to budget, team and stage. Use for 'marketing plan' or 'GTM plan'. Not for a quick list of tactics (use marketing-ideas)."
 ---
 
 # Marketing Plan

@@ -1,6 +1,6 @@
 ---
 name: self-learning-skills
-description: Captures golden path procedures, reusable workflows, setup steps, and troubleshooting patterns into persisted SKILL.md and AGENTS.md files for continuous agent self-improvement.
+description: "Saves golden-path procedures, setup steps and troubleshooting patterns as SKILL.md or AGENTS.md files. Use for 'save this as a skill', 'remember this procedure' or 'persist this pattern'."
 ---
 
 # Self-Learning Skills & Golden Path Persistence

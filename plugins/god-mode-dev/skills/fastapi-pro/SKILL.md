@@ -1,6 +1,6 @@
 ---
 name: fastapi-pro
-description: Guides development of high-performance asynchronous FastAPI applications with Pydantic v2 schemas, dependency injection, structured error handling, background tasks, and production OpenAPI documentation.
+description: "Builds async FastAPI apps: Pydantic v2 schemas, dependency injection, structured errors, background tasks, OpenAPI docs. Use for 'build a FastAPI endpoint' or 'structure this FastAPI app'."
 ---
 
 # FastAPI Pro (Production-Ready Async Python)

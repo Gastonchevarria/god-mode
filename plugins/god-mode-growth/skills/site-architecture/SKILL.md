@@ -1,6 +1,6 @@
 ---
 name: site-architecture
-description: "Plans a website's page hierarchy, navigation, URL structure and internal linking, with a visual Mermaid sitemap. Use when the user says 'site structure,' 'information architecture,' 'what pages do I need,' or 'how should I organize my site.' Not for XML sitemaps (use seo-audit)."
+description: "Plans a site's page hierarchy, navigation, URLs and internal linking, with a Mermaid sitemap. Use for 'site structure' or 'what pages do I need'. Not for XML sitemaps (use seo-audit)."
 metadata:
   version: 2.0.0
 ---

@@ -2,6 +2,17 @@
 
 All notable changes to god-mode are documented here. Versions follow [Semantic Versioning](https://semver.org/).
 
+## [1.9.0] - 2026-10-14
+
+### Changed
+- Every skill description is 200 characters or fewer, down from 300, and `scripts/validate.py` enforces it. The skill list Claude reads went from about 32,700 to 24,100 characters. Claude Code gives that list 1% of the context window and lists the skills that do not fit by name only; in Cowork, with all four packs and Cowork's own skills, 31 of the 35 `god-mode-dev` skills had lost their descriptions.
+- Skills that had no trigger phrase (`backend-architect`, `agent-mcp-builder`, `ai-product-eval-ops`, `fastapi-pro`, `nextjs-app-router`, `rag-implementation`, `retro`, `self-learning-skills` and others) now say when to use them. `shipping-and-launch` (deploys) and `launch` (marketing) point to each other.
+
+### Fixed
+- `scripts/eval_routing.py` gives the model up to four turns (`--max-turns`) before its first skill call. It used to stop at the first text, so a model that says what it will do before acting (Fable 5.1) scored as "no skill". API errors such as spend limits now count as failed runs instead of "no skill".
+
+On Fable 5.1 (38 requests, 1 run each), routing went from 30/38 to 33/38; `god-mode-dev` from 6/10 to 9/10. No run picked a wrong skill, before or after. Details in `docs/evals/skill-listing-2026-10-14.md`.
+
 ## [1.8.1] - 2026-10-13
 
 ### Fixed

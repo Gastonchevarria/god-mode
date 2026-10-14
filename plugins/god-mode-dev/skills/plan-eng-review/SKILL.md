@@ -1,6 +1,6 @@
 ---
 name: plan-eng-review
-description: "Stress-tests a technical design before coding: data integrity, failure modes and retries, concurrency, rate limits, test plan, with a risk matrix and verdict. Use when asked for an \"eng review\", \"what could break?\", \"review this architecture\" or \"check failure modes\"."
+description: "Stress-tests a technical design before coding: data integrity, failure modes, concurrency, rate limits, test plan, verdict. Use for 'eng review', 'what could break?' or 'review this architecture'."
 ---
 
 # Plan Engineering Review

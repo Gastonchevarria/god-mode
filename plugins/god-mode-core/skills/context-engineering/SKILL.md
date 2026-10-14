@@ -1,6 +1,6 @@
 ---
 name: context-engineering
-description: Optimizes agent context setup. Use when starting a new session, when agent output quality degrades, when switching between tasks, or when you need to configure rules files and context for a project.
+description: "Sets up agent context: rules files, CLAUDE.md, what to load per task. Use when starting a project or session, switching tasks, or when output quality degrades."
 ---
 
 # Context Engineering

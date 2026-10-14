@@ -1,6 +1,6 @@
 ---
 name: ui-states-verification
-description: "Verifies a rendered component with Playwright: drives hover, focus-visible, active, disabled, loading and error, screenshots each state against the reference image, checks touch targets, reduced motion and a11y. Use when the user says 'verify the states' or 'does it match the design'."
+description: "Verifies a rendered component with Playwright: hover, focus, active, disabled, loading, error, touch targets, reduced motion, a11y, vs the reference image. Use for 'verify the states'."
 model: claude-opus-5-5
 context: fork
 ---

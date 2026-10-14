@@ -20,7 +20,9 @@ except ImportError:
 
 ROOT = Path(__file__).resolve().parent.parent
 FRONTMATTER = re.compile(r"\A---\n(.*?)\n---\n", re.DOTALL)
-DEFAULT_MAX_DESCRIPTION = 300
+# Claude Code fits every skill's description into a share of the context window (1% by default)
+# and drops the descriptions that do not fit, so a short limit keeps all packs visible together.
+DEFAULT_MAX_DESCRIPTION = 200
 # Skills allowed to set disable-model-invocation (manual-only). Keep empty unless a skill must never auto-run.
 MANUAL_ONLY_ALLOWLIST = set()
 

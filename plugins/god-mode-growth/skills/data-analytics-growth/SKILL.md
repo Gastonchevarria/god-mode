@@ -1,6 +1,6 @@
 ---
 name: data-analytics-growth
-description: Implements product analytics, client/server telemetry tracking, conversion funnel measurement, cohort retention tracking, and A/B experimentation frameworks (PostHog, Mixpanel, Custom Events).
+description: "Implements product analytics in code: client and server events, funnels, cohort retention, experiments (PostHog, Mixpanel). Use for 'instrument product analytics'. GA4 and UTMs: analytics."
 ---
 
 # Data Analytics & Growth Telemetry

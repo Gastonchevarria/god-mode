@@ -1,6 +1,6 @@
 ---
 name: archify
-description: "Builds validated architecture, workflow, sequence, data-flow and state diagrams as interactive HTML from plain language, Mermaid or repo code. Use when the user says 'diagram my architecture', 'draw this API sequence', 'map our data pipeline' or 'beautify this Mermaid'."
+description: "Builds validated architecture, sequence, data-flow and state diagrams as interactive HTML from text, Mermaid or code. Use for 'diagram my architecture' or 'draw this API sequence'."
 license: MIT
 metadata:
   version: "2.17"

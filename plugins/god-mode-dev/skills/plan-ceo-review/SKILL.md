@@ -1,6 +1,6 @@
 ---
 name: plan-ceo-review
-description: "Reviews a drafted plan, PRD or roadmap as a founder-CEO: KPI impact, 80/20 scope cuts, pricing tier, moat, build vs buy; verdict approve, reduce or reject. Use when asked for a \"CEO review\", \"cut this scope\", \"how does this make money?\" or \"build or buy?\". Raw idea: office-hours."
+description: "Reviews a plan or PRD as a founder-CEO: KPI impact, scope cuts, pricing, moat, build vs buy; verdict approve, reduce or reject. Use for 'CEO review' or 'build or buy?'. Raw idea: office-hours."
 ---
 
 # Plan CEO Review

@@ -1,6 +1,6 @@
 ---
 name: security-and-hardening
-description: "Secure-coding practices while building features that handle input, auth, sessions or data. Use when the user says 'add login', 'handle file uploads', 'secure this endpoint', 'store user data safely' or 'add a webhook'. For a pre-launch audit use security."
+description: "Secure coding while building features with input, auth, sessions or data. Use for 'add login', 'handle file uploads', 'secure this endpoint' or 'add a webhook'. Pre-launch audit: security."
 ---
 
 # Security and Hardening

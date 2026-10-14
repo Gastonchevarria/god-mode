@@ -1,6 +1,6 @@
 ---
 name: sales-enablement
-description: "Creates sales collateral: pitch decks, one-pagers, objection handling docs, demo scripts, ROI analyses and playbooks. Use when the user says 'sales deck,' 'objection handling,' 'demo script,' or 'what should I give my sales reps.' Not for public comparison pages (use competitors)."
+description: "Creates sales collateral: pitch decks, one-pagers, objection handling, demo scripts, ROI analyses. Use for 'sales deck' or 'demo script'. Not for public vs pages (use competitors)."
 metadata:
   version: 2.0.1
 ---

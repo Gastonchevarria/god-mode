@@ -1,6 +1,6 @@
 ---
 name: directory-submissions
-description: "Plans directory submissions for backlinks across startup, SaaS, AI, MCP and review sites: readiness, tiers, positioning, tracker. Use when the user says 'submit to directories', 'directory backlinks', 'list us on G2' or 'MCP registry'. Not for the whole launch (use launch)."
+description: "Plans directory submissions for backlinks: startup, SaaS, AI, MCP and review sites, with a tracker. Use for 'submit to directories' or 'list us on G2'. Not for the whole launch (use launch)."
 metadata:
   version: 2.0.0
 ---

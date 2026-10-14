@@ -1,6 +1,6 @@
 ---
 name: saas-business-model
-description: "Chooses the SaaS business and monetization model: value metric, tiers, usage metering and unit economics. Use when the user says /monetize, 'how should we charge' or 'per seat or usage-based'. For price points use pricing; for billing code use saas-launch-revenue."
+description: "Chooses the SaaS monetization model: value metric, tiers, usage metering, unit economics. Use for /monetize or 'per seat or usage-based'. Prices: pricing; billing code: saas-launch-revenue."
 ---
 
 # SaaS Business Model & Monetization Architecture

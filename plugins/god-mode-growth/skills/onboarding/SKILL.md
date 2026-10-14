@@ -1,6 +1,6 @@
 ---
 name: onboarding
-description: "Optimizes post-signup onboarding and activation: aha moment, checklists, empty states, time-to-value. Use when the user says 'activation rate,' 'onboarding flow,' 'nobody completes setup,' or 'users sign up but don't use the product.' Not for the signup form (use signup)."
+description: "Optimizes post-signup activation: aha moment, checklists, empty states, time-to-value. Use for 'activation rate' or 'onboarding flow'. Not for the signup form (use signup)."
 metadata:
   version: 2.0.0
 ---

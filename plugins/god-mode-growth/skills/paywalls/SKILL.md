@@ -1,6 +1,6 @@
 ---
 name: paywalls
-description: "Optimizes in-app paywalls, upgrade screens, upsell modals and feature gates shown after users have felt value. Use when the user says 'paywall,' 'upgrade modal,' 'limit reached screen,' or 'free users won't upgrade.' Not for choosing plans or price points (use pricing)."
+description: "Optimizes in-app paywalls, upgrade screens and feature gates shown after users feel value. Use for 'paywall', 'upgrade modal' or 'free users won't upgrade'. Not for price points (use pricing)."
 metadata:
   version: 2.0.0
 ---

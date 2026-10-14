@@ -1,6 +1,6 @@
 ---
 name: competitor-profiling
-description: "Researches competitors from their URLs, combining site scraping with SEO data, into structured profile files. Use when the user says 'profile this competitor', 'competitive intelligence' or 'research these competitors'. Not for comparison pages (use competitors)."
+description: "Researches competitors from their URLs into structured profile files, with site and SEO data. Use for 'profile this competitor' or 'competitive intelligence'. Not for vs pages (use competitors)."
 metadata:
   version: 2.0.0
 ---
