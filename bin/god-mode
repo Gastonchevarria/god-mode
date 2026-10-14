@@ -11,6 +11,7 @@ import re
 import shutil
 import subprocess
 import sys
+from collections import Counter
 from pathlib import Path
 
 HOME = Path.home()
@@ -492,6 +493,9 @@ RECOMMENDED_ENV = {
     "AUTOHARNESS_REFLECT_EVERY_N": "75",
     "AUTOHARNESS_CONSOLIDATE_EVERY_N": "300",
 }
+# With a 1M-token window a session can reach ~800k tokens before auto-compact (seen in a Cowork session),
+# and every model call re-reads that whole context. 200k keeps each call several times cheaper; Claude Code accepts 100k-1M.
+RECOMMENDED_COMPACT_WINDOW = 200_000
 TOKEN_RULE_SECTIONS = ["Brevedad Obligatoria", "Context Hygiene", "Tool Call Discipline",
                        "Output Frugality", "Auto-Compact Triggers", "Smart Skill Loading"]
 
@@ -579,6 +583,10 @@ def fix_claude_settings(path):
     if data.get("outputStyle") != "Concise":
         changes.append(f"outputStyle: {data.get('outputStyle') or '—'} → Concise")
         data["outputStyle"] = "Concise"
+    if "autoCompactWindow" not in data:
+        changes.append(f"autoCompactWindow: — → {RECOMMENDED_COMPACT_WINDOW} (compacta antes de que el contexto "
+                       "llegue a cientos de miles de tokens)")
+        data["autoCompactWindow"] = RECOMMENDED_COMPACT_WINDOW
     for name, value in RECOMMENDED_ENV.items():
         if env.get(name) != value:
             changes.append(f"env.{name}: {env.get(name) or '—'} → {value}")
@@ -689,6 +697,10 @@ def cmd_doctor(fix=False):
     style = (settings or {}).get("outputStyle")
     results.append(((style or "").lower() == "concise", "Claude Code: output style Concise",
                     style or ("settings.json inválido" if settings is None else "sin definir"), "god-mode doctor --fix"))
+    window = (settings or {}).get("autoCompactWindow")
+    results.append((window is not None, "Claude Code: autoCompactWindow",
+                    str(window) if window is not None else "sin definir: con 1M de contexto la sesión puede llegar a ~800k antes de compactar",
+                    "god-mode doctor --fix"))
 
     if settings is not None:
         groups, found = _audit_hook_entries(settings)
@@ -732,6 +744,142 @@ def cmd_doctor(fix=False):
     sys.exit(1 if failed else 0)
 
 
+USAGE_MARKERS = ('"usage"', '"cost-state"', '"compact_boundary"', '"tool_use"')
+BIG_CONTEXT = 300_000
+
+
+def _transcript_stats(path):
+    """Cost, cache reads, context size, compactions and launched agents of one Claude Code transcript.
+
+    Subagent transcripts live next to it in <session>/subagents/ and add their calls and cache reads.
+    The cost comes from the transcript's last "cost-state" row, which already includes subagents.
+    """
+    s = {"cwd": None, "entry": None, "cost": None, "models": {}, "calls": 0, "cache_read": 0, "max_ctx": 0,
+         "compactions": 0, "agents": 0, "audits": 0, "skills": Counter()}
+    seen = set()
+    for index, f in enumerate([path, *sorted(path.with_suffix("").glob("subagents/*.jsonl"))]):
+        main = index == 0
+        try:
+            handle = f.open(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        with handle:
+            for number, line in enumerate(handle):
+                if number > 30 and not any(marker in line for marker in USAGE_MARKERS):
+                    continue
+                try:
+                    row = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                if not isinstance(row, dict):
+                    continue
+                if main:
+                    s["cwd"] = s["cwd"] or row.get("cwd")
+                    s["entry"] = s["entry"] or row.get("entrypoint")
+                    if row.get("type") == "cost-state":
+                        s["cost"] = row.get("totalCostUSD")
+                        usage_by_model = row.get("modelUsage") or {}
+                        s["models"] = {m: (u or {}).get("costUSD") or 0 for m, u in usage_by_model.items()}
+                        s["state_read"] = sum((u or {}).get("cacheReadInputTokens") or 0 for u in usage_by_model.values())
+                    if row.get("subtype") == "compact_boundary":
+                        s["compactions"] += 1
+                        s["max_ctx"] = max(s["max_ctx"], (row.get("compactMetadata") or {}).get("preTokens") or 0)
+                msg = row.get("message")
+                if not isinstance(msg, dict):
+                    continue
+                if main and isinstance(msg.get("content"), list):
+                    for block in msg["content"]:
+                        if not isinstance(block, dict) or block.get("type") != "tool_use":
+                            continue
+                        name, args = block.get("name"), block.get("input") or {}
+                        if name in ("Agent", "Task"):
+                            s["agents"] += 1
+                            s["audits"] += "prompt-audit" in json.dumps(args)
+                        elif name == "Skill" and isinstance(args, dict):
+                            s["skills"][str(args.get("skill") or args.get("command") or "?")] += 1
+                usage, key = msg.get("usage"), (f.name, msg.get("id"))
+                if not isinstance(usage, dict) or key in seen:
+                    continue
+                seen.add(key)
+                s["calls"] += 1
+                read = usage.get("cache_read_input_tokens") or 0
+                s["cache_read"] += read
+                if main:
+                    context = read + (usage.get("cache_creation_input_tokens") or 0) + (usage.get("input_tokens") or 0)
+                    s["max_ctx"] = max(s["max_ctx"], context)
+    # A compaction can drop earlier rows from the transcript; the cost-state totals keep them.
+    s["cache_read"] = max(s["cache_read"], s.pop("state_read", 0))
+    return s
+
+
+def _tokens(n):
+    return f"{n / 1e6:.1f}M" if n >= 1e6 else f"{n / 1e3:.0f}k" if n >= 1e3 else str(n)
+
+
+def cmd_usage(days=2.0):
+    root = CLAUDE_DIR / "projects"
+    cutoff = datetime.datetime.now().timestamp() - days * 86400
+    paths = [p for p in root.glob("*/*.jsonl") if p.stat().st_mtime >= cutoff] if root.exists() else []
+    if not paths:
+        print(f"No hay sesiones de Claude Code de los últimos {days:g} días en {root}.")
+        return
+    rows = []
+    for path in paths:
+        s = _transcript_stats(path)
+        s["path"], s["mtime"] = path, path.stat().st_mtime
+        s["background"] = (s["entry"] or "").startswith("sdk")
+        rows.append(s)
+    rows.sort(key=lambda s: (s["cost"] or 0, s["cache_read"]), reverse=True)
+
+    print(f"\n{PURPLE}{BOLD}⚡ Uso de Claude Code, últimos {days:g} días{NC} ({len(rows)} sesiones, de {root})\n")
+    print(f"  {'Fecha':11}  {'Proyecto':18} {'Tipo':5} {'Costo':>8}  {'Caché':>7}  {'Contexto':>8}  "
+          f"{'Compact.':>8}  {'Agentes':>7}  Skills")
+    for s in rows[:15]:
+        date = datetime.datetime.fromtimestamp(s["mtime"]).strftime("%m-%d %H:%M")
+        project = Path(s["cwd"]).name if s["cwd"] else s["path"].parent.name[-18:]
+        kind = "-p" if s["background"] else (s["entry"] or "?")[:5]
+        cost = f"${s['cost']:.2f}" if isinstance(s["cost"], (int, float)) else "—"
+        skills = ", ".join(f"{k}×{v}" for k, v in s["skills"].most_common(3)) or "—"
+        print(f"  {date}  {project[:18]:18} {kind:5} {cost:>8}  {_tokens(s['cache_read']):>7}  "
+              f"{_tokens(s['max_ctx']):>8}  {s['compactions']:>8}  {s['agents']:>7}  {skills}")
+    if len(rows) > 15:
+        print(f"  … y {len(rows) - 15} sesiones más")
+
+    costs = [s["cost"] for s in rows if isinstance(s["cost"], (int, float))]
+    by_model = Counter()
+    for s in rows:
+        by_model.update(s["models"])
+    if costs:
+        models = ", ".join(f"{m} ${c:.2f}" for m, c in by_model.most_common(4) if c)
+        print(f"\n  Total: ${sum(costs):.2f}" + (f" · {models}" if models else ""))
+        print("  Costo a precio de API, como lo calcula Claude Code. Con un plan, mide la proporción de uso.")
+    print("  Caché = tokens releídos del contexto en cada llamada, sumando subagentes.\n")
+
+    findings = []
+    big = [s for s in rows if s["max_ctx"] > BIG_CONTEXT]
+    if big:
+        many = "sesiones pasaron" if len(big) > 1 else "sesión pasó"
+        findings.append(f"{len(big)} {many} los {_tokens(BIG_CONTEXT)} tokens de contexto: cada llamada relee "
+                        f"todo ese contexto. `god-mode doctor --fix` pone autoCompactWindow en "
+                        f"{RECOMMENDED_COMPACT_WINDOW} para compactar antes; para un tema nuevo, sesión nueva.")
+    audits = sum(s["audits"] for s in rows)
+    if audits:
+        findings.append(f"{audits} audit{'s' if audits > 1 else ''} de instrucciones (prompt-audit) en subagentes. "
+                        "GOD_MODE_PROMPT_AUDIT=off los apaga.")
+    background = [s for s in rows if s["background"]]
+    if background:
+        spent = sum(s["cost"] or 0 for s in background)
+        findings.append(f"{len(background)} sesi{'ones' if len(background) > 1 else 'ón'} de `claude -p` "
+                        "(AutoHarness, scripts o evals)"
+                        + (f": ${spent:.2f}" if spent else "") + ".")
+    agents = sum(s["agents"] for s in rows)
+    if agents:
+        findings.append(f"{agents} subagente{'s' if agents > 1 else ''} lanzado{'s' if agents > 1 else ''}: "
+                        "cada uno arranca con su propio contexto.")
+    for line in findings:
+        print(f"  • {line}")
+
+
 USAGE = f"""
 {PURPLE}{BOLD}⚡ god-mode CLI — Gestor de la suite DEV GOD-MODE{NC}
 
@@ -744,8 +892,11 @@ USAGE = f"""
   {CYAN}update{NC}                 Actualiza desde GitHub y reaplica protocolo, agentes y pack.
   {CYAN}cursor [ruta]{NC}          Copia .cursorrules y AGENTS.md a un proyecto (con copia de respaldo).
   {CYAN}add <github-url>{NC}       Instala una skill desde GitHub (pide confirmación).
-  {CYAN}doctor [--fix]{NC}         Verifica la instalación; con --fix escribe outputStyle, env recomendados y el
-                         hook de audit post-compact en ~/.claude/settings.json (con copia de respaldo).
+  {CYAN}doctor [--fix]{NC}         Verifica la instalación; con --fix escribe outputStyle, autoCompactWindow, env
+                         recomendados y el hook de audit post-compact en ~/.claude/settings.json (con copia
+                         de respaldo).
+  {CYAN}usage [--days=N]{NC}       En qué se fueron los tokens de Claude Code: costo, contexto, compactaciones y
+                         subagentes por sesión (por defecto, últimos 2 días). Solo lee ~/.claude/projects.
   {CYAN}setup [--targets=claude,gemini] [--source=<repo>]{NC}
                          Instala protocolo, agentes e instalador (lo usa install.sh).
 """
@@ -789,6 +940,16 @@ def main():
         sys.exit(subprocess.run([sys.executable, str(installer), *args[1:]], check=False).returncode)
     elif cmd == "doctor":
         cmd_doctor(fix="--fix" in args[1:])
+    elif cmd == "usage":
+        days = 2.0
+        for i, a in enumerate(args[1:], start=1):
+            value = a.split("=", 1)[1] if a.startswith("--days=") else (args[i + 1] if a == "--days" and i + 1 < len(args) else None)
+            if value is not None:
+                try:
+                    days = float(value)
+                except ValueError:
+                    fail(f"--days espera un número de días, no '{value}'.")
+        cmd_usage(days)
     elif cmd == "packs":
         repo = ensure_source_dir()
         print(" ".join(load_packs(repo)))

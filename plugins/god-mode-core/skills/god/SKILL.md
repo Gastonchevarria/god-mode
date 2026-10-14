@@ -57,7 +57,8 @@ Una sola línea: el diagnóstico largo va solo si el usuario lo pide.
  │    └── Ruta: ARCHIFY ➔ Activa `archify`
  │
  ├── 🕸️ Entender el código: cómo se conectan los módulos, quién llama a qué, qué se rompe si cambio algo
- │    └── Ruta: CODE-MAP ➔ Activa `graphify` si está instalada en el proyecto; si no, ninguna
+ │    └── Ruta: CODE-MAP ➔ Activa ninguna skill: usá la CLI de graphify si está instalada
+ │         La skill `graphify` del proyecto es para construir grafos con `/graphify` y pesa unos 11k tokens: para consultar alcanza la CLI.
  │         · con `graphify-out/graph.json`: primero `graphify query "<pregunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"` o `graphify affected "<X>"`; leé archivos solo para lo que el grafo no responde
  │         · con la CLI y sin grafo: generalo con `graphify extract . --code-only` (solo AST, local, sin API) y excluí `graphify-out/` de git; `graphify cluster-only . --no-label` suma el reporte y `graph.html` sin API
  │         · sin la CLI: respondé con búsqueda y lectura, y decí en una línea cómo instalarla (es una instalación externa: pedí el "sí")
@@ -116,9 +117,11 @@ Una sola línea: el diagnóstico largo va solo si el usuario lo pide.
  │    └── Ruta: CONTEXT-HEALTH ➔ Activa una:
  │         · compactar la sesión ➔ `auto-compact`
  │         · configurar reglas y contexto del proyecto ➔ `context-engineering`
- │         · auditar CLAUDE.md, reglas, skills o subagentes: instrucciones viejas, contradictorias o de más ➔ `claude-api` con el argumento prompt-audit, en un subagente
- │           Viene con Claude Code. No edita nada: mostrá los hallazgos y aplicá el diff solo con el "sí" del usuario.
- │           Después de cada compactación, el hook de god-mode lo pide solo si las instrucciones cambiaron.
+ │         · auditar CLAUDE.md, reglas, skills o subagentes: instrucciones viejas, contradictorias o de más ➔ `claude-api` con el argumento prompt-audit, en un subagente Sonnet
+ │           Viene con Claude Code. Pasale los archivos a auditar: sin archivos audita todo el directorio, y en un repo grande eso son cientos de miles de tokens.
+ │           No edita nada: mostrá los hallazgos y aplicá el diff solo con el "sí" del usuario.
+ │           Después de cada compactación, el hook de god-mode lo pide solo para los archivos que cambiaron.
+ │         · ver en qué se fueron los tokens de las últimas sesiones ➔ ninguna: corré `god-mode usage`
  │
  └── 🎨 UI que se sienta nativa, pixel-perfect, animaciones o verificar estados
       └── Ruta: DESIGN ➔ Activa una:

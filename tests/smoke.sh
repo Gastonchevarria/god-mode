@@ -231,7 +231,7 @@ import json, pathlib, sys
 claude = pathlib.Path(sys.argv[1]) / ".claude"
 repo = json.loads((claude / ".god-mode-state.json").read_text())["source_dir"]
 command = f'python3 "{repo}/plugins/god-mode-core/hooks/prompt_audit_check.py"'
-settings = {"outputStyle": "Concise",
+settings = {"outputStyle": "Concise", "autoCompactWindow": 300000,
             "hooks": {"SessionStart": [{"matcher": "compact", "hooks": [{"type": "command", "command": command}]}]}}
 (claude / "settings.json").write_text(json.dumps(settings))
 PY
@@ -260,6 +260,8 @@ check "escribe outputStyle y las tres variables en settings.json" python3 -c "
 import json; d = json.load(open('$HOME/.claude/settings.json'))
 assert d['outputStyle'] == 'Concise' and d['env']['CLAUDE_CODE_SUBAGENT_MODEL'] == 'claude-sonnet-5-5'
 assert d['env']['AUTOHARNESS_REFLECT_EVERY_N'] == '75' and d['env']['AUTOHARNESS_CONSOLIDATE_EVERY_N'] == '300'"
+check "y autoCompactWindow en 200000" python3 -c "
+import json; assert json.load(open('$HOME/.claude/settings.json'))['autoCompactWindow'] == 200000"
 check "conserva el resto de la configuración" python3 -c "
 import json; d = json.load(open('$HOME/.claude/settings.json'))
 assert d['permissions'] == {'deny': ['Bash(rm -rf:*)']} and d['env']['MI_VAR'] == '1'"
@@ -272,6 +274,11 @@ check "y correrlo de nuevo no lo duplica" python3 -c "
 import json; d = json.load(open('$HOME/.claude/settings.json'))
 assert sum('prompt_audit_check.py' in h['command'] for g in d['hooks']['SessionStart'] for h in g['hooks']) == 1"
 check "guarda una copia de la versión anterior" bash -c "grep -q Explanatory '$HOME'/.claude/settings.json.bak-*"
+python3 -c "
+import json; p = '$HOME/.claude/settings.json'; d = json.load(open(p)); d['autoCompactWindow'] = 500000; json.dump(d, open(p, 'w'))"
+PATH="$WORK/fakebin:$PATH" python3 "$HOME/.local/bin/god-mode" doctor --fix >/dev/null 2>&1
+check "respeta un autoCompactWindow que el usuario ya eligió" python3 -c "
+import json; assert json.load(open('$HOME/.claude/settings.json'))['autoCompactWindow'] == 500000"
 check "no toca el shell" test ! -e "$HOME/.zshrc"
 printf 'export CLAUDE_CODE_SUBAGENT_MODEL="claude-sonnet-5"\nexport AUTOHARNESS_REFLECT_EVERY_N=75\nexport AUTOHARNESS_CONSOLIDATE_EVERY_N=300\n' >"$HOME/.zshrc"
 check "doctor toma el valor de settings.json, que es el que usa Claude Code, aunque el shell tenga otro" env CLAUDE_CODE_SUBAGENT_MODEL=claude-sonnet-5 PATH="$WORK/fakebin:$PATH" python3 "$HOME/.local/bin/god-mode" doctor

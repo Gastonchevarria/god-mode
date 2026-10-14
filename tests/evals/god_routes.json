@@ -93,6 +93,10 @@
       "query": "Auditá mis CLAUDE.md y mis skills: ¿hay instrucciones viejas, contradictorias o de más?"
     },
     {
+      "route": "CONTEXT",
+      "query": "¿Por qué me gasté casi todos los tokens en la última sesión de Claude Code?"
+    },
+    {
       "route": "CODE-MAP",
       "query": "¿Qué módulos dependen de conciliacion.py y qué se rompe si cambio la firma de conciliar()?"
     },

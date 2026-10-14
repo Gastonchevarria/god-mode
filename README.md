@@ -176,10 +176,11 @@ god-mode keeps sessions lean:
 - **`config/rules/token-optimization.md`**: global rule for brevity, context hygiene, tool-call discipline, output frugality, compaction triggers and skill loading. `install.sh` adds it to the managed block in `~/.claude/CLAUDE.md` and to Antigravity's rules; the god-mode-core plugin loads it when the session starts.
 - **`auto-compact` skill** (god-mode-core): rates the session 🟢🟡🔴 from observable signals (tool calls, back-and-forth, re-read files, topic changes) and, with your OK, compacts it with a structured summary that keeps decisions and dead ends.
 - **CONTEXT-HEALTH route in `/god`**: "the session feels heavy" or "compact" loads `auto-compact`; "audit my CLAUDE.md and skills" runs Claude Code's own prompt audit (`/claude-api prompt-audit`) in a subagent.
-- **Prompt audit after compacting**: after each compaction, a hook checks whether the instructions that load in the project changed since the last audit (CLAUDE.md, AGENTS.md, rules, skills, commands, subagents, output styles; it compares sizes and dates, not contents). If they did, Claude runs the audit in a subagent on the session's model and shows you the findings. It edits nothing without your "yes". In a test with 119 instruction files and Opus 5.5, an audit cost about US$ 2.40, and the main conversation stayed under 47,000 tokens. Set `GOD_MODE_PROMPT_AUDIT` to `always` to audit after every compaction, or to `off` to turn it off. The hook is installed by `god-mode doctor --fix` and loaded by the god-mode-core plugin. In Cowork, `claude-api` is turned off, so Claude says so in one line and carries on.
-- **[Graphify](https://github.com/Graphify-Labs/graphify)** (optional, third-party, Apache-2.0): turns a repo into a local knowledge graph with tree-sitter, so Claude asks the graph instead of grepping dozens of files. `/god` sends "what depends on X", "what breaks if I change Y" or "trace the path from A to B" to the CODE-MAP route, which runs `graphify query`, `path`, `explain` or `affected` when the project has `graphify-out/graph.json`. god-mode does not install it: `uv tool install graphifyy` (the PyPI name has two y's for now), then, in each project, `graphify install --project`, `graphify extract . --code-only` (writes `graph.json`) and `graphify cluster-only . --no-label` (adds `GRAPH_REPORT.md` and `graph.html`). With those two flags everything stays on your machine: only code is parsed, and communities keep numbered names instead of LLM-written ones. A full `graphify extract .` also sends docs and images to whichever LLM API key is set in your environment. `graphify install --project` adds a section to the project's `CLAUDE.md` and a PreToolUse hook in `.claude/settings.json` that nudges Claude toward the graph before raw reads and searches.
+- **Prompt audit after compacting**: after each compaction, a hook checks which instruction files changed since the last audit (CLAUDE.md, AGENTS.md, rules, commands, subagents, output styles and your own skills; it compares sizes and dates, not contents). Claude audits only those files, in a Sonnet subagent, with the session's model as the target, and shows you the findings. It edits nothing without your "yes". god-mode's own skills, linked into `~/.claude/skills`, are left out: an update does not trigger audits in every project. When the changed files add up to more than 60 KB, Claude only offers the audit (`GOD_MODE_PROMPT_AUDIT_MAX_KB` changes the cap, `0` removes it). Without a file list, Claude Code's prompt audit covers the whole working directory, which in a large repo is hundreds of thousands of tokens. Set `GOD_MODE_PROMPT_AUDIT` to `always` to audit every instruction file after every compaction, or to `off` to turn it off. The hook is installed by `god-mode doctor --fix` and loaded by the god-mode-core plugin. In Cowork, `claude-api` is turned off, so Claude says so in one line and carries on.
+- **[Graphify](https://github.com/Graphify-Labs/graphify)** (optional, third-party, Apache-2.0): turns a repo into a local knowledge graph with tree-sitter, so Claude asks the graph instead of grepping dozens of files. `/god` sends "what depends on X", "what breaks if I change Y" or "trace the path from A to B" to the CODE-MAP route, which runs `graphify query`, `path`, `explain` or `affected` when the project has `graphify-out/graph.json`. god-mode does not install it: `uv tool install graphifyy` (the PyPI name has two y's for now), then, in each project, `graphify install --project`, `graphify extract . --code-only` (writes `graph.json`) and `graphify cluster-only . --no-label` (adds `GRAPH_REPORT.md` and `graph.html`). With those two flags everything stays on your machine: only code is parsed, and communities keep numbered names instead of LLM-written ones. A full `graphify extract .` also sends docs and images to whichever LLM API key is set in your environment. `graphify install --project` adds a section to the project's `CLAUDE.md` and a PreToolUse hook in `.claude/settings.json` that nudges Claude toward the graph before raw reads and searches. It also adds a `graphify` skill of about 43 KB whose description matches any question about the code, so Claude loads it often. CODE-MAP uses the CLI, not that skill. To keep Claude from loading it on its own, add `disable-model-invocation: true` to the frontmatter of `.claude/skills/graphify/SKILL.md`: `/graphify` still works.
 - **Short skill descriptions**: every description is 200 characters or fewer. Claude Code gives the list of skills 1% of the context window (about 40,000 characters on a 1M-context model, 8,000 on a 200k one) and lists the skills that do not fit by name only, which Claude cannot pick on its own. With all four packs plus Cowork's own skills, the old 300-character descriptions overflowed and 31 of the 35 `god-mode-dev` skills lost theirs. On a 200k-context model, install only the packs you use.
 - **`god-mode doctor`**: checks the installation and the recommended settings below, and prints the exact fix for anything missing. It changes nothing unless you add `--fix`, which writes the settings below and the audit hook into `~/.claude/settings.json` (backup first, every other key kept).
+- **`god-mode usage`**: shows where Claude Code's tokens went in the last two days (`--days=N` for more): cost per session as Claude Code computes it, cache reads, the largest context, compactions, subagents and skills, plus `claude -p` sessions such as AutoHarness. It only reads `~/.claude/projects`.
 
 ### Recommended settings
 
@@ -189,6 +190,7 @@ god-mode keeps sessions lean:
 // ~/.claude/settings.json
 {
   "outputStyle": "Concise",                          // built-in style: results first, no narration
+  "autoCompactWindow": 200000,                       // compact near 200k tokens; with a 1M window a session can reach ~800k first (kept if you set it)
   "env": {
     "CLAUDE_CODE_SUBAGENT_MODEL": "claude-sonnet-5-5", // subagents run on Sonnet 5.5 instead of the main model
     "AUTOHARNESS_REFLECT_EVERY_N": "75",             // only if you use AutoHarness (default 50)
@@ -202,7 +204,7 @@ god-mode keeps sessions lean:
 ```
 
 Exporting the same variables in `~/.zshrc` works too. For a single project, put these keys in the project's `.claude/settings.json`, next to rules such as `"permissions": {"deny": ["Bash(git push:*)", "Read(./**/.env)"]}`.
-- **[AutoHarness](https://github.com/tigerless-labs/autoharness)** (optional, third-party, MIT): a Claude Code plugin that learns skills from your sessions. Each reflection runs a background session that uses tokens; the higher values above make it run less often.
+- **[AutoHarness](https://github.com/tigerless-labs/autoharness)** (optional, third-party, MIT): a Claude Code plugin that learns skills from your sessions. Each reflection runs a background session on Haiku; the higher values above make it run less often.
 
   ```
   /plugin marketplace add tigerless-labs/autoharness
@@ -261,9 +263,9 @@ Installed in `~/.claude/agents/` and dispatched by the skills when a job needs a
 <br/>
 
 ```bash
-curl -fsSLO https://github.com/Gastonchevarria/god-mode/releases/download/v1.9.0/install.sh
-curl -fsSLO https://github.com/Gastonchevarria/god-mode/releases/download/v1.9.0/install.sh.sha256
-shasum -a 256 -c install.sh.sha256 && bash install.sh --version=v1.9.0 --pack=core
+curl -fsSLO https://github.com/Gastonchevarria/god-mode/releases/download/v1.10.0/install.sh
+curl -fsSLO https://github.com/Gastonchevarria/god-mode/releases/download/v1.10.0/install.sh.sha256
+shasum -a 256 -c install.sh.sha256 && bash install.sh --version=v1.10.0 --pack=core
 ```
 
 A pinned install doesn't update itself. To move to another version, run the installer again with `--version=vX.Y.Z`.

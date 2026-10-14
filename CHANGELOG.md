@@ -2,6 +2,17 @@
 
 All notable changes to god-mode are documented here. Versions follow [Semantic Versioning](https://semver.org/).
 
+## [1.10.0] - 2026-10-14
+
+### Added
+- `god-mode usage [--days=N]` shows where Claude Code's tokens went: cost per session as Claude Code computes it, cache reads (subagents included), the largest context, compactions, subagents and skills, and `claude -p` sessions such as AutoHarness. It only reads `~/.claude/projects`.
+- `god-mode doctor --fix` sets `autoCompactWindow` to 200000 when it is not set, and `doctor` reports it. With a 1M-token window, a Cowork session reached 783,000 tokens before compacting, and every model call re-read that context: 399 million cache-read tokens in one session.
+
+### Changed
+- The post-compact prompt audit covers only the instruction files that changed, runs in a Sonnet subagent with the session's model as the target, and leaves out skills linked into `~/.claude/skills` (god-mode's own). It used to audit the whole working directory on the session's model: about 2.6 MB of Markdown in the god-mode repo, and every god-mode update triggered it in every project. Above 60 KB of changed files Claude only offers the audit (`GOD_MODE_PROMPT_AUDIT_MAX_KB`). The first run after updating takes today's files as the baseline instead of auditing everything.
+- CODE-MAP in `/god` uses the Graphify CLI and no longer loads the project's `graphify` skill, which is about 43 KB and meant for building graphs with `/graphify`. The README explains how to stop Claude from loading that skill on its own.
+- CONTEXT-HEALTH: pass the files to audit to `prompt-audit`, and `god-mode usage` for "where did my tokens go".
+
 ## [1.9.0] - 2026-10-14
 
 ### Changed
