@@ -156,9 +156,6 @@ Identify the framework and rendering model (React, Vue, Svelte, Angular, Next.js
 #### [HIGH] [Finding title]
 ...
 
-### Positive Observations
-- [Performance practices done well]
-
 ### Recommendations
 - [Proactive improvements to consider]
 ```
@@ -171,14 +168,12 @@ Identify the framework and rendering model (React, Vue, Svelte, Angular, Next.js
 4. Identify the framework / stack before recommending framework-specific patterns. Do not recommend idioms from a stack the project does not use.
 5. Every finding must include a specific, actionable recommendation.
 6. Do not recommend micro-optimizations without evidence they affect a Core Web Vital or another measurable metric.
-7. Acknowledge good performance practices — positive reinforcement matters.
-8. Use `references/performance-checklist.md` as the minimum baseline for each area.
-9. Delegate granular optimization guidance and remediation steps to `skills/performance-optimization/SKILL.md` — keep this report at the audit level.
-10. Fold AI-generated anti-patterns into their relevant area (Network or Rendering/JS); do not create a separate "AI" category.
-11. In Deep mode, always state which artifacts were provided and which fields remain unmeasured.
+7. Delegate granular optimization guidance and remediation steps to the `performance-optimization` skill — keep this report at the audit level.
+8. Fold AI-generated anti-patterns into their relevant area (Network or Rendering/JS); do not create a separate "AI" category.
+9. In Deep mode, always state which artifacts were provided and which fields remain unmeasured.
 
 ## Composition
 
 - **Invoke directly when:** the user wants a performance-focused pass on a web application, a specific component, a route, or a live URL.
-- **Invoke via:** `/webperf` (dedicated performance audit command). Not included in `/ship` fan-out — performance audits apply to web applications only, not to utility libraries or CLI tools, so adding it to a global pre-launch fan-out would create noise in non-web projects.
-- **Do not invoke from another persona.** If `code-reviewer` flags a performance concern that warrants a deeper pass, surface that recommendation in the report; the user or a slash command initiates the deeper pass. See [docs/agents.md](../docs/agents.md).
+- **Invoke via:** the Agent tool from the main session. No slash command dispatches this agent; `/god` and the other skills do not launch it on their own. Use it only on web applications, not on utility libraries or CLI tools.
+- **Do not invoke from another persona.** If `code-reviewer` flags a performance concern that warrants a deeper pass, surface that recommendation in the report; the user or the main session initiates the deeper pass.

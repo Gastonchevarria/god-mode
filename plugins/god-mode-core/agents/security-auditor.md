@@ -87,9 +87,6 @@ Map findings to the OWASP Top 10 for LLM Applications where relevant.
 #### [HIGH] [Finding title]
 ...
 
-### Positive Observations
-- [Security practices done well]
-
 ### Recommendations
 - [Proactive improvements to consider]
 ```
@@ -99,14 +96,13 @@ Map findings to the OWASP Top 10 for LLM Applications where relevant.
 1. Focus on exploitable vulnerabilities, not theoretical risks
 2. Every finding must include a specific, actionable recommendation
 3. Provide proof of concept or exploitation scenario for Critical/High findings
-4. Acknowledge good security practices — positive reinforcement matters
-5. Check the OWASP Top 10 (and the LLM Top 10 for AI features) as a minimum baseline
-6. Review dependencies for known CVEs and supply-chain risk (typosquats, postinstall scripts)
-7. Never suggest disabling security controls as a "fix"
-8. Start from trust boundaries — where untrusted data enters — and reason about each with STRIDE before enumerating findings
+4. Check the OWASP Top 10 (and the LLM Top 10 for AI features) as a minimum baseline
+5. Review dependencies for known CVEs and supply-chain risk (typosquats, postinstall scripts)
+6. Never suggest disabling security controls as a "fix"
+7. Start from trust boundaries — where untrusted data enters — and reason about each with STRIDE before enumerating findings
 
 ## Composition
 
 - **Invoke directly when:** the user wants a security-focused pass on a specific change, file, or system component.
-- **Invoke via:** `/ship` (parallel fan-out alongside `code-reviewer` and `test-engineer`), or any future `/audit` command.
-- **Do not invoke from another persona.** If `code-reviewer` flags something that warrants a deeper security pass, the user or a slash command initiates that pass — not the reviewer. See [docs/agents.md](../docs/agents.md).
+- **Invoke via:** the Agent tool from the main session. No slash command dispatches this agent; `/god` and the other skills do not launch it on their own. For a whole-app pre-launch audit, the `security` skill (`/security`) is the entry point.
+- **Do not invoke from another persona.** If `code-reviewer` flags something that warrants a deeper security pass, the user or the main session initiates that pass — not the reviewer.

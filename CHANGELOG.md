@@ -2,6 +2,13 @@
 
 All notable changes to god-mode are documented here. Versions follow [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+- Protocol (§0–1 of `config/CLAUDE.md`, `.cursorrules`, `AGENTS.md`, Antigravity rules): one "sí" covers only the action shown, so an approved commit does not authorize the push. "Never Stop Short" now names when the agent stops: an Autonomy Limits action, a user who asked to see the plan or diff first, or a decision only the user can make. The role line is gone.
+- Token rules: failed commands and tests are read in full; the 3-files-per-turn, 100-line and 2-skills-per-turn caps are gone; `/compact` is recommended by stale context, not by call counts.
+- Subagents: no forced praise sections; no links to `docs/agents.md` or the missing performance checklist; "Invoke via" says they are launched from the main session (`/thermos` launches the two thermo agents), with the `god-mode-core:` prefix when god-mode loads as a plugin.
+
 ## [1.12.0] - 2026-10-15
 
 ### Added
