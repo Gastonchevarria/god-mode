@@ -2,6 +2,14 @@
 
 All notable changes to god-mode are documented here. Versions follow [Semantic Versioning](https://semver.org/).
 
+## [1.12.0] - 2026-10-15
+
+### Added
+- SessionStart hook `graphify_refresh.py`: when a session starts and after each compaction, in a project with `graphify-out/graph.json`, it runs `graphify update .` in the background (code only, local, no LLM). It prints nothing, so it adds no tokens. It finds the CLI on `PATH` or in `~/.local/bin`, where `uv tool` installs it and where the desktop app may not look. `GOD_MODE_GRAPHIFY_REFRESH=off` turns it off. Loaded by the god-mode-core plugin and written by `god-mode doctor --fix`, which also checks it.
+
+### Changed
+- Compaction goes back to when the context fills the `autoCompactWindow` of 200,000 tokens (about 187,000, after the 13,000 Claude Code keeps for the summary). `god-mode doctor --fix` no longer sets `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE`, and removes the `70` that 1.11.0 wrote if it is still there.
+
 ## [1.11.0] - 2026-10-15
 
 ### Added

@@ -27,7 +27,7 @@ Reducir el consumo de tokens sin sacrificar calidad. Esta regla aplica a todas l
 - No generes código de ejemplo si el usuario no lo pidió.
 
 ## 5. Compactación
-- En Claude Code la compactación es obligatoria al 70% de la ventana: `god-mode doctor --fix` pone `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=70` y `autoCompactWindow` en 200000, o sea unos 140.000 tokens. Cada llamada reenvía todo el contexto, así que pasar ese punto cuesta en cada paso.
+- En Claude Code la sesión compacta sola al llenar la ventana de 200.000 tokens (`autoCompactWindow`, que pone `god-mode doctor --fix`); deja 13.000 para el resumen, así que compacta cerca de 187.000. Cada llamada reenvía todo el contexto, así que una sesión más grande cuesta más en cada paso.
 - Recomendá `/compact` antes de eso si detectás más de 30 tool calls, más de 15 mensajes de ida y vuelta o relectura de archivos ya procesados.
 - Si el usuario cambia de tema, recomendá `/clear` o una sesión nueva: el contexto anterior ya no sirve y compactarlo igual se paga.
 

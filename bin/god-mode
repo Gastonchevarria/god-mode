@@ -490,11 +490,11 @@ def cmd_cursor(target_dir="."):
 
 RECOMMENDED_ENV = {
     "CLAUDE_CODE_SUBAGENT_MODEL": "claude-sonnet-5-5",
-    # Auto-compact at 70% of the window: with autoCompactWindow 200000, at about 140k tokens.
-    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "70",
     "AUTOHARNESS_REFLECT_EVERY_N": "75",
     "AUTOHARNESS_CONSOLIDATE_EVERY_N": "300",
 }
+# Values an earlier god-mode wrote and no longer recommends; --fix removes them only while unchanged.
+RETIRED_ENV = {"CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "70"}
 # Claude Code auto-compacts at the window minus 13k tokens, so with a 1M window sessions reached 974k, and
 # every model call re-reads that whole context. 200k keeps each call several times cheaper (accepted: 100k-1M).
 RECOMMENDED_COMPACT_WINDOW = 200_000
@@ -534,41 +534,60 @@ def _read_settings(path):
 
 
 AUDIT_HOOK_SCRIPT = "prompt_audit_check.py"
+REFRESH_HOOK_SCRIPT = "graphify_refresh.py"
+# script -> (SessionStart matcher or None for every source, line shown when --fix adds it)
+SESSION_HOOKS = {
+    AUDIT_HOOK_SCRIPT: ("compact", "audit de instrucciones después de cada compactación (si cambiaron)"),
+    REFRESH_HOOK_SCRIPT: (None, "graphify update . al empezar y al compactar, en proyectos con grafo"),
+}
+
+
+def hook_command(repo, script):
+    return f'python3 "{repo / "plugins" / "god-mode-core" / "hooks" / script}"'
 
 
 def audit_hook_command(repo):
-    script = repo / "plugins" / "god-mode-core" / "hooks" / AUDIT_HOOK_SCRIPT
-    return f'python3 "{script}"'
+    return hook_command(repo, AUDIT_HOOK_SCRIPT)
 
 
-def _audit_hook_entries(data):
-    """(SessionStart groups, the group index and hook index of god-mode's audit hook, or None)."""
+def _session_hook(data, script):
+    """(SessionStart groups, the group index and hook index of god-mode's hook for script, or None)."""
     groups = ((data.get("hooks") or {}).get("SessionStart")) or []
     for gi, group in enumerate(groups):
         for hi, hook in enumerate((group or {}).get("hooks") or []):
-            if AUDIT_HOOK_SCRIPT in str((hook or {}).get("command", "")):
+            if script in str((hook or {}).get("command", "")):
                 return groups, (gi, hi)
     return groups, None
 
 
-def _ensure_audit_hook(data, repo):
-    """Adds or repoints the SessionStart hook (matcher "compact") that asks for prompt-audit. Returns a change line."""
+def _audit_hook_entries(data):
+    return _session_hook(data, AUDIT_HOOK_SCRIPT)
+
+
+def _ensure_session_hook(data, repo, script):
+    """Adds or repoints one of god-mode's SessionStart hooks. Returns a change line, or None."""
     hooks = data.get("hooks")
     if hooks is not None and not isinstance(hooks, dict):
         fail("No toco settings.json: \"hooks\" no es un objeto. Corregilo a mano y volvé a correr.")
-    command = audit_hook_command(repo)
-    groups, found = _audit_hook_entries(data)
+    matcher, added = SESSION_HOOKS[script]
+    command = hook_command(repo, script)
+    groups, found = _session_hook(data, script)
     if found:
         gi, hi = found
         hook = groups[gi]["hooks"][hi]
-        if hook.get("command") == command and groups[gi].get("matcher") == "compact":
+        if hook.get("command") == command and groups[gi].get("matcher") == matcher:
             return None
         hook["command"] = command
-        groups[gi]["matcher"] = "compact"
-        return "hooks.SessionStart: audit post-compact apuntado al repo actual"
-    data.setdefault("hooks", {}).setdefault("SessionStart", []).append(
-        {"matcher": "compact", "hooks": [{"type": "command", "command": command}]})
-    return "hooks.SessionStart: audit de instrucciones después de cada compactación (si cambiaron)"
+        if matcher:
+            groups[gi]["matcher"] = matcher
+        else:
+            groups[gi].pop("matcher", None)
+        return f"hooks.SessionStart: {script} apuntado al repo actual"
+    group = {"hooks": [{"type": "command", "command": command}]}
+    if matcher:
+        group = {"matcher": matcher, **group}
+    data.setdefault("hooks", {}).setdefault("SessionStart", []).append(group)
+    return f"hooks.SessionStart: {added}"
 
 
 def fix_claude_settings(path):
@@ -579,9 +598,10 @@ def fix_claude_settings(path):
     env = dict(data.get("env", {}))
     changes = []
     repo = source_dir()
-    hook_change = _ensure_audit_hook(data, repo) if repo else None
-    if hook_change:
-        changes.append(hook_change)
+    for script in SESSION_HOOKS if repo else ():
+        hook_change = _ensure_session_hook(data, repo, script)
+        if hook_change:
+            changes.append(hook_change)
     if data.get("outputStyle") != "Concise":
         changes.append(f"outputStyle: {data.get('outputStyle') or '—'} → Concise")
         data["outputStyle"] = "Concise"
@@ -593,6 +613,10 @@ def fix_claude_settings(path):
         if env.get(name) != value:
             changes.append(f"env.{name}: {env.get(name) or '—'} → {value}")
             env[name] = value
+    for name, value in RETIRED_ENV.items():
+        if env.get(name) == value:
+            changes.append(f"env.{name}: {value} → — (ya no se recomienda)")
+            del env[name]
     if not changes:
         print(f"{GREEN}✓ {path} ya tenía la configuración recomendada.{NC}")
         return
@@ -713,6 +737,14 @@ def cmd_doctor(fix=False):
         if ok and os.environ.get("GOD_MODE_PROMPT_AUDIT", "").lower() == "off":
             detail += " (desactivado con GOD_MODE_PROMPT_AUDIT=off)"
         results.append((ok, "Claude Code: audit de instrucciones post-compact", detail, "god-mode doctor --fix"))
+        groups, found = _session_hook(settings, REFRESH_HOOK_SCRIPT)
+        hook = groups[found[0]]["hooks"][found[1]] if found else None
+        ok = bool(hook) and hook.get("command") == hook_command(repo, REFRESH_HOOK_SCRIPT)
+        detail = ("graphify update . al empezar y al compactar" if ok else
+                  "apunta a otra copia del repo" if hook else "no configurado")
+        if ok and os.environ.get("GOD_MODE_GRAPHIFY_REFRESH", "").lower() == "off":
+            detail += " (desactivado con GOD_MODE_GRAPHIFY_REFRESH=off)"
+        results.append((ok, "Claude Code: grafo de Graphify al día", detail, "god-mode doctor --fix"))
 
     graphify = shutil.which("graphify")
     results.append((True if graphify else None, "Graphify CLI (opcional, para la ruta CODE-MAP)",
@@ -898,7 +930,7 @@ def cmd_usage(days=2.0):
     if big:
         many = "sesiones pasaron" if len(big) > 1 else "sesión pasó"
         findings.append(f"{len(big)} {many} los {_tokens(BIG_CONTEXT)} tokens de contexto: cada llamada relee "
-                        "todo ese contexto. Con `god-mode doctor --fix`, Claude Code compacta solo al 70% de "
+                        "todo ese contexto. Con `god-mode doctor --fix`, Claude Code compacta solo al llegar a "
                         f"{_tokens(RECOMMENDED_COMPACT_WINDOW)}; para un tema nuevo, `/clear` o sesión nueva.")
     audits = sum(s["audits"] for s in rows)
     if audits:
@@ -945,8 +977,8 @@ USAGE = f"""
   {CYAN}cursor [ruta]{NC}          Copia .cursorrules y AGENTS.md a un proyecto (con copia de respaldo).
   {CYAN}add <github-url>{NC}       Instala una skill desde GitHub (pide confirmación).
   {CYAN}doctor [--fix]{NC}         Verifica la instalación; con --fix escribe outputStyle, autoCompactWindow, env
-                         recomendados y el hook de audit post-compact en ~/.claude/settings.json (con copia
-                         de respaldo).
+                         recomendados y los hooks de god-mode (audit post-compact y grafo de Graphify al
+                         día) en ~/.claude/settings.json (con copia de respaldo).
   {CYAN}usage [--days=N]{NC}       En qué se fueron los tokens de Claude Code: costo, contexto, compactaciones y
                          subagentes por sesión (por defecto, últimos 2 días). Solo lee ~/.claude/projects.
   {CYAN}setup [--targets=claude,gemini] [--source=<repo>]{NC}

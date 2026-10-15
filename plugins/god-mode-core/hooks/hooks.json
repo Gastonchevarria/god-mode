@@ -17,6 +17,14 @@
             "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/prompt_audit_check.py\""
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/graphify_refresh.py\""
+          }
+        ]
       }
     ]
   }
