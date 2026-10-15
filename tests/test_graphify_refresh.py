@@ -47,7 +47,10 @@ class GraphifyRefreshTest(unittest.TestCase):
         return out.stdout
 
     def calls(self, wait=True):
-        deadline = time.time() + (3 if wait else 0.3)
+        # The hook returns before the background `graphify update` runs. On macOS the first run of a
+        # freshly written executable can be held for seconds by the system's malware scan, so the
+        # wait is long; it returns as soon as the call shows up, so a passing run does not pay it.
+        deadline = time.time() + (15 if wait else 0.3)
         while time.time() < deadline:
             if self.log.exists() and self.log.read_text().strip():
                 return self.log.read_text().splitlines()
