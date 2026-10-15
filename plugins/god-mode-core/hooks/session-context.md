@@ -61,12 +61,10 @@ Reducir el consumo de tokens sin sacrificar calidad. Esta regla aplica a todas l
 - Resumí los diffs en 2 o 3 bullets. Excepción: antes de una acción que requiere confirmación (push, deploy, borrados), mostrá el cambio completo o ofrecelo.
 - No generes código de ejemplo si el usuario no lo pidió.
 
-## 5. Auto-Compact Triggers
-El agente debe recomendar compactar (en Claude Code, `/compact`) cuando detecte:
-- Más de 30 tool calls en la conversación actual.
-- Más de 15 mensajes de ida y vuelta.
-- Un cambio de tema mayor.
-- Relectura de archivos ya procesados.
+## 5. Compactación
+- En Claude Code la compactación es obligatoria al 70% de la ventana: `god-mode doctor --fix` pone `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=70` y `autoCompactWindow` en 200000, o sea unos 140.000 tokens. Cada llamada reenvía todo el contexto, así que pasar ese punto cuesta en cada paso.
+- Recomendá `/compact` antes de eso si detectás más de 30 tool calls, más de 15 mensajes de ida y vuelta o relectura de archivos ya procesados.
+- Si el usuario cambia de tema, recomendá `/clear` o una sesión nueva: el contexto anterior ya no sirve y compactarlo igual se paga.
 
 Para decidir y compactar, usá la skill `auto-compact`.
 

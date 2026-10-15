@@ -2,6 +2,17 @@
 
 All notable changes to god-mode are documented here. Versions follow [Semantic Versioning](https://semver.org/).
 
+## [1.11.0] - 2026-10-15
+
+### Added
+- `god-mode doctor --fix` sets `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=70`: Claude Code compacts on its own at 70% of the auto-compact window, about 140,000 tokens with `autoCompactWindow` 200000. Without it, Claude Code compacts at the window minus 13,000 tokens. In three days of one user's Claude Code, the four sessions with a recorded cost reached 656,000 to 974,000 tokens of context and cost US$ 1,741 at API prices.
+- `god-mode usage` shows each session's main model, hides empty sessions, counts the times the context was written again because the cache had expired (and says whether the cache lasts 5 minutes or 1 hour), and lists projects whose Graphify graph nobody queried.
+
+### Changed
+- The protocol block in `~/.claude/CLAUDE.md` went from 7,800 to 3,800 characters. The command table, the skill-install steps and the subagent list repeated what the skill and agent descriptions already say; `/install-skill` keeps the install steps.
+- Token rule "Compactación": compaction at 70% is automatic in Claude Code; on a change of topic, Claude suggests `/clear` or a new session instead of compacting.
+- README: Graphify's strict Read hook (`graphify hook-guard read --strict`). In one user's six repos, the soft hook had never led to a `graphify query`.
+
 ## [1.10.0] - 2026-10-14
 
 ### Added

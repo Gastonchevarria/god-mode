@@ -490,14 +490,16 @@ def cmd_cursor(target_dir="."):
 
 RECOMMENDED_ENV = {
     "CLAUDE_CODE_SUBAGENT_MODEL": "claude-sonnet-5-5",
+    # Auto-compact at 70% of the window: with autoCompactWindow 200000, at about 140k tokens.
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "70",
     "AUTOHARNESS_REFLECT_EVERY_N": "75",
     "AUTOHARNESS_CONSOLIDATE_EVERY_N": "300",
 }
-# With a 1M-token window a session can reach ~800k tokens before auto-compact (seen in a Cowork session),
-# and every model call re-reads that whole context. 200k keeps each call several times cheaper; Claude Code accepts 100k-1M.
+# Claude Code auto-compacts at the window minus 13k tokens, so with a 1M window sessions reached 974k, and
+# every model call re-reads that whole context. 200k keeps each call several times cheaper (accepted: 100k-1M).
 RECOMMENDED_COMPACT_WINDOW = 200_000
 TOKEN_RULE_SECTIONS = ["Brevedad Obligatoria", "Context Hygiene", "Tool Call Discipline",
-                       "Output Frugality", "Auto-Compact Triggers", "Smart Skill Loading"]
+                       "Output Frugality", "Compactación", "Smart Skill Loading"]
 
 
 def _shell_rc_value(name):
@@ -699,7 +701,7 @@ def cmd_doctor(fix=False):
                     style or ("settings.json inválido" if settings is None else "sin definir"), "god-mode doctor --fix"))
     window = (settings or {}).get("autoCompactWindow")
     results.append((window is not None, "Claude Code: autoCompactWindow",
-                    str(window) if window is not None else "sin definir: con 1M de contexto la sesión puede llegar a ~800k antes de compactar",
+                    str(window) if window is not None else "sin definir: con 1M de contexto compacta recién cerca de 987k",
                     "god-mode doctor --fix"))
 
     if settings is not None:
@@ -746,6 +748,7 @@ def cmd_doctor(fix=False):
 
 USAGE_MARKERS = ('"usage"', '"cost-state"', '"compact_boundary"', '"tool_use"')
 BIG_CONTEXT = 300_000
+REBUILD_MIN_CONTEXT = 50_000
 
 
 def _transcript_stats(path):
@@ -755,7 +758,8 @@ def _transcript_stats(path):
     The cost comes from the transcript's last "cost-state" row, which already includes subagents.
     """
     s = {"cwd": None, "entry": None, "cost": None, "models": {}, "calls": 0, "cache_read": 0, "max_ctx": 0,
-         "compactions": 0, "agents": 0, "audits": 0, "skills": Counter()}
+         "compactions": 0, "agents": 0, "audits": 0, "skills": Counter(), "msg_models": Counter(),
+         "write_5m": 0, "write_1h": 0, "rebuilds": 0, "rebuilt_tokens": 0}
     seen = set()
     for index, f in enumerate([path, *sorted(path.with_suffix("").glob("subagents/*.jsonl"))]):
         main = index == 0
@@ -807,6 +811,15 @@ def _transcript_stats(path):
                 if main:
                     context = read + (usage.get("cache_creation_input_tokens") or 0) + (usage.get("input_tokens") or 0)
                     s["max_ctx"] = max(s["max_ctx"], context)
+                    if msg.get("model") and not str(msg["model"]).startswith("<"):
+                        s["msg_models"][msg["model"]] += 1
+                    split = usage.get("cache_creation") or {}
+                    s["write_5m"] += split.get("ephemeral_5m_input_tokens") or 0
+                    s["write_1h"] += split.get("ephemeral_1h_input_tokens") or 0
+                    # Most of a large context written again instead of read: the cache had expired.
+                    if context > REBUILD_MIN_CONTEXT and read < context / 2:
+                        s["rebuilds"] += 1
+                        s["rebuilt_tokens"] += usage.get("cache_creation_input_tokens") or 0
     # A compaction can drop earlier rows from the transcript; the cost-state totals keep them.
     s["cache_read"] = max(s["cache_read"], s.pop("state_read", 0))
     return s
@@ -814,6 +827,27 @@ def _transcript_stats(path):
 
 def _tokens(n):
     return f"{n / 1e6:.1f}M" if n >= 1e6 else f"{n / 1e3:.0f}k" if n >= 1e3 else str(n)
+
+
+def _main_model(s):
+    """The model that cost the most in a session, without the claude- prefix or a date suffix."""
+    costs = {m: c for m, c in s["models"].items() if c}
+    model = max(costs, key=costs.get) if costs else (s["msg_models"].most_common(1) or [("?", 0)])[0][0]
+    return re.sub(r"-\d{8}$", "", re.sub(r"^claude-", "", model))
+
+
+def _graphs_not_queried(rows, cutoff):
+    """Projects with a Graphify graph that no `graphify query`, `path` or `explain` used since the cutoff."""
+    names = []
+    for cwd in sorted({s["cwd"] for s in rows if s["cwd"]}):
+        graph = Path(cwd) / "graphify-out" / "graph.json"
+        stamp = graph.parent / "cache" / "last_query_stamp"
+        try:
+            if graph.is_file() and (not stamp.exists() or stamp.stat().st_mtime < cutoff):
+                names.append(Path(cwd).name)
+        except OSError:
+            continue
+    return names
 
 
 def cmd_usage(days=2.0):
@@ -829,18 +863,22 @@ def cmd_usage(days=2.0):
         s["path"], s["mtime"] = path, path.stat().st_mtime
         s["background"] = (s["entry"] or "").startswith("sdk")
         rows.append(s)
+    empty = [s for s in rows if not s["calls"] and not s["cost"]]
+    rows = [s for s in rows if s["calls"] or s["cost"]]
     rows.sort(key=lambda s: (s["cost"] or 0, s["cache_read"]), reverse=True)
 
-    print(f"\n{PURPLE}{BOLD}⚡ Uso de Claude Code, últimos {days:g} días{NC} ({len(rows)} sesiones, de {root})\n")
-    print(f"  {'Fecha':11}  {'Proyecto':18} {'Tipo':5} {'Costo':>8}  {'Caché':>7}  {'Contexto':>8}  "
+    hidden = f", {len(empty)} vací{'as' if len(empty) > 1 else 'a'} sin mostrar" if empty else ""
+    count = f"{len(rows)} sesi{'ones' if len(rows) != 1 else 'ón'}"
+    print(f"\n{PURPLE}{BOLD}⚡ Uso de Claude Code, últimos {days:g} días{NC} ({count}{hidden}, de {root})\n")
+    print(f"  {'Fecha':11}  {'Proyecto':18} {'Modelo':14} {'Costo':>8}  {'Caché':>7}  {'Contexto':>8}  "
           f"{'Compact.':>8}  {'Agentes':>7}  Skills")
     for s in rows[:15]:
         date = datetime.datetime.fromtimestamp(s["mtime"]).strftime("%m-%d %H:%M")
         project = Path(s["cwd"]).name if s["cwd"] else s["path"].parent.name[-18:]
-        kind = "-p" if s["background"] else (s["entry"] or "?")[:5]
+        model = _main_model(s)[:11] + (" -p" if s["background"] else "")
         cost = f"${s['cost']:.2f}" if isinstance(s["cost"], (int, float)) else "—"
         skills = ", ".join(f"{k}×{v}" for k, v in s["skills"].most_common(3)) or "—"
-        print(f"  {date}  {project[:18]:18} {kind:5} {cost:>8}  {_tokens(s['cache_read']):>7}  "
+        print(f"  {date}  {project[:18]:18} {model:14} {cost:>8}  {_tokens(s['cache_read']):>7}  "
               f"{_tokens(s['max_ctx']):>8}  {s['compactions']:>8}  {s['agents']:>7}  {skills}")
     if len(rows) > 15:
         print(f"  … y {len(rows) - 15} sesiones más")
@@ -860,8 +898,8 @@ def cmd_usage(days=2.0):
     if big:
         many = "sesiones pasaron" if len(big) > 1 else "sesión pasó"
         findings.append(f"{len(big)} {many} los {_tokens(BIG_CONTEXT)} tokens de contexto: cada llamada relee "
-                        f"todo ese contexto. `god-mode doctor --fix` pone autoCompactWindow en "
-                        f"{RECOMMENDED_COMPACT_WINDOW} para compactar antes; para un tema nuevo, sesión nueva.")
+                        "todo ese contexto. Con `god-mode doctor --fix`, Claude Code compacta solo al 70% de "
+                        f"{_tokens(RECOMMENDED_COMPACT_WINDOW)}; para un tema nuevo, `/clear` o sesión nueva.")
     audits = sum(s["audits"] for s in rows)
     if audits:
         findings.append(f"{audits} audit{'s' if audits > 1 else ''} de instrucciones (prompt-audit) en subagentes. "
@@ -872,6 +910,20 @@ def cmd_usage(days=2.0):
         findings.append(f"{len(background)} sesi{'ones' if len(background) > 1 else 'ón'} de `claude -p` "
                         "(AutoHarness, scripts o evals)"
                         + (f": ${spent:.2f}" if spent else "") + ".")
+    rebuilds = sum(s["rebuilds"] for s in rows)
+    if rebuilds:
+        written = sum(s["rebuilt_tokens"] for s in rows)
+        one_hour = sum(s["write_1h"] for s in rows) > sum(s["write_5m"] for s in rows)
+        findings.append(f"{rebuilds} {'veces' if rebuilds > 1 else 'vez'} la caché estaba vencida y se escribió de nuevo "
+                        f"el contexto entero ({_tokens(written)} tokens): pasa tras una pausa más larga que la caché. "
+                        + ("La caché ya dura 1 hora." if one_hour else
+                           "La caché dura 5 minutos; con muchas pausas, `ENABLE_PROMPT_CACHING_1H=1` la lleva a 1 hora "
+                           "(cada escritura cuesta 2x en vez de 1,25x, así que conviene solo si esto se repite)."))
+    unused = _graphs_not_queried(rows, cutoff)
+    if unused:
+        findings.append(f"Graphify: {', '.join(unused)} {'tienen' if len(unused) > 1 else 'tiene'} grafo y Claude no "
+                        "lo consultó en estos días. Con `graphify hook-guard read --strict` en el hook de "
+                        "`.claude/settings.json`, la primera lectura de código de cada sesión espera una consulta al grafo.")
     agents = sum(s["agents"] for s in rows)
     if agents:
         findings.append(f"{agents} subagente{'s' if agents > 1 else ''} lanzado{'s' if agents > 1 else ''}: "
