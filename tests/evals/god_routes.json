@@ -58,7 +58,18 @@
     },
     {
       "route": "TECH-ARCH",
-      "query": "How should I structure the backend and database for a multi-tenant invoicing app?"
+      "query": "How should I structure the backend and database for a multi-tenant invoicing app?",
+      "skills": [
+        "backend-architect"
+      ]
+    },
+    {
+      "route": "TECH-ARCH",
+      "skills": [
+        "plan-eng-review",
+        "mvp-scope-killer"
+      ],
+      "query": "Auditá el escáner actual (gateway, landing, guardas SSRF y CLI) y armá una propuesta de MVP punto por punto, sin tocar código."
     },
     {
       "route": "FULL-BUILD",

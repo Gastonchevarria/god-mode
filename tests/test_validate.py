@@ -38,6 +38,7 @@ class FakeRepo:
             agents = validate.check_agents(errors)
             validate.check_packs(skills, errors)
             validate.check_router(skills, agents, errors)
+            validate.check_router_routes_have_skill(errors)
             validate.check_third_party(skills, errors)
             validate.check_plugins(errors)
         return errors
@@ -93,6 +94,44 @@ class ValidateTest(unittest.TestCase):
         errors = self.repo.errors()
         self.assertTrue(any("'ghost-skill'" in e for e in errors))
         self.assertFalse(any("'not-checked'" in e for e in errors))
+
+    def write_router(self, matrix):
+        self.repo.skill("god", "name: god\ndescription: router")
+        (self.repo.root / "skills" / "god" / "SKILL.md").write_text(
+            "---\nname: god\ndescription: router\n---\n## Matriz de rutas\n" + matrix + "## Otra sección\n",
+            encoding="utf-8")
+        self.repo.credit("god")
+
+    def test_router_route_without_skill_is_flagged(self):
+        self.write_router(
+            " ├── 📐 Arquitectura técnica\n"
+            " │    └── Ruta: TECH-ARCH ➔ Activa una:\n"
+            " │         · auditar algo que ya existe ➔ hacelo vos\n")
+        self.assertTrue(any("route TECH-ARCH loads no skill" in e for e in self.repo.errors()))
+
+    def test_router_route_marked_ninguna_outside_allowed_set_is_flagged(self):
+        self.write_router(" │    └── Ruta: TECH-ARCH ➔ Activa ninguna skill: hacelo vos\n")
+        self.assertTrue(any("route TECH-ARCH loads no skill" in e for e in self.repo.errors()))
+
+    def test_router_direct_and_code_map_may_load_no_skill(self):
+        self.write_router(
+            " │    └── Ruta: DIRECTA ➔ Activa ninguna skill: hacelo vos, con el protocolo\n"
+            " │    └── Ruta: CODE-MAP ➔ Activa ninguna skill: usá la CLI de graphify\n")
+        self.assertFalse(any("loads no skill" in e for e in self.repo.errors()))
+
+    def test_router_route_skill_on_a_later_line_counts(self):
+        self.repo.skill("demo", "name: demo\ndescription: x")
+        self.repo.credit("god", "demo")
+        self.write_router(
+            " │    └── Ruta: TECH-ARCH ➔ Activa una:\n"
+            " │         · diseñar el backend ➔ `demo`\n")
+        self.repo.credit("god", "demo")
+        self.assertFalse(any("loads no skill" in e for e in self.repo.errors()))
+
+    def test_real_router_gives_every_route_a_skill(self):
+        errors = []
+        validate.check_router_routes_have_skill(errors)
+        self.assertEqual(errors, [])
 
     def test_skill_missing_from_third_party(self):
         self.repo.skill("demo", "name: demo\ndescription: x")

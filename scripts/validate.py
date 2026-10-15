@@ -134,6 +134,32 @@ def check_router(skills, agents, errors):
                     errors.append(f"{router.relative_to(ROOT)}:{lineno}: routes to unknown skill or agent {name!r}")
 
 
+NO_SKILL_ROUTES = {"DIRECTA", "CODE-MAP"}
+
+
+def check_router_routes_have_skill(errors):
+    """Every route in the matrix loads a skill, except the routes that are meant to load none."""
+    for router in [d / "SKILL.md" for d in skill_dirs() if d.name == "god"]:
+        routes, in_matrix = [], False
+        for lineno, line in enumerate(router.read_text(encoding="utf-8").splitlines(), 1):
+            if line.startswith("## "):
+                in_matrix = line.startswith("## Matriz")
+                continue
+            if not in_matrix:
+                continue
+            m = re.search(r"Ruta:\s*([A-Z][A-Z0-9 -]*[A-Z0-9])", line)
+            if m:
+                routes.append({"name": m.group(1), "line": lineno, "ninguna": "Activa ninguna" in line, "skills": []})
+            if routes:
+                routes[-1]["skills"] += re.findall(r"`/?([a-z][a-z0-9-]*)`", line)
+        for route in routes:
+            if route["name"] in NO_SKILL_ROUTES:
+                continue
+            if route["ninguna"] or not route["skills"]:
+                errors.append(f"{router.relative_to(ROOT)}:{route['line']}: route {route['name']} loads no skill; "
+                              f"only {', '.join(sorted(NO_SKILL_ROUTES))} may")
+
+
 def check_third_party(skills, errors):
     path = ROOT / "THIRD_PARTY.md"
     if not path.exists():
@@ -201,6 +227,7 @@ def main():
     agents = check_agents(errors)
     check_packs(skills, errors)
     check_router(skills, agents, errors)
+    check_router_routes_have_skill(errors)
     check_third_party(skills, errors)
     check_plugins(errors)
     check_protocol(errors)

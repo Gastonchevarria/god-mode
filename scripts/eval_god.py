@@ -11,7 +11,8 @@ HOME, stops after a few turns, and records:
 - the cost of those first turns.
 
 A case passes when its expected route token (for example `DEBUG` or `DIRECT`) appears in
-the route /god names. The other numbers are reported, not scored.
+the route /god names and, if the case lists `skills`, /god loads one of them. The other
+numbers are reported, not scored.
 
 Usage:
     python3 scripts/eval_god.py [--cases tests/evals/god_routes.json] [--runs 1]
@@ -104,13 +105,20 @@ def route_matches(expected, route, known):
     return expected in head and not any(k in head for k in known if k != expected and k not in expected)
 
 
+def run_passes(case, run, known):
+    """Right route and, when the case lists skills, one of them loaded: a route without its skill fails."""
+    if not run["route"] or not route_matches(normalize(case["route"]), run["route"], known):
+        return False
+    expected_skills = case.get("skills")
+    return not expected_skills or any(s in expected_skills for s in run["skills"])
+
+
 def summarize(cases, results, max_turns, model, out):
     known = {normalize(c["route"]) for c in cases} - {"DIRECT"}
     report, hits, scored, skills, protocol_reads, cost = [], 0, 0, 0, 0, 0.0
     for i, case in enumerate(cases):
-        expected = normalize(case["route"])
         runs = results[i]
-        ok = [r for r in runs if r["route"] and route_matches(expected, r["route"], known)]
+        ok = [r for r in runs if run_passes(case, r, known)]
         valid = [r for r in runs if r["route"]]
         hits += len(ok)
         scored += len(runs)

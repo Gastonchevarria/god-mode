@@ -27,7 +27,7 @@ Una sola línea: el diagnóstico largo va solo si el usuario lo pide.
 
 1. **Una ruta.** La más específica que encaje con el pedido.
 2. **Si ninguna encaja claramente, la ruta es DIRECTA:** hacés el pedido vos, sin cargar skills. Es lo normal para un cambio chico, un refactor puntual, una pregunta, explicar código, un comando, configuración o un mensaje de commit. Nunca uses una ruta pesada (FULL-BUILD, `autoplan`) para un pedido chico.
-3. **Una skill.** Cargá la que la ruta indica para ese caso. Otra skill entra solo cuando un paso posterior la necesita, nunca al principio "por las dudas".
+3. **Una skill.** Cargá la que la ruta indica para ese caso. Solo DIRECTA, CODE-MAP y `god-mode usage` llevan "Skills: ninguna": si elegiste otra ruta y ninguna de sus opciones encaja, cambiá de ruta en vez de dejarla sin skill. Otra skill entra solo cuando un paso posterior la necesita, nunca al principio "por las dudas".
 4. **Skills que corren aparte.** Si la skill tiene `context: fork` (las de diseño), no ve la conversación: pasale en los argumentos el pedido completo y las rutas de los archivos.
 5. **`/god` sin pedido.** Respondé con cuatro o cinco ejemplos de lo que puede hacer y preguntá qué necesita.
 
@@ -87,7 +87,7 @@ Una sola línea: el diagnóstico largo va solo si el usuario lo pide.
  ├── 📐 Arquitectura técnica
  │    └── Ruta: TECH-ARCH ➔ Activa una:
  │         · diseñar el backend o la base de datos ➔ `backend-architect`
- │         · revisar un plan técnico que ya existe ➔ `plan-eng-review`
+ │         · revisar un plan técnico o un sistema que ya existe (auditar y proponer mejoras o un MVP) ➔ `plan-eng-review`
  │         · estructurar una app Next.js ➔ `nextjs-app-router`
  │         · estructurar una API en FastAPI ➔ `fastapi-pro`
  │
