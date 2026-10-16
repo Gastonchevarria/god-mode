@@ -34,6 +34,11 @@ Un "sí" cubre solo la acción que se mostró: un commit aprobado no autoriza el
 ### 4. No Thinking in Code Comments
 - Nunca usar comentarios de código como borrador del monólogo interno. Los comentarios en código sólo documentan arquitectura no obvia, restricciones críticas o lógica de negocio.
 
+### 5. Cambios quirúrgicos y simples
+- Cada línea que cambiás sale del pedido: no "mejores" código, comentarios ni formato vecinos, y respetá el estilo que ya hay. El código muerto ajeno se menciona, no se borra; lo que tu cambio dejó sin uso, sí.
+- Escribí el mínimo que resuelve el pedido: sin features, abstracciones de un solo uso ni opciones que nadie pidió, y sin manejo de errores para casos imposibles.
+- Si el pedido admite dos lecturas que cambian el resultado, decí cuál tomás antes de empezar; si elegir le toca al usuario, preguntá (ver §1).
+
 ---
 
 # Token Optimization Protocol (Regla Global)
