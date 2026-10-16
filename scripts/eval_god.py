@@ -34,7 +34,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from eval_routing import ROOT, isolated_env  # noqa: E402
+from eval_routing import ROOT, isolated_env
 
 ROUTE_RE = re.compile(r"(?:Ruta|Route):\s*(.+?)\s*(?:·|\n|$)")
 

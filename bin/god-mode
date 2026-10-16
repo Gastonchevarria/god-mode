@@ -884,7 +884,7 @@ def _graphs_not_queried(rows, cutoff):
 
 def cmd_usage(days=2.0):
     root = CLAUDE_DIR / "projects"
-    cutoff = datetime.datetime.now().timestamp() - days * 86400
+    cutoff = datetime.datetime.now(datetime.timezone.utc).timestamp() - days * 86400
     paths = [p for p in root.glob("*/*.jsonl") if p.stat().st_mtime >= cutoff] if root.exists() else []
     if not paths:
         print(f"No hay sesiones de Claude Code de los últimos {days:g} días en {root}.")
@@ -905,7 +905,7 @@ def cmd_usage(days=2.0):
     print(f"  {'Fecha':11}  {'Proyecto':18} {'Modelo':14} {'Costo':>8}  {'Caché':>7}  {'Contexto':>8}  "
           f"{'Compact.':>8}  {'Agentes':>7}  Skills")
     for s in rows[:15]:
-        date = datetime.datetime.fromtimestamp(s["mtime"]).strftime("%m-%d %H:%M")
+        date = datetime.datetime.fromtimestamp(s["mtime"], datetime.timezone.utc).astimezone().strftime("%m-%d %H:%M")
         project = Path(s["cwd"]).name if s["cwd"] else s["path"].parent.name[-18:]
         model = _main_model(s)[:11] + (" -p" if s["background"] else "")
         cost = f"${s['cost']:.2f}" if isinstance(s["cost"], (int, float)) else "—"
