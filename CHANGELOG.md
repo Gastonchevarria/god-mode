@@ -5,6 +5,7 @@ All notable changes to god-mode are documented here. Versions follow [Semantic V
 ## [Unreleased]
 
 ### Added
+- Loop breaker: `plugins/god-mode-core/hooks/loop_breaker.py`, a PreToolUse hook on Bash that blocks the fourth run in a row of the same command (`GOD_MODE_LOOP_MAX`, `0` turns it off), installed by `god-mode doctor --fix` and loaded by the plugin; `god-mode doctor` checks it. The token rule now caps retries at 2 per step and asks for quiet test and linter output.
 - Protocol §5 "Cambios quirúrgicos y simples" (`config/CLAUDE.md`, `protocol.md`, `.cursorrules`, Gemini rules): every changed line comes from the request, the minimum code that solves it, and the reading taken is named before starting. Adapted in our own words from the principles in [multica-ai/andrej-karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills) (MIT); the overlap with `code-simplification`, `incremental-implementation`, `spec-driven-development` and `test-driven-development` is why it is a rule, not a skill.
 - `scripts/validate.py`: every route in the `/god` matrix must load a skill; only DIRECTA and CODE-MAP may load none. `tests/test_eval_god.py` covers the new scoring.
 - `scripts/eval_god.py`: a case can list `skills`; it passes only when /god picks the route and loads one of them. New TECH-ARCH case: audit an existing system and propose an MVP.

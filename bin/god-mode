@@ -535,10 +535,12 @@ def _read_settings(path):
 
 AUDIT_HOOK_SCRIPT = "prompt_audit_check.py"
 REFRESH_HOOK_SCRIPT = "graphify_refresh.py"
-# script -> (SessionStart matcher or None for every source, line shown when --fix adds it)
-SESSION_HOOKS = {
-    AUDIT_HOOK_SCRIPT: ("compact", "audit de instrucciones después de cada compactación (si cambiaron)"),
-    REFRESH_HOOK_SCRIPT: (None, "graphify update . al empezar y al compactar, en proyectos con grafo"),
+LOOP_HOOK_SCRIPT = "loop_breaker.py"
+# script -> (hook event, matcher or None for every source, line shown when --fix adds it)
+MANAGED_HOOKS = {
+    AUDIT_HOOK_SCRIPT: ("SessionStart", "compact", "audit de instrucciones después de cada compactación (si cambiaron)"),
+    REFRESH_HOOK_SCRIPT: ("SessionStart", None, "graphify update . al empezar y al compactar, en proyectos con grafo"),
+    LOOP_HOOK_SCRIPT: ("PreToolUse", "Bash", "corta un comando que se reintenta en bucle (3 veces seguidas)"),
 }
 
 
@@ -551,8 +553,9 @@ def audit_hook_command(repo):
 
 
 def _session_hook(data, script):
-    """(SessionStart groups, the group index and hook index of god-mode's hook for script, or None)."""
-    groups = ((data.get("hooks") or {}).get("SessionStart")) or []
+    """(the event's hook groups, the group index and hook index of god-mode's hook for script, or None)."""
+    event = MANAGED_HOOKS[script][0]
+    groups = ((data.get("hooks") or {}).get(event)) or []
     for gi, group in enumerate(groups):
         for hi, hook in enumerate((group or {}).get("hooks") or []):
             if script in str((hook or {}).get("command", "")):
@@ -565,11 +568,11 @@ def _audit_hook_entries(data):
 
 
 def _ensure_session_hook(data, repo, script):
-    """Adds or repoints one of god-mode's SessionStart hooks. Returns a change line, or None."""
+    """Adds or repoints one of god-mode's hooks. Returns a change line, or None."""
     hooks = data.get("hooks")
     if hooks is not None and not isinstance(hooks, dict):
         fail("No toco settings.json: \"hooks\" no es un objeto. Corregilo a mano y volvé a correr.")
-    matcher, added = SESSION_HOOKS[script]
+    event, matcher, added = MANAGED_HOOKS[script]
     command = hook_command(repo, script)
     groups, found = _session_hook(data, script)
     if found:
@@ -582,12 +585,12 @@ def _ensure_session_hook(data, repo, script):
             groups[gi]["matcher"] = matcher
         else:
             groups[gi].pop("matcher", None)
-        return f"hooks.SessionStart: {script} apuntado al repo actual"
+        return f"hooks.{event}: {script} apuntado al repo actual"
     group = {"hooks": [{"type": "command", "command": command}]}
     if matcher:
         group = {"matcher": matcher, **group}
-    data.setdefault("hooks", {}).setdefault("SessionStart", []).append(group)
-    return f"hooks.SessionStart: {added}"
+    data.setdefault("hooks", {}).setdefault(event, []).append(group)
+    return f"hooks.{event}: {added}"
 
 
 def fix_claude_settings(path):
@@ -598,7 +601,7 @@ def fix_claude_settings(path):
     env = dict(data.get("env", {}))
     changes = []
     repo = source_dir()
-    for script in SESSION_HOOKS if repo else ():
+    for script in MANAGED_HOOKS if repo else ():
         hook_change = _ensure_session_hook(data, repo, script)
         if hook_change:
             changes.append(hook_change)
@@ -745,6 +748,14 @@ def cmd_doctor(fix=False):
         if ok and os.environ.get("GOD_MODE_GRAPHIFY_REFRESH", "").lower() == "off":
             detail += " (desactivado con GOD_MODE_GRAPHIFY_REFRESH=off)"
         results.append((ok, "Claude Code: grafo de Graphify al día", detail, "god-mode doctor --fix"))
+        groups, found = _session_hook(settings, LOOP_HOOK_SCRIPT)
+        hook = groups[found[0]]["hooks"][found[1]] if found else None
+        ok = bool(hook) and hook.get("command") == hook_command(repo, LOOP_HOOK_SCRIPT)
+        detail = ("corta un comando repetido 3 veces seguidas" if ok else
+                  "apunta a otra copia del repo" if hook else "no configurado")
+        if ok and os.environ.get("GOD_MODE_LOOP_MAX", "") == "0":
+            detail += " (desactivado con GOD_MODE_LOOP_MAX=0)"
+        results.append((ok, "Claude Code: corte de bucles en Bash", detail, "god-mode doctor --fix"))
 
     graphify = shutil.which("graphify")
     results.append((True if graphify else None, "Graphify CLI (opcional, para la ruta CODE-MAP)",

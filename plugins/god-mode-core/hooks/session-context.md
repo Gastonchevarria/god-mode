@@ -61,6 +61,8 @@ Reducir el consumo de tokens sin sacrificar calidad. Esta regla aplica a todas l
 ## 3. Tool Call Discipline
 - Si varias llamadas no dependen entre sí, hacelas juntas en un mismo mensaje.
 - No corras el mismo comando dos veces salvo error o cambio.
+- Máximo 2 reintentos por paso. Si un comando, un test o una conexión falla 3 veces seguidas, abortá el paso: no sigas llamando, dejá el error tal cual en el informe y preguntá cómo seguir. Nunca reintentes "hasta que vuelva la red" ni "hasta que pase". En Claude Code, el hook `loop_breaker.py` de god-mode corta el cuarto intento igual.
+- Corré tests y linters en modo silencioso: `pytest -q --tb=short --maxfail=3`, `ruff check --quiet`, `npm test -- --silent`. Un traceback completo por cada ciclo llena el contexto; si necesitás ver uno entero, pedilo solo.
 
 ## 4. Output Frugality
 - Recortá la salida larga de comandos que funcionaron (`head`, `tail`, `grep`). Si un comando o un test falló, leé el error completo.

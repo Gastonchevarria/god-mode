@@ -232,9 +232,11 @@ claude = pathlib.Path(sys.argv[1]) / ".claude"
 repo = json.loads((claude / ".god-mode-state.json").read_text())["source_dir"]
 command = f'python3 "{repo}/plugins/god-mode-core/hooks/prompt_audit_check.py"'
 refresh = f'python3 "{repo}/plugins/god-mode-core/hooks/graphify_refresh.py"'
+loops = f'python3 "{repo}/plugins/god-mode-core/hooks/loop_breaker.py"'
 settings = {"outputStyle": "Concise", "autoCompactWindow": 300000,
             "hooks": {"SessionStart": [{"matcher": "compact", "hooks": [{"type": "command", "command": command}]},
-                                       {"hooks": [{"type": "command", "command": refresh}]}]}}
+                                       {"hooks": [{"type": "command", "command": refresh}]}],
+                      "PreToolUse": [{"matcher": "Bash", "hooks": [{"type": "command", "command": loops}]}]}}
 (claude / "settings.json").write_text(json.dumps(settings))
 PY
 doctor_run
@@ -279,10 +281,15 @@ import json; d = json.load(open('$HOME/.claude/settings.json'))
 groups = [g for g in d['hooks']['SessionStart'] for h in g['hooks'] if 'graphify_refresh.py' in h['command']]
 assert len(groups) == 1 and 'matcher' not in groups[0]"
 PATH="$WORK/fakebin:$PATH" python3 "$HOME/.local/bin/god-mode" doctor --fix >/dev/null 2>&1
+check "y el corte de bucles como PreToolUse de Bash" python3 -c "
+import json; d = json.load(open('$HOME/.claude/settings.json'))
+groups = [g for g in d['hooks']['PreToolUse'] for h in g['hooks'] if 'loop_breaker.py' in h['command']]
+assert len(groups) == 1 and groups[0]['matcher'] == 'Bash'"
 check "y correrlo de nuevo no lo duplica" python3 -c "
 import json; d = json.load(open('$HOME/.claude/settings.json'))
 assert sum('prompt_audit_check.py' in h['command'] for g in d['hooks']['SessionStart'] for h in g['hooks']) == 1
-assert sum('graphify_refresh.py' in h['command'] for g in d['hooks']['SessionStart'] for h in g['hooks']) == 1"
+assert sum('graphify_refresh.py' in h['command'] for g in d['hooks']['SessionStart'] for h in g['hooks']) == 1
+assert sum('loop_breaker.py' in h['command'] for g in d['hooks']['PreToolUse'] for h in g['hooks']) == 1"
 check "guarda una copia de la versión anterior" bash -c "grep -q Explanatory '$HOME'/.claude/settings.json.bak-*"
 python3 -c "
 import json; p = '$HOME/.claude/settings.json'; d = json.load(open(p)); d['autoCompactWindow'] = 500000; json.dump(d, open(p, 'w'))"
