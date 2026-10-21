@@ -66,6 +66,9 @@ curl -fsSL https://raw.githubusercontent.com/Gastonchevarria/god-mode/main/insta
 > [!WARNING]
 > Don't use both at once. You would load every skill twice. `god-mode doctor` flags it.
 
+> [!TIP]
+> Do you use the Claude desktop app with the god-mode plugins uploaded for Cowork? Those plugins also load in the app's Claude Code sessions, so with the installer you would get every skill, hook and subagent twice. Run `god-mode claude-via plugins`: the CLI stops linking skills, copying subagents and writing hooks for Claude Code, and keeps the protocol in `CLAUDE.md`, Antigravity and Cursor as they are. Keep the plugins current by uploading each version's zip. `god-mode claude-via installer` reverts it.
+
 **Check that it worked:** open Claude Code in any project and type `/god`. The first line of the reply should start with `⚡ GOD · Ruta:`.
 
 ---

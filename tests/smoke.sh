@@ -308,6 +308,35 @@ rm -f "$HOME/.claude/settings.json"
 printf '{"outputStyle": ' >"$HOME/.claude/settings.json"
 check "con un settings.json inválido --fix falla sin tocarlo" bash -c "! PATH='$WORK/fakebin:$PATH' python3 '$HOME/.local/bin/god-mode' doctor --fix >/dev/null 2>&1 && test \"\$(cat '$HOME/.claude/settings.json')\" = '{\"outputStyle\": '"
 
+echo "== Claude Code vía plugins de la app"
+fresh_home via
+mkdir -p "$HOME/.gemini"
+run_install --pack=core
+printf 'export CLAUDE_CODE_SUBAGENT_MODEL="claude-sonnet-5-5"\nexport AUTOHARNESS_REFLECT_EVERY_N=75\nexport AUTOHARNESS_CONSOLIDATE_EVERY_N=300\n' >"$HOME/.zshrc"
+PATH="$WORK/fakebin:$PATH" cli doctor --fix >/dev/null 2>&1
+via_run() { cli claude-via "$1" >"$WORK/via.log" 2>&1; }
+finish_run() { cli _finish-update >/dev/null 2>&1; }
+no_managed_hooks() { ! grep -qE 'loop_breaker|prompt_audit_check|graphify_refresh' "$HOME/.claude/settings.json"; }
+check "con el CLI: skills enlazadas" test "$(count_links "$HOME/.claude/skills")" = "$(pack_size core)"
+check "subagentes copiados" test -e "$HOME/.claude/agents/code-reviewer.md"
+check "y hooks en settings.json" grep -q loop_breaker "$HOME/.claude/settings.json"
+check "god-mode claude-via plugins termina con código 0" via_run plugins
+check "quita los enlaces de ~/.claude/skills" test "$(count_links "$HOME/.claude/skills")" = "0"
+check "pero deja los de Antigravity" test "$(count_links "$HOME/.gemini/config/skills")" = "$(pack_size core)"
+check "quita las copias de los subagentes" test ! -e "$HOME/.claude/agents/code-reviewer.md"
+check "quita los tres hooks de settings.json" no_managed_hooks
+check "y conserva el protocolo en CLAUDE.md" grep -q "god-mode:start" "$HOME/.claude/CLAUDE.md"
+check "doctor queda en verde en modo plugins" doctor_run
+check "y lo dice" grep -q "vía plugins de la app" "$WORK/doctor.log"
+check "update respeta el modo" finish_run
+check "sin volver a enlazar skills" test "$(count_links "$HOME/.claude/skills")" = "0"
+check "ni a copiar subagentes" test ! -e "$HOME/.claude/agents/code-reviewer.md"
+check "claude-via installer lo revierte" via_run installer
+check "con las skills enlazadas de nuevo" test "$(count_links "$HOME/.claude/skills")" = "$(pack_size core)"
+check "los subagentes copiados" test -e "$HOME/.claude/agents/code-reviewer.md"
+check "y los hooks en settings.json" grep -q loop_breaker "$HOME/.claude/settings.json"
+check "y doctor sigue en verde" doctor_run
+
 echo "== Hook de sesión del plugin god-mode-core"
 HOOK_CMD="$(python3 -c "import json; print(json.load(open('$REPO/plugins/god-mode-core/hooks/hooks.json'))['hooks']['SessionStart'][0]['hooks'][0]['command'])")"
 fresh_home hook

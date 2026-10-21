@@ -87,6 +87,16 @@ def save_state(**changes):
     STATE_FILE.write_text(json.dumps(state, indent=2), encoding="utf-8")
 
 
+def claude_via():
+    """How Claude Code gets god-mode's skills, hooks and agents.
+
+    "installer": the CLI links the skills, copies the agents and writes the hooks (default).
+    "plugins": the god-mode plugins loaded by the Claude app do that, so the CLI leaves those out
+    for Claude Code and keeps only the protocol in CLAUDE.md, plus Antigravity and Cursor.
+    """
+    return load_state().get("claude_via", "installer")
+
+
 def is_repo(path):
     return path is not None and (path / "config" / "packs.json").exists()
 
@@ -231,6 +241,7 @@ def apply_pack(pack_name):
 
     conflicts = []
     migrated = 0
+    via_plugins = claude_via() == "plugins"
     for skills_dir in target_dirs(targets):
         skills_dir.mkdir(parents=True, exist_ok=True)
         for item in skills_dir.iterdir():
@@ -241,6 +252,8 @@ def apply_pack(pack_name):
             elif _legacy_link(item, known, roots):
                 item.unlink()
                 migrated += 1
+        if via_plugins and skills_dir == CLAUDE_SKILLS:
+            continue
         for name, src in selected.items():
             dest = skills_dir / name
             if dest.is_symlink() or dest.exists():
@@ -254,6 +267,9 @@ def apply_pack(pack_name):
     if migrated:
         print(f"  {GREEN}✓ {migrated} enlaces de una instalación anterior a 1.0 reemplazados por los de esta versión{NC}")
     for skills_dir in target_dirs(targets):
+        if via_plugins and skills_dir == CLAUDE_SKILLS:
+            print(f"  • {skills_dir}: 0 skills de god-mode (las cargan los plugins de la app)")
+            continue
         managed = sum(1 for i in skills_dir.iterdir() if i.is_symlink() and _managed_link(i, roots))
         print(f"  • {skills_dir}: {managed} skills de god-mode")
         if managed < len(selected):
@@ -407,8 +423,17 @@ def cmd_setup(targets):
         (CLAUDE_SCRIPTS / "install-skill.py").chmod(0o755)
 
     agents = discover_agents(repo)
-    changed = sum(install_file(a, CLAUDE_AGENTS / a.name, f"Agente {a.name}") for a in agents)
-    print(f"  {GREEN}✓ {len(agents)} subagentes en {CLAUDE_AGENTS} ({changed} actualizados){NC}")
+    if claude_via() == "plugins":
+        removed = 0
+        for a in agents:
+            copy = CLAUDE_AGENTS / a.name
+            if copy.exists():
+                copy.unlink()
+                removed += 1
+        print(f"  {GREEN}✓ Subagentes a cargo del plugin god-mode-core de la app ({removed} copias quitadas de {CLAUDE_AGENTS}){NC}")
+    else:
+        changed = sum(install_file(a, CLAUDE_AGENTS / a.name, f"Agente {a.name}") for a in agents)
+        print(f"  {GREEN}✓ {len(agents)} subagentes en {CLAUDE_AGENTS} ({changed} actualizados){NC}")
 
     if "gemini" in targets:
         rules = repo / "config" / "GEMINI_RULES.md"
@@ -449,6 +474,23 @@ def finish_update():
     print(f"{GREEN}{BOLD}🎉 god-mode actualizado.{NC}\n")
 
 
+def cmd_claude_via(mode):
+    state = load_state()
+    save_state(claude_via=mode)
+    print(f"\n{PURPLE}{BOLD}⚡ Claude Code vía {mode}{NC}")
+    cmd_setup(state.get("targets") or detect_targets())
+    apply_pack(state.get("active_pack", "core"))
+    settings_path = CLAUDE_DIR / "settings.json"
+    if settings_path.exists():
+        fix_claude_settings(settings_path)
+    if mode == "plugins":
+        print(f"{CYAN}💡 Skills, hooks y subagentes de Claude Code quedan a cargo de los plugins god-mode-* de la app.\n"
+              f"   Mantenelos al día subiendo los zips de cada versión. Abrí una sesión nueva para que tome efecto.{NC}\n")
+    else:
+        print(f"{CYAN}💡 El CLI vuelve a cargar todo en Claude Code. Si los plugins god-mode-* siguen en la app, se\n"
+              f"   cargaría todo dos veces: quitalos o volvé a `god-mode claude-via plugins`.{NC}\n")
+
+
 def cmd_status():
     state = load_state()
     repo = source_dir()
@@ -460,6 +502,7 @@ def cmd_status():
     print(f"  • Repositorio:     {repo or 'no encontrado'}")
     print(f"  • Pack activo:     {GREEN}{BOLD}{active.upper()}{NC}")
     print(f"  • Destinos:        {', '.join(targets)}")
+    print(f"  • Claude Code vía: {claude_via()}")
     for d in target_dirs(targets):
         count = len(list(d.iterdir())) if d.exists() else 0
         print(f"  • {d}: {CYAN}{count}{NC} skills")
@@ -593,6 +636,21 @@ def _ensure_session_hook(data, repo, script):
     return f"hooks.{event}: {added}"
 
 
+def _remove_managed_hook(data, script):
+    """Removes one of god-mode's hooks from settings (the plugin loads it instead). Returns a change line, or None."""
+    event = MANAGED_HOOKS[script][0]
+    groups, found = _session_hook(data, script)
+    if not found:
+        return None
+    gi, hi = found
+    del groups[gi]["hooks"][hi]
+    if not groups[gi]["hooks"]:
+        del groups[gi]
+    if not groups:
+        data["hooks"].pop(event, None)
+    return f"hooks.{event}: {script} quitado (lo carga el plugin god-mode-core)"
+
+
 def fix_claude_settings(path):
     """Writes the recommended outputStyle, env and audit hook into Claude Code's settings, keeping every other key."""
     data = _read_settings(path)
@@ -602,7 +660,8 @@ def fix_claude_settings(path):
     changes = []
     repo = source_dir()
     for script in MANAGED_HOOKS if repo else ():
-        hook_change = _ensure_session_hook(data, repo, script)
+        hook_change = (_remove_managed_hook(data, script) if claude_via() == "plugins"
+                       else _ensure_session_hook(data, repo, script))
         if hook_change:
             changes.append(hook_change)
     if data.get("outputStyle") != "Concise":
@@ -692,11 +751,24 @@ def cmd_doctor(fix=False):
                           ("Token Optimization Protocol", "regla de optimización de tokens")):
         results.append((needle in text, f"Claude Code: {label} en CLAUDE.md", "presente" if needle in text else "falta",
                         "god-mode update"))
-    _check_skills_dir(CLAUDE_SKILLS, expected, "Claude Code", results)
-    agents = len(list(CLAUDE_AGENTS.glob("*.md"))) if CLAUDE_AGENTS.exists() else 0
-    wanted = len(discover_agents(repo))
-    results.append((agents >= wanted, "Claude Code: subagentes", f"{agents} instalados, se esperaban {wanted}",
-                    "god-mode update"))
+    via_plugins = claude_via() == "plugins"
+    if via_plugins:
+        results.append((None, "Claude Code: vía plugins de la app",
+                        "skills, hooks y subagentes los carga god-mode-core; el protocolo sigue en CLAUDE.md", ""))
+        links = _managed_links(CLAUDE_SKILLS)
+        results.append((not links, "Claude Code: skills del pack",
+                        "a cargo del plugin" if not links else f"{len(links)} enlazadas por el CLI además del plugin: duplicadas",
+                        "god-mode claude-via plugins"))
+        copies = [a.name for a in discover_agents(repo) if (CLAUDE_AGENTS / a.name).exists()]
+        results.append((not copies, "Claude Code: subagentes",
+                        "a cargo del plugin" if not copies else f"{len(copies)} copias del CLI además del plugin: duplicados",
+                        "god-mode claude-via plugins"))
+    else:
+        _check_skills_dir(CLAUDE_SKILLS, expected, "Claude Code", results)
+        agents = len(list(CLAUDE_AGENTS.glob("*.md"))) if CLAUDE_AGENTS.exists() else 0
+        wanted = len(discover_agents(repo))
+        results.append((agents >= wanted, "Claude Code: subagentes", f"{agents} instalados, se esperaban {wanted}",
+                        "god-mode update"))
 
     if "gemini" in targets:
         dev = GEMINI_RULES.read_text(encoding="utf-8", errors="replace") if GEMINI_RULES.exists() else ""
@@ -732,30 +804,26 @@ def cmd_doctor(fix=False):
                     "god-mode doctor --fix"))
 
     if settings is not None:
-        groups, found = _audit_hook_entries(settings)
-        hook = groups[found[0]]["hooks"][found[1]] if found else None
-        ok = bool(hook) and hook.get("command") == audit_hook_command(repo)
-        detail = ("activo después de cada compactación" if ok else
-                  "apunta a otra copia del repo" if hook else "no configurado")
-        if ok and os.environ.get("GOD_MODE_PROMPT_AUDIT", "").lower() == "off":
-            detail += " (desactivado con GOD_MODE_PROMPT_AUDIT=off)"
-        results.append((ok, "Claude Code: audit de instrucciones post-compact", detail, "god-mode doctor --fix"))
-        groups, found = _session_hook(settings, REFRESH_HOOK_SCRIPT)
-        hook = groups[found[0]]["hooks"][found[1]] if found else None
-        ok = bool(hook) and hook.get("command") == hook_command(repo, REFRESH_HOOK_SCRIPT)
-        detail = ("graphify update . al empezar y al compactar" if ok else
-                  "apunta a otra copia del repo" if hook else "no configurado")
-        if ok and os.environ.get("GOD_MODE_GRAPHIFY_REFRESH", "").lower() == "off":
-            detail += " (desactivado con GOD_MODE_GRAPHIFY_REFRESH=off)"
-        results.append((ok, "Claude Code: grafo de Graphify al día", detail, "god-mode doctor --fix"))
-        groups, found = _session_hook(settings, LOOP_HOOK_SCRIPT)
-        hook = groups[found[0]]["hooks"][found[1]] if found else None
-        ok = bool(hook) and hook.get("command") == hook_command(repo, LOOP_HOOK_SCRIPT)
-        detail = ("corta un comando repetido 3 veces seguidas" if ok else
-                  "apunta a otra copia del repo" if hook else "no configurado")
-        if ok and os.environ.get("GOD_MODE_LOOP_MAX", "") == "0":
-            detail += " (desactivado con GOD_MODE_LOOP_MAX=0)"
-        results.append((ok, "Claude Code: corte de bucles en Bash", detail, "god-mode doctor --fix"))
+        checks = (
+            (AUDIT_HOOK_SCRIPT, "audit de instrucciones post-compact", "activo después de cada compactación",
+             "GOD_MODE_PROMPT_AUDIT", "off"),
+            (REFRESH_HOOK_SCRIPT, "grafo de Graphify al día", "graphify update . al empezar y al compactar",
+             "GOD_MODE_GRAPHIFY_REFRESH", "off"),
+            (LOOP_HOOK_SCRIPT, "corte de bucles en Bash", "corta un comando repetido 3 veces seguidas",
+             "GOD_MODE_LOOP_MAX", "0"),
+        )
+        for script, label, active, env_name, env_off in checks:
+            groups, found = _session_hook(settings, script)
+            hook = groups[found[0]]["hooks"][found[1]] if found else None
+            if via_plugins:
+                ok = hook is None
+                detail = "lo carga el plugin god-mode-core" if ok else "también en settings.json: correría dos veces"
+            else:
+                ok = bool(hook) and hook.get("command") == hook_command(repo, script)
+                detail = active if ok else "apunta a otra copia del repo" if hook else "no configurado"
+            if ok and os.environ.get(env_name, "").lower() == env_off:
+                detail += f" (desactivado con {env_name}={env_off})"
+            results.append((ok, f"Claude Code: {label}", detail, "god-mode doctor --fix"))
 
     graphify = shutil.which("graphify")
     results.append((True if graphify else None, "Graphify CLI (opcional, para la ruta CODE-MAP)",
@@ -990,6 +1058,11 @@ USAGE = f"""
   {CYAN}doctor [--fix]{NC}         Verifica la instalación; con --fix escribe outputStyle, autoCompactWindow, env
                          recomendados y los hooks de god-mode (audit post-compact y grafo de Graphify al
                          día) en ~/.claude/settings.json (con copia de respaldo).
+  {CYAN}claude-via <installer|plugins>{NC}
+                         Quién carga skills, hooks y subagentes en Claude Code: el CLI (installer, por
+                         defecto) o los plugins god-mode-* subidos a la app de Claude (plugins). Con
+                         plugins el CLI los quita de ~/.claude para no cargarlos dos veces y deja el
+                         protocolo en CLAUDE.md, Antigravity y Cursor como están.
   {CYAN}usage [--days=N]{NC}       En qué se fueron los tokens de Claude Code: costo, contexto, compactaciones y
                          subagentes por sesión (por defecto, últimos 2 días). Solo lee ~/.claude/projects.
   {CYAN}setup [--targets=claude,gemini] [--source=<repo>]{NC}
@@ -1033,6 +1106,11 @@ def main():
         if not installer.exists():
             fail(f"No existe {installer}. Corré `god-mode setup` primero.")
         sys.exit(subprocess.run([sys.executable, str(installer), *args[1:]], check=False).returncode)
+    elif cmd == "claude-via":
+        mode = args[1].lower() if len(args) > 1 else ""
+        if mode not in ("installer", "plugins"):
+            fail("Opciones: god-mode claude-via installer | plugins")
+        cmd_claude_via(mode)
     elif cmd == "doctor":
         cmd_doctor(fix="--fix" in args[1:])
     elif cmd == "usage":
