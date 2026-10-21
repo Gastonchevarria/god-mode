@@ -7,7 +7,8 @@ command is about to run for the fourth time in a row (GOD_MODE_LOOP_MAX, default
 changes the limit; 0 turns the hook off), the hook blocks it and tells Claude to stop,
 report the error and wait for the user. Running any other command resets the count.
 A `sleep` before the retry does not hide the loop. Counts are kept per session in the
-temp directory. Any error inside the hook lets the command through: the hook never
+temp directory. When god-mode is loaded twice (installer and plugin) the hook runs twice
+per command; the same tool_use_id is counted once. Any error inside the hook lets the command through: the hook never
 blocks by accident.
 """
 import json
@@ -49,9 +50,14 @@ def main():
                 state = json.load(f)
         except (OSError, ValueError):
             state = {}
-        count = state.get("count", 0) + 1 if state.get("last") == command else 1
+        call_id = str(data.get("tool_use_id") or "")
+        if state.get("last") == command:
+            seen = bool(call_id) and state.get("call_id") == call_id
+            count = state.get("count", 0) if seen else state.get("count", 0) + 1
+        else:
+            count = 1
         with open(path, "w", encoding="utf-8") as f:
-            json.dump({"last": command, "count": count}, f)
+            json.dump({"last": command, "count": count, "call_id": call_id}, f)
         if count <= limit:
             return 0
         shown = command if len(command) <= 120 else command[:117] + "..."

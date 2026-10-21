@@ -11,19 +11,22 @@ SCRIPT = ROOT / "plugins" / "god-mode-core" / "hooks" / "loop_breaker.py"
 
 
 class LoopBreakerTest(unittest.TestCase):
-    def setUp(self):
-        self.tmp = tempfile.TemporaryDirectory()
-
     def tearDown(self):
         self.tmp.cleanup()
 
-    def run_hook(self, command, session="s1", tool="Bash", limit=None, raw=None):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.calls = 0
+
+    def run_hook(self, command, session="s1", tool="Bash", limit=None, raw=None, call_id=None):
         env = {k: v for k, v in os.environ.items() if k != "GOD_MODE_LOOP_MAX"}
         env["TMPDIR"] = self.tmp.name
         if limit is not None:
             env["GOD_MODE_LOOP_MAX"] = str(limit)
+        self.calls += 1
         payload = raw if raw is not None else json.dumps(
-            {"session_id": session, "hook_event_name": "PreToolUse", "tool_name": tool, "tool_input": {"command": command}})
+            {"session_id": session, "hook_event_name": "PreToolUse", "tool_name": tool,
+             "tool_use_id": call_id or f"toolu_{self.calls}", "tool_input": {"command": command}})
         return subprocess.run([sys.executable, str(SCRIPT)], input=payload, capture_output=True, text=True, env=env, check=False)
 
     def test_the_fourth_identical_command_in_a_row_is_blocked(self):
@@ -61,6 +64,13 @@ class LoopBreakerTest(unittest.TestCase):
         self.assertEqual(self.run_hook("make", limit=1).returncode, 2)
         for _ in range(6):
             self.assertEqual(self.run_hook("make", session="off", limit=0).returncode, 0)
+
+    def test_the_same_call_seen_twice_at_once_counts_once(self):
+        # god-mode loaded as a plugin and from the installer runs the hook twice per command
+        for i in range(3):
+            self.assertEqual(self.run_hook("pytest tests/", call_id=f"toolu_same_{i}").returncode, 0)
+            self.assertEqual(self.run_hook("pytest tests/", call_id=f"toolu_same_{i}").returncode, 0)
+        self.assertEqual(self.run_hook("pytest tests/").returncode, 2)
 
     def test_other_tools_and_bad_input_never_block(self):
         for _ in range(5):
