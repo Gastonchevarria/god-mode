@@ -2,7 +2,7 @@
 
 All notable changes to god-mode are documented here. Versions follow [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [1.13.0] - 2026-10-21
 
 ### Added
 - `god-mode claude-via plugins`: for Claude Code, skills, hooks and subagents come from the god-mode plugins uploaded to the Claude app (which also load in the app's Claude Code sessions), so the CLI removes its own links, agent copies and hooks and keeps the protocol in `CLAUDE.md`, Antigravity and Cursor; `update` and `doctor` respect the mode; `claude-via installer` reverts it.
@@ -12,6 +12,7 @@ All notable changes to god-mode are documented here. Versions follow [Semantic V
 - `scripts/eval_god.py`: a case can list `skills`; it passes only when /god picks the route and loads one of them. New TECH-ARCH case: audit an existing system and propose an MVP.
 
 ### Fixed
+- CI: the four `ruff` errors in `god-mode usage` and `eval_god.py`; `test_graphify_refresh` waits up to 15 s for the background call, which macOS can hold on a fresh executable.
 - `/god` answered "Ruta: TECH-ARCH · Skills: ninguna" for an audit-and-MVP request. Rule 3 now says only DIRECTA, CODE-MAP and `god-mode usage` load no skill, and TECH-ARCH sends reviews of an existing system to `plan-eng-review`.
 
 ### Changed
