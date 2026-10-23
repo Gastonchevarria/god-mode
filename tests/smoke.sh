@@ -233,10 +233,13 @@ repo = json.loads((claude / ".god-mode-state.json").read_text())["source_dir"]
 command = f'python3 "{repo}/plugins/god-mode-core/hooks/prompt_audit_check.py"'
 refresh = f'python3 "{repo}/plugins/god-mode-core/hooks/graphify_refresh.py"'
 loops = f'python3 "{repo}/plugins/god-mode-core/hooks/loop_breaker.py"'
+blast = f'python3 "{repo}/plugins/god-mode-core/hooks/blast_radius.py"'
 settings = {"outputStyle": "Concise", "autoCompactWindow": 300000,
             "hooks": {"SessionStart": [{"matcher": "compact", "hooks": [{"type": "command", "command": command}]},
                                        {"hooks": [{"type": "command", "command": refresh}]}],
-                      "PreToolUse": [{"matcher": "Bash", "hooks": [{"type": "command", "command": loops}]}]}}
+                      "PreToolUse": [{"matcher": "Bash", "hooks": [{"type": "command", "command": loops}]},
+                                     {"matcher": "Bash|Write|Edit|MultiEdit|NotebookEdit",
+                                      "hooks": [{"type": "command", "command": blast}]}]}}
 (claude / "settings.json").write_text(json.dumps(settings))
 PY
 doctor_run
@@ -285,11 +288,16 @@ check "y el corte de bucles como PreToolUse de Bash" python3 -c "
 import json; d = json.load(open('$HOME/.claude/settings.json'))
 groups = [g for g in d['hooks']['PreToolUse'] for h in g['hooks'] if 'loop_breaker.py' in h['command']]
 assert len(groups) == 1 and groups[0]['matcher'] == 'Bash'"
+check "y blast radius como PreToolUse de Bash y las escrituras" python3 -c "
+import json; d = json.load(open('$HOME/.claude/settings.json'))
+groups = [g for g in d['hooks']['PreToolUse'] for h in g['hooks'] if 'blast_radius.py' in h['command']]
+assert len(groups) == 1 and groups[0]['matcher'] == 'Bash|Write|Edit|MultiEdit|NotebookEdit'"
 check "y correrlo de nuevo no lo duplica" python3 -c "
 import json; d = json.load(open('$HOME/.claude/settings.json'))
 assert sum('prompt_audit_check.py' in h['command'] for g in d['hooks']['SessionStart'] for h in g['hooks']) == 1
 assert sum('graphify_refresh.py' in h['command'] for g in d['hooks']['SessionStart'] for h in g['hooks']) == 1
-assert sum('loop_breaker.py' in h['command'] for g in d['hooks']['PreToolUse'] for h in g['hooks']) == 1"
+assert sum('loop_breaker.py' in h['command'] for g in d['hooks']['PreToolUse'] for h in g['hooks']) == 1
+assert sum('blast_radius.py' in h['command'] for g in d['hooks']['PreToolUse'] for h in g['hooks']) == 1"
 check "guarda una copia de la versión anterior" bash -c "grep -q Explanatory '$HOME'/.claude/settings.json.bak-*"
 python3 -c "
 import json; p = '$HOME/.claude/settings.json'; d = json.load(open(p)); d['autoCompactWindow'] = 500000; json.dump(d, open(p, 'w'))"
@@ -316,7 +324,7 @@ printf 'export CLAUDE_CODE_SUBAGENT_MODEL="claude-sonnet-5-5"\nexport AUTOHARNES
 PATH="$WORK/fakebin:$PATH" cli doctor --fix >/dev/null 2>&1
 via_run() { cli claude-via "$1" >"$WORK/via.log" 2>&1; }
 finish_run() { cli _finish-update >/dev/null 2>&1; }
-no_managed_hooks() { ! grep -qE 'loop_breaker|prompt_audit_check|graphify_refresh' "$HOME/.claude/settings.json"; }
+no_managed_hooks() { ! grep -qE 'loop_breaker|blast_radius|prompt_audit_check|graphify_refresh' "$HOME/.claude/settings.json"; }
 check "con el CLI: skills enlazadas" test "$(count_links "$HOME/.claude/skills")" = "$(pack_size core)"
 check "subagentes copiados" test -e "$HOME/.claude/agents/code-reviewer.md"
 check "y hooks en settings.json" grep -q loop_breaker "$HOME/.claude/settings.json"
@@ -324,7 +332,7 @@ check "god-mode claude-via plugins termina con código 0" via_run plugins
 check "quita los enlaces de ~/.claude/skills" test "$(count_links "$HOME/.claude/skills")" = "0"
 check "pero deja los de Antigravity" test "$(count_links "$HOME/.gemini/config/skills")" = "$(pack_size core)"
 check "quita las copias de los subagentes" test ! -e "$HOME/.claude/agents/code-reviewer.md"
-check "quita los tres hooks de settings.json" no_managed_hooks
+check "quita los cuatro hooks de settings.json" no_managed_hooks
 check "y conserva el protocolo en CLAUDE.md" grep -q "god-mode:start" "$HOME/.claude/CLAUDE.md"
 check "doctor queda en verde en modo plugins" doctor_run
 check "y lo dice" grep -q "vía plugins de la app" "$WORK/doctor.log"

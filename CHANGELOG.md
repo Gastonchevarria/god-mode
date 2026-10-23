@@ -2,6 +2,11 @@
 
 All notable changes to god-mode are documented here. Versions follow [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+- Blast radius: `plugins/god-mode-core/hooks/blast_radius.py`, a PreToolUse hook on Bash, Write, Edit, MultiEdit and NotebookEdit. It blocks `rm` outside the temp dir, `git reset --hard`, `git checkout -- …`, `git restore …`, `git clean -f`, `git stash drop|clear`, `git branch -D` and force pushes, listing what each would discard, and blocks writes outside the session's project (temp dir and `~/.claude` allowed). `GOD_MODE_BLAST=off` turns it off; `doctor --fix` installs it, the plugin loads it, `doctor` checks it.
+
 ## [1.13.0] - 2026-10-21
 
 ### Added

@@ -579,11 +579,15 @@ def _read_settings(path):
 AUDIT_HOOK_SCRIPT = "prompt_audit_check.py"
 REFRESH_HOOK_SCRIPT = "graphify_refresh.py"
 LOOP_HOOK_SCRIPT = "loop_breaker.py"
+BLAST_HOOK_SCRIPT = "blast_radius.py"
+BLAST_MATCHER = "Bash|Write|Edit|MultiEdit|NotebookEdit"
 # script -> (hook event, matcher or None for every source, line shown when --fix adds it)
 MANAGED_HOOKS = {
     AUDIT_HOOK_SCRIPT: ("SessionStart", "compact", "audit de instrucciones después de cada compactación (si cambiaron)"),
     REFRESH_HOOK_SCRIPT: ("SessionStart", None, "graphify update . al empezar y al compactar, en proyectos con grafo"),
     LOOP_HOOK_SCRIPT: ("PreToolUse", "Bash", "corta un comando que se reintenta en bucle (3 veces seguidas)"),
+    BLAST_HOOK_SCRIPT: ("PreToolUse", BLAST_MATCHER,
+                        "blast radius: frena borrados, descartes de git, push forzado y escrituras fuera del proyecto"),
 }
 
 
@@ -811,6 +815,8 @@ def cmd_doctor(fix=False):
              "GOD_MODE_GRAPHIFY_REFRESH", "off"),
             (LOOP_HOOK_SCRIPT, "corte de bucles en Bash", "corta un comando repetido 3 veces seguidas",
              "GOD_MODE_LOOP_MAX", "0"),
+            (BLAST_HOOK_SCRIPT, "blast radius", "frena borrados, descartes de git, push forzado y escrituras fuera del proyecto",
+             "GOD_MODE_BLAST", "off"),
         )
         for script, label, active, env_name, env_off in checks:
             groups, found = _session_hook(settings, script)
